@@ -13,6 +13,7 @@
     "sequelize:migrate:undo:all": "sequelize-cli db:migrate:undo:all"
   },
   "dependencies": {
+    "@fastify/cors": "^11.2.0",
     "dotenv": "^17.4.2",
     "fastify": "^5.9.0",
     "path": "^0.12.7",

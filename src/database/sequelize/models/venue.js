@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
 
-class User extends Model {
+class Venue extends Model {
   static initModel(sequelize) {
-    User.init(
+    Venue.init(
         {
           id: {
             type: DataTypes.BIGINT,
@@ -10,18 +10,10 @@ class User extends Model {
             primaryKey: true,
           },
 
-          user_code: {
+          venue_code: {
             type: DataTypes.STRING(8),
             allowNull: false,
             unique: true,
-            validate: {
-              is: /^[A-Za-z0-9]{8}$/,
-            },
-          },
-
-          organization_code: {
-            type: DataTypes.STRING(8),
-            allowNull: true,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
@@ -29,34 +21,20 @@ class User extends Model {
 
           business_code: {
             type: DataTypes.STRING(8),
-            allowNull: true,
-            validate: {
-              is: /^[A-Za-z0-9]{8}$/,
-            },
-          },
-
-          role_code: {
-            type: DataTypes.STRING(8),
             allowNull: false,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
           },
 
-          first_name: {
-            type: DataTypes.STRING(100),
-            allowNull: true,
-          },
-
-          last_name: {
-            type: DataTypes.STRING(100),
-            allowNull: true,
+          name: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
           },
 
           email: {
             type: DataTypes.STRING(255),
             allowNull: true,
-            unique: true,
             validate: {
               isEmail: true,
             },
@@ -65,21 +43,10 @@ class User extends Model {
           phone: {
             type: DataTypes.STRING(50),
             allowNull: true,
-            unique: true,
           },
 
-          password: {
-            type: DataTypes.STRING(255),
-            allowNull: true,
-          },
-
-          user_type: {
-            type: DataTypes.ENUM("manager", "staff"),
-            allowNull: false,
-          },
-
-          avatar: {
-            type: DataTypes.STRING(500),
+          description: {
+            type: DataTypes.TEXT,
             allowNull: true,
           },
 
@@ -91,20 +58,18 @@ class User extends Model {
 
           created_at: {
             type: DataTypes.DATE,
-            allowNull: false,
             defaultValue: DataTypes.NOW,
           },
 
           updated_at: {
             type: DataTypes.DATE,
-            allowNull: false,
             defaultValue: DataTypes.NOW,
           },
         },
         {
           sequelize,
-          modelName: "User",
-          tableName: "users",
+          modelName: "Venue",
+          tableName: "venues",
           timestamps: true,
           createdAt: "created_at",
           updatedAt: "updated_at",
@@ -112,11 +77,22 @@ class User extends Model {
         }
     );
 
-    return User;
+    return Venue;
   }
 
   static associate(models) {
+    // Venue.belongsTo(models.Business, {
+    //     foreignKey: "business_code",
+    //     targetKey: "business_code",
+    //     as: "business",
+    // });
+
+    // Venue.hasMany(models.Location, {
+    //     foreignKey: "venue_code",
+    //     sourceKey: "venue_code",
+    //     as: "locations",
+    // });
   }
 }
 
-module.exports = User;
+module.exports = Venue;
