@@ -95,25 +95,25 @@ class InfluencerRating extends Model {
   }
 
   static associate(models) {
-    InfluencerRating.belongsTo(models.Influencer, {
-        foreignKey: "influencer_code",
-        targetKey: "influencer_code",
-        as: "influencer",
-        constraints: false
-    });
-
-    // InfluencerRating.belongsTo(models.Event, {
-    //     foreignKey: "event_code",
-    //     targetKey: "event_code",
-    //     as: "event",
+    // InfluencerRating.belongsTo(models.Influencer, {
+    //     foreignKey: "influencer_code",
+    //     targetKey: "influencer_code",
+    //     as: "influencer",
+    //     constraints: false
     // });
-
-    InfluencerRating.belongsTo(models.User, {
-        foreignKey: "rated_by",
-        targetKey: "user_code",
-        as: "rater",
-        constraints: false
-    });
+    //
+    // // InfluencerRating.belongsTo(models.Event, {
+    // //     foreignKey: "event_code",
+    // //     targetKey: "event_code",
+    // //     as: "event",
+    // // });
+    //
+    // InfluencerRating.belongsTo(models.User, {
+    //     foreignKey: "rated_by",
+    //     targetKey: "user_code",
+    //     as: "rater",
+    //     constraints: false
+    // });
   }
 }
 

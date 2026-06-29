@@ -125,26 +125,26 @@ class Event extends Model {
   }
 
   static associate(models) {
-    Event.belongsTo(models.Business, {
-        foreignKey: "business_code",
-        targetKey: "business_code",
-        as: "business",
-        constraints: false
-    });
-
-    Event.belongsTo(models.Venue, {
-        foreignKey: "venue_code",
-        targetKey: "venue_code",
-        as: "venue",
-        constraints: false
-    });
-
-    Event.belongsTo(models.User, {
-        foreignKey: "created_by",
-        targetKey: "user_code",
-        as: "creator",
-        constraints: false
-    });
+    // Event.belongsTo(models.Business, {
+    //     foreignKey: "business_code",
+    //     targetKey: "business_code",
+    //     as: "business",
+    //     constraints: false
+    // });
+    //
+    // Event.belongsTo(models.Venue, {
+    //     foreignKey: "venue_code",
+    //     targetKey: "venue_code",
+    //     as: "venue",
+    //     constraints: false
+    // });
+    //
+    // Event.belongsTo(models.User, {
+    //     foreignKey: "created_by",
+    //     targetKey: "user_code",
+    //     as: "creator",
+    //     constraints: false
+    // });
   }
 }
 

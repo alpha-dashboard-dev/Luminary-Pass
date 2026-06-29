@@ -73,4 +73,4 @@ module.exports = {
   async down(queryInterface) {
     await queryInterface.dropTable("checklist_attachments");
   },
-};ss
+};

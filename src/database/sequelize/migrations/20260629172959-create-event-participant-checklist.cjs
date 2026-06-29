@@ -110,4 +110,4 @@ module.exports = {
   async down(queryInterface) {
     await queryInterface.dropTable("event_participants_checklists");
   },
-};ss
+};
