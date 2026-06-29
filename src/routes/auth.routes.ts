@@ -1,27 +1,13 @@
-// import { FastifyInstance } from "fastify";
-// import authController from "../controllers/auth.controller";
-// import { authenticate } from "../middlewares/auth.middleware";
-// // import { authorizeRoles } from "../middlewares/role.middleware";
-// // import { ROLES } from "../utils/roles";
-//
-// export default async function authRoutes(fastify: FastifyInstance) {
-//     fastify.post(
-//         "/register",
-//         {
-//             preHandler: [authenticate],
-//         },
-//         authController.register
-//     );
-//
-//     fastify.post("/login", authController.login);
-//
-//     fastify.post("/refresh", authController.refresh);
-//
-//     fastify.post(
-//         "/logout",
-//         {
-//             preHandler: authenticate,
-//         },
-//         authController.logout
-//     );
-// }
+import { FastifyInstance } from "fastify";
+import AuthController from "../controllers/auth.controller";
+
+export default async function authRoutes(app: FastifyInstance) {
+
+    app.post("/register", AuthController.register);
+
+    app.post("/login", AuthController.login);
+
+    app.post("/refresh", AuthController.refresh);
+
+    app.post("/logout", AuthController.logout);
+}

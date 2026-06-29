@@ -1,73 +1,27 @@
-import initModels from "../../database/sequelize/models/index.js";
-import { buildIncludes } from "../../utils/buildInclude";
-import dbHelper from "../../dbHelper/dbHelper";
-
-const db = initModels();
+import User from "../models/user.model";
 
 class UserRepository {
 
-    private tables: any;
-
-    constructor() {
-        this.tables = db.User;
+    async create(data: any) {
+        return await User.create(data);
     }
 
-    async create(data: any, options?: any) {
-        return dbHelper.create(this.tables, data, options);
+    async findOne(where: any) {
+        return await User.findOne({ where });
     }
 
-    async findAll(options: any = {}) {
-
-        const include = buildIncludes(
-            this.tables,
-            options.include || []
-        );
-
-        return dbHelper.findAll(
-            this.tables,
-            {
-                ...options,
-                include
-            }
-        );
+    async findAll(where: any = {}) {
+        return await User.findAll({ where });
     }
 
-    async findOne(where: any = {}, options: any = {}) {
-        return dbHelper.findOne(
-            this.tables,
-            {
-                where,
-                include: buildIncludes(
-                    this.tables,
-                    options.include || []
-                ),
-            }
-        );
-    }
+    async update(where: any, data: any) {
+        await User.update(data, { where });
 
-    async update(where: any, data: any, options: any = {}) {
-
-        return dbHelper.update(
-            this.tables,
-            where,
-            data,
-            options
-        );
-    }
-
-    async deactivate(where: any, data: any) {
-        return dbHelper.update(
-            this.tables,
-            where,
-            data
-        )
+        return await User.findOne({ where });
     }
 
     async delete(where: any) {
-        return dbHelper.delete(
-            this.tables,
-            where
-        );
+        return await User.destroy({ where });
     }
 }
 

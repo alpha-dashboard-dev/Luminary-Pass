@@ -1,4 +1,3 @@
-// routes/index.ts
 import { FastifyInstance } from "fastify";
 
 import authRoutes from "./auth.routes";
