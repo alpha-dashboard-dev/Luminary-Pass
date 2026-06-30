@@ -1,27 +1,63 @@
-import User from "../models/user.model";
+import initModels from "../../database/sequelize/models/index.cjs"
+import dbHelper from "../../dbHelper/dbHelper"
+import {buildIncludes} from "../../utils/buildInclude.js";
+
+const db = initModels();
 
 class UserRepository {
 
-    async create(data: any) {
-        return await User.create(data);
+    private tables: any;
+
+    constructor() {
+        this.tables = db.User;
     }
 
-    async findOne(where: any) {
-        return await User.findOne({ where });
+    async create(data: any, options?: any) {
+        return await dbHelper.create(data, options);
     }
 
-    async findAll(where: any = {}) {
-        return await User.findAll({ where });
-    }
+    // async findOne(where: any = {}, options: any = {}) {
+    //     return await dbHelper.findOne(
+    //         this.tables,
+    //         {
+    //             where,
+    //             include: buildIncludes(
+    //                 this.tables,
+    //                 options.include || [],
+    //             )
+    //         }
+    //     );
+    // }
+    //
+    // async findAll(options: any = {}) {
+    //
+    //     const include = buildIncludes(
+    //         this.tables,
+    //         options.include || [],
+    //     )
+    //     return await dbHelper.findAll(
+    //         this.tables,
+    //         {
+    //             ...options,
+    //             include
+    //         }
+    //     );
+    // }
 
-    async update(where: any, data: any) {
-        await User.update(data, { where });
-
-        return await User.findOne({ where });
+    async update(where: any, data: any, options: any = {}) {
+        return dbHelper.update(
+            this.tables,
+            where,
+            data,
+            options
+        );
     }
 
     async delete(where: any) {
-        return await User.destroy({ where });
+        return await dbHelper.delete(
+            this.tables,
+            where,
+        );
     }
 }
 

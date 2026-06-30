@@ -61,6 +61,13 @@ class Permission extends Model {
     //     otherKey: "role_code",
     //     as: "roles",
     // });
+    //
+    //   Permission.hasMany(models.RolePermission, {
+    //       foreignKey: "permission_code",
+    //       sourceKey: "permission_code",
+    //       as: "rolePermissions",
+    //       constraints: false
+    //   });
   }
 }
 

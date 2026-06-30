@@ -1,4 +1,4 @@
-import { INCLUDE_CONFIG } from "includeConfig";
+import { INCLUDE_CONFIG } from "./includeConfig";
 
 function buildNestedIncludes(config: any): any[] {
 

@@ -13,6 +13,7 @@ class dbHelper {
     }
 
     async create(table: any, data: any, options?: any) {
+        // console.log(table)
 
         if (this.orm === "sequelize") {
 

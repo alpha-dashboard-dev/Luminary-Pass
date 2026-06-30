@@ -18,23 +18,22 @@ class Role extends Model {
               is: /^[A-Za-z0-9]{8}$/,
             },
           },
+            business_code: {
+                type: DataTypes.STRING(8),
+                allowNull: true,
+                validate: {
+                    is: /^[A-Za-z0-9]{8}$/,
+                },
+            },
 
           role: {
             type: DataTypes.STRING(100),
             allowNull: false,
           },
 
-          business_code: {
-            type: DataTypes.STRING(8),
-            allowNull: true,
-            validate: {
-              is: /^[A-Za-z0-9]{8}$/,
-            },
-          },
-
           rank: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 1,
           },
 
@@ -73,7 +72,7 @@ class Role extends Model {
     //     targetKey: "business_code",
     //     as: "business",
     // });
-
+    //
     // Role.hasMany(models.User, {
     //     foreignKey: "role_code",
     //     sourceKey: "role_code",

@@ -17,19 +17,19 @@ module.exports = {
         unique: true,
       },
 
-      role: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-      },
-
       business_code: {
         type: Sequelize.STRING(8),
         allowNull: true,
       },
 
+      role: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+
       rank: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         defaultValue: 1,
       },
 

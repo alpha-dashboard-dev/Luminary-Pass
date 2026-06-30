@@ -1,4 +1,6 @@
-import UserSession from "../models/userSession.model";
+import UserSession from "../../database/sequelize/models/index.cjs";
+import dbHelper from "../../dbHelper/dbHelper.js";
+import { buildIncludes } from "../../utils/buildInclude.js";
 
 class UserSessionRepository {
 

@@ -10,7 +10,9 @@
     "sequelize:migrate": "sequelize-cli db:migrate",
     "sequelize:seed": "sequelize-cli db:seed:all",
     "sequelize:migrate:undo": "sequelize-cli db:migrate:undo",
-    "sequelize:migrate:undo:all": "sequelize-cli db:migrate:undo:all"
+    "sequelize:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
+    "sequelize:seed:undo": "sequelize-cli db:seed:undo",
+    "sequelize:seed:undo:all": "sequelize-cli db:seed:undo:all"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",

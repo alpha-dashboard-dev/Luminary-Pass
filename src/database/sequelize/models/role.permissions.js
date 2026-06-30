@@ -57,12 +57,14 @@ class RolePermission extends Model {
     //     foreignKey: "role_code",
     //     targetKey: "role_code",
     //     as: "role",
+    //     constraints: false
     // });
-
+    //
     // RolePermission.belongsTo(models.Permission, {
     //     foreignKey: "permission_code",
     //     targetKey: "permission_code",
     //     as: "permission",
+    //     constraints: false
     // });
   }
 }

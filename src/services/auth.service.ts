@@ -1,16 +1,9 @@
-import UserRepository from "../repositories/user.repository";
-import UserSessionRepository from "../repositories/userSession.repository";
+import UserRepository from "../repositories/user/user.repository";
+import UserSessionRepository from "../repositories/user/userSession.repository";
 
-import {
-    hashPassword,
-    comparePassword
-} from "../utils/password";
+import {hashPassword, comparePassword} from "../utils/hashPassword";
 
-import {
-    generateAccessToken,
-    generateRefreshToken,
-    verifyRefreshToken
-} from "../utils/jwt";
+import {generateAccessToken, generateRefreshToken, verifyRefreshToken} from "../utils/jwt";
 
 import { generateCode } from "../utils/generateCode";
 
