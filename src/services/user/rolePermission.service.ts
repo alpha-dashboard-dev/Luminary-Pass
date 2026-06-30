@@ -3,7 +3,6 @@ import userRoleRepo from "../../repositories/user/userRole.repository.js";
 import permissionRepo from "../../repositories/user/permission.repository.js";
 
 import { generateCode } from "../../utils/generateCode.js";
-import {buildWhere} from "../../utils/buildWhere.js";
 
 class RolePermissionService {
 
@@ -157,8 +156,6 @@ class RolePermissionService {
         if (!role) {
             throw new Error("Role not found");
         }
-
-        const where = buildWhere(query)
 
         return await rolePermissionRepo.findAll(
             {
