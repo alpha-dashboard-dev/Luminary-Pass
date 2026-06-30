@@ -22,6 +22,12 @@ class dbHelper {
 
     }
 
+    async bulkCreate(table: any, data: any[], options?: any) {
+        if (this.orm === "sequelize") {
+            return await table.bulkCreate(data, options);
+        }
+    }
+
     async findOne(table: any, options: any = {}) {
 
         if (this.orm === "sequelize") {

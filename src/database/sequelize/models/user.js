@@ -116,6 +116,19 @@ class User extends Model {
   }
 
   static associate(models) {
+      User.belongsTo(models.Role, {
+          foreignKey: "role_code",
+          targetKey: "role_code",
+          as: "role",
+          constraints: false,
+      });
+
+      User.belongsTo(models.Business, {
+          foreignKey: "business_code",
+          targetKey: "business_code",
+          as: "business",
+          constraints: false,
+      });
   }
 }
 

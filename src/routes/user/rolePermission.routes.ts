@@ -5,34 +5,35 @@ import rolePermissionController from "../../controllers/user/rolePermission.cont
 export default async function rolePermissionRoutes(app: FastifyInstance) {
 
     app.post(
-        "/create-role-permission",
+        "/assign-permission",
         // {
         //     preHandler: [
         //         app.authenticate,
         //         authorize("admin"),
         //     ],
         // },
-        rolePermissionController.create
+        rolePermissionController.assignPermissions,
     );
 
-    // app.get(
-    //     "/get-all-permissions",
-    //     permissionController.getAll
-    // );
-    //
-    // app.get(
-    //     "/get-one-permission/:permissionCode",
-    //
-    //     permissionController.getByPermissionCode
-    // )
-    //
-    // app.put(
-    //     "/update-permission/:permissionCode",
-    //     permissionController.update
-    // )
-    //
-    // app.delete(
-    //     "/delete-permission/:permissionCode",
-    //     permissionController.delete
-    // )
+    app.post(
+        "/replace-permissions",
+        rolePermissionController.replacePermissions,
+    )
+
+    app.get(
+        "/get-all-permissions/:roleCode",
+        rolePermissionController.getPermissions,
+
+    )
+
+    app.delete(
+        "/delete-one-permission",
+        rolePermissionController.removeOnePermission,
+    )
+
+    app.delete(
+        "/delete-all-permissions/:roleCode",
+        rolePermissionController.removeAllPermissions,
+    )
+
 }

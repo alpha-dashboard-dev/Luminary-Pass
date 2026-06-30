@@ -99,11 +99,19 @@ class Business extends Model {
     //     as: "owner",
     // });
 
-    // Business.hasMany(models.User, {
-    //     foreignKey: "business_code",
-    //     sourceKey: "business_code",
-    //     as: "users",
-    // });
+      Business.hasMany(models.Role, {
+          foreignKey: "business_code",
+          sourceKey: "business_code",
+          as: "roles",
+          constraints: false,
+      });
+
+        Business.hasMany(models.User, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "users",
+            constraints: false
+        });
   }
 }
 

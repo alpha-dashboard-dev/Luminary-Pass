@@ -1,7 +1,7 @@
 export const INCLUDE_CONFIG = {
-    User: {
-        business: {
-            attributes: ["name"]
+    RolePermissions: {
+        permission: {
+            attributes: ["module","name"]
         }
     },
 };

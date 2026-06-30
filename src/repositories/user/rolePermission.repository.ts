@@ -1,5 +1,6 @@
 import initModels from "../../database/sequelize/models/index.cjs"
 import dbHelper from "../../dbHelper/dbHelper"
+import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels()
 
@@ -13,6 +14,48 @@ class RolePermissionRepository {
 
     async create(data: any){
         dbHelper.create(this.tables, data)
+    }
+
+    async bulkCreate(data: any){
+        dbHelper.bulkCreate(this.tables, data)
+    }
+
+    async findOne(where: any = {}, options: any = {}) {
+        return dbHelper.findOne(
+            this.tables,
+            {
+                where,
+                include: buildIncludes(
+                    this.tables,
+                    options.include || []
+                ),
+            }
+        );
+    }
+
+    async findAll(options: any = {}) {
+        // console.log(options);
+        // console.log(this.tables);
+
+        const include = buildIncludes(
+            this.tables,
+            options.include || []
+        );
+
+        return dbHelper.findAll(
+            this.tables,
+            {
+                ...options,
+                include
+            }
+        );
+    }
+
+    async delete(where: any) {
+        return dbHelper.delete(
+            this.tables,
+            where
+        );
     }
 }
 

@@ -55,19 +55,23 @@ class Permission extends Model {
 
   static associate(models) {
     // Many-to-Many (recommended RBAC design)
-    // Permission.belongsToMany(models.Role, {
-    //     through: models.RolePermission,
-    //     foreignKey: "permission_code",
-    //     otherKey: "role_code",
-    //     as: "roles",
-    // });
-    //
-    //   Permission.hasMany(models.RolePermission, {
-    //       foreignKey: "permission_code",
-    //       sourceKey: "permission_code",
-    //       as: "rolePermissions",
-    //       constraints: false
-    //   });
+      Permission.hasMany(models.RolePermissions, {
+          foreignKey: "permission_code",
+          sourceKey: "permission_code",
+          as: "rolePermissions",
+          constraints: false
+      });
+
+      Permission.belongsToMany(models.Role, {
+        through: models.RolePermissions,
+        foreignKey: "permission_code",
+        otherKey: "role_code",
+        sourceKey: "permission_code",
+        targetKey: "role_code",
+        as: "roles",
+        constraints: false
+    });
+
   }
 }
 
