@@ -104,12 +104,12 @@ class UserSession extends Model {
   }
 
   static associate(models) {
-    // UserSession.belongsTo(models.User, {
-    //     foreignKey: "user_code",
-    //     targetKey: "user_code",
-    //     as: "user",
-    //     constraints: false
-    // });
+    UserSession.belongsTo(models.User, {
+        foreignKey: "user_code",
+        targetKey: "user_code",
+        as: "user",
+        constraints: false
+    });
   }
 }
 

@@ -1,7 +1,7 @@
 import { FastifyInstance } from "fastify";
 
-import authRoutes from "./auth.routes";
-// import userRoutes from "./user.routes";
+import authRoutes from "./authentication/auth.routes.js";
+// import userRoutes from "./user/user.routes";
 import userRoleRoutes from "./user/userRole.routes"
 import permissionRoutes from "./user/permission.routes"
 import rolePermissionRoutes from "./user/rolePermission.routes"

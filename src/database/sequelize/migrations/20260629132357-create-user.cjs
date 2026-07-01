@@ -61,7 +61,7 @@ module.exports = {
 
       user_type: {
         type: Sequelize.ENUM("manager", "staff"),
-        allowNull: false,
+        allowNull: true,
       },
 
       avatar: {

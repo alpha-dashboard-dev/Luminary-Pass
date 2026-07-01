@@ -6,6 +6,7 @@ const Role = require('./roles');
 const Permission = require('./permissions');
 const RolePermissions = require('./role.permissions');
 const Business = require("./business.js");
+const UserSession = require('./session');
 
 
 const initModels = () => {
@@ -17,6 +18,7 @@ const initModels = () => {
         Permission: Permission.initModel(sequelize),
         RolePermissions: RolePermissions.initModel(sequelize),
         Business: Business.initModel(sequelize),
+        UserSession: UserSession.initModel(sequelize),
     };
 
     Object.values(models).forEach((model) => {
