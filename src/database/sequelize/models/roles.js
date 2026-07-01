@@ -18,6 +18,7 @@ class Role extends Model {
               is: /^[A-Za-z0-9]{8}$/,
             },
           },
+
             business_code: {
                 type: DataTypes.STRING(8),
                 allowNull: true,

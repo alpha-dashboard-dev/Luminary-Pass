@@ -1,19 +1,19 @@
-import userRepo from "../../repositories/user/user.repository";
+import orgRepo from "../../repositories/organization/organization.repository";
 
 import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 
-class UserService {
+class OrganizationService {
 
-    // Create Users
+    // CREATE Organization
 
     async create(data: any, actor: any) {
         console.log(actor);
 
         if (!actor) throw new Error("Unauthorized");
 
-        const emailExists = await userRepo.findOne(
+        const emailExists = await orgRepo.findOne(
             {
                 email: data.email
             }
@@ -23,7 +23,7 @@ class UserService {
             throw new Error("Email already exists");
         }
 
-        const phoneExists = await userRepo.findOne({
+        const phoneExists = await orgRepo.findOne({
             phone: data.phone
         })
 
@@ -31,27 +31,21 @@ class UserService {
             throw new Error("Phone already exists");
         }
 
-        const userCode = generateCode();
+        const organizationCode = generateCode();
 
         const password = await hashPassword(data.password);
 
-        return await userRepo.create({
-            user_code: userCode,
-            organization_code: data.organizationCode,
-            business_code: data.businessCode,
-            role_code: data.roleCode,
-            first_name: data.firstName,
-            last_name: data.lastName,
+        return await orgRepo.create({
+            organization_code: organizationCode,
+            name: data.name,
             email: data.email.trim().toLowerCase(),
             phone: data.phone,
             password,
-            user_type: data.userType,
-            avatar: null,
             status: data.status
         });
     }
 
-    // Get all users
+    // Get all organizations
 
     async getAll(query: any = {}, actor: any) {
         // console.log(query.where)
@@ -61,7 +55,7 @@ class UserService {
             throw new Error("Unauthorized Access");
         }
 
-        return userRepo.findAll({
+        return orgRepo.findAll({
             where,
             include: Array.isArray(query.include)
                 ? query.include
@@ -77,94 +71,94 @@ class UserService {
         });
     }
 
-    // Get users By user code
-    async getByUserCode(userCode: string, query: any = {}, actor: any) {
+    // Get Organization By Organization Code
+    async getByOrganizationCode(organizationCode: string, query: any = {}, actor: any) {
 
-        const user = await userRepo.findOne(
+        const organization = await orgRepo.findOne(
             {
-                user_code: userCode
+                organization_code: organizationCode
             },
             {
                 include: Array.isArray(query.include) ? query.include : [],
             }
         );
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!organization) {
+            throw new Error("Organization not found");
         }
 
-        return user;
+        return organization;
     }
 
-    // Get User By Any Field
+    // Get Organization By Any Field
     async getByField(where: any, query: any = {}, actor: any) {
         console.log(where);
-        const user = await userRepo.findOne(
+        const organization = await orgRepo.findOne(
             where,
             {
                 include: query.include || []
             }
         );
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!organization) {
+            throw new Error("Organization not found");
         }
 
-        return user;
+        return organization;
     }
 
-    // Update user
-    async update(userCode: string, data: any, actor: any) {
+    // Update Organization
+    async update(organizationCode: string, data: any, actor: any) {
 
-        const user = await userRepo.findOne({
-            user_code: userCode
+        const organization = await orgRepo.findOne({
+            organization_code: organizationCode
         });
 
-        if (!user) throw new Error("User not found");
+        if (!organization) throw new Error("Organization not found");
 
         if (data.password) {data.password = await hashPassword(data.password);
         }
 
-        return await userRepo.update(
-            { user_code: userCode },
+        return await orgRepo.update(
+            { organization_code: organizationCode },
             data
         );
     }
 
-    // Delete User
+    // Delete Organization
 
-    async delete(userCode: string, actor: any) {
-        const user = await userRepo.findOne({
-            user_code: userCode
-        });
+    async delete(organizationCode: string, actor: any) {
+        const organization = await orgRepo.findOne({
+                organization_code: organizationCode
+            });
 
-        if (!user) {
-            throw new Error("User not found");
+        if (!organization) {
+            throw new Error("Organization not found");
         }
 
-        return await userRepo.delete({
-            user_code: userCode
+        return await orgRepo.delete({
+            organization_code: organizationCode
         });
     }
 
-    // Deactivate user
+    // Deactivate Organization
 
-    async deactivate(userCode: string, data: any, actor: any) {
+    async deactivate(organizationCode: string, data: any, actor: any) {
 
-        const user = await userRepo.findOne({
-            user_code: userCode
+        const organization = await orgRepo.findOne({
+            organization_code: organizationCode
         });
 
-        if (!user) {
+        if (!organization) {
             throw new Error("User not found");
         }
 
-        return await userRepo.deactivate({
-                user_code: userCode
+        return await orgRepo.deactivate({
+                organization_code: organizationCode
             },
             data
         );
     }
 }
 
-export default new UserService();
+export default new OrganizationService();

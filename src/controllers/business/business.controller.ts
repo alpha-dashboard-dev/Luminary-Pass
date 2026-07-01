@@ -1,21 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import userService from "../../services/user/user.service";
-// import {validateUser} from "../../utils/validator.js";
+import businessService from "../../services/business/business.service";
+import {validateBusiness} from "../../utils/validator.js";
 
-class UserController {
+class businessController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            // validateUser(data);
-            const result =  await userService.create(
+            validateBusiness(data);
+            const result =  await businessService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "User created successfully",
+                message: "Business created successfully",
                 data: result
             });
         }
@@ -39,7 +39,7 @@ class UserController {
             ]
             // console.log(include)
             const data =
-                await userService.getAll(
+                await businessService.getAll(
                     {
                         ...req.query,
                         include
@@ -60,8 +60,8 @@ class UserController {
         }
     }
 
-    // Get by User code
-    async getByUserCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by business code
+    async getByBusinessCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
@@ -71,9 +71,9 @@ class UserController {
                     attributes: [],
                 },
             ]
-            const userCode = String(req.params.userCode)
-            const result = await userService.getByUserCode(
-                userCode,
+            const businessCode = String(req.params.businessCode)
+            const result = await businessService.getByBusinessCode(
+                businessCode,
                 {
                     ...req.query,
                     include
@@ -95,7 +95,7 @@ class UserController {
         }
     }
 
-    // Get By Any Field
+    // Get Business By Any Field
     async getByField(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -107,7 +107,7 @@ class UserController {
                 },
             ]
             const where = {...req.query};
-            const result = await userService.getByField(
+            const result = await businessService.getByField(
                 where,
                 {
                     ...req.query,
@@ -131,23 +131,23 @@ class UserController {
     }
 
 
-    //Update User
+    //Update Business
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const userCode = String(req.params.userCode);
+            const businessCode = String(req.params.businessCode);
 
-            const data = await userService.update(
-                userCode,
+            const data = await businessService.update(
+                businessCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User updated successfully",
+                message: "business updated successfully",
                 data,
             });
 
@@ -160,20 +160,21 @@ class UserController {
         }
     }
 
+    // Deactivate Business
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
-            const userCode = String(req.params.userCode)
+            const businessCode = String(req.params.businessCode)
             const data = req.body
             console.log(data)
-            await userService.deactivate(
-                userCode,
+            await businessService.deactivate(
+                businessCode,
                 data,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User deactivated",
+                message: "Business deactivated",
                 data,
             });
 
@@ -186,20 +187,20 @@ class UserController {
         }
     }
 
-    //  DELETE User
+    //  Delete Business
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const userCode = String(req.params.userCode)
+            const businessCode = String(req.params.businessCode)
 
-            await userService.delete(
-                userCode,
+            await businessService.delete(
+                businessCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User permanently deleted"
+                message: "Business permanently deleted"
             });
 
         } catch (err: any) {
@@ -212,4 +213,4 @@ class UserController {
     }
 }
 
-export default  new UserController();
+export default  new businessController();

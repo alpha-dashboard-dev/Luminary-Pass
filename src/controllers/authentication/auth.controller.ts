@@ -3,9 +3,6 @@ import authService from "../../services/authentication/auth.service.ts";
 
 class AuthController {
 
-    /**
-     * LOGIN
-     */
     async login(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -30,9 +27,6 @@ class AuthController {
         }
     }
 
-    /**
-     * LOGOUT
-     */
     async logout(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -64,9 +58,7 @@ class AuthController {
         }
     }
 
-    /**
-     * REFRESH TOKEN
-     */
+
     async refreshToken(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -96,6 +88,13 @@ class AuthController {
     async me(req: FastifyRequest, reply: FastifyReply) {
 
         try {
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "role",
+                    attributes: [],
+                }
+            ]
 
             const userCode = (req as any).user?.userCode;
 
@@ -106,7 +105,13 @@ class AuthController {
                 });
             }
 
-            const result = await authService.me(userCode);
+            const result = await authService.me(
+                userCode,
+                {
+                    ...req.query,
+                    include,
+                }
+            );
 
             return reply.status(200).send({
                 success: true,

@@ -1,21 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import userService from "../../services/user/user.service";
-// import {validateUser} from "../../utils/validator.js";
+import orgService from "../../services/organization/organization.service";
+import {validateOrganization} from "../../utils/validator.js";
 
-class UserController {
+class organizationController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            // validateUser(data);
-            const result =  await userService.create(
+            validateOrganization(data);
+            const result =  await orgService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "User created successfully",
+                message: "Organization created successfully",
                 data: result
             });
         }
@@ -39,7 +39,7 @@ class UserController {
             ]
             // console.log(include)
             const data =
-                await userService.getAll(
+                await orgService.getAll(
                     {
                         ...req.query,
                         include
@@ -60,8 +60,8 @@ class UserController {
         }
     }
 
-    // Get by User code
-    async getByUserCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by organization code
+    async getByOrganizationCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
@@ -71,15 +71,15 @@ class UserController {
                     attributes: [],
                 },
             ]
-            const userCode = String(req.params.userCode)
-            const result = await userService.getByUserCode(
-                userCode,
-                {
-                    ...req.query,
-                    include
-                },
-                req.user,
-            );
+            const organizationCode = String(req.params.organizationCode)
+            const result = await orgService.getByOrganizationCode(
+                    organizationCode,
+                    {
+                        ...req.query,
+                        include
+                    },
+                    req.user,
+                );
 
             return reply.status(200).send({
                 success: true,
@@ -107,14 +107,14 @@ class UserController {
                 },
             ]
             const where = {...req.query};
-            const result = await userService.getByField(
-                where,
-                {
-                    ...req.query,
-                    include
-                },
-                req.user,
-            );
+            const result = await orgService.getByField(
+                    where,
+                    {
+                        ...req.query,
+                        include
+                    },
+                    req.user,
+                );
 
             return reply.status(200).send({
                 success: true,
@@ -131,23 +131,23 @@ class UserController {
     }
 
 
-    //Update User
+    //Update Organization
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const userCode = String(req.params.userCode);
+            const organizationCode = String(req.params.organizationCode);
 
-            const data = await userService.update(
-                userCode,
+            const data = await orgService.update(
+                organizationCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User updated successfully",
+                message: "Organization updated successfully",
                 data,
             });
 
@@ -162,18 +162,18 @@ class UserController {
 
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
-            const userCode = String(req.params.userCode)
+            const organizationCode = String(req.params.organizationCode)
             const data = req.body
             console.log(data)
-            await userService.deactivate(
-                userCode,
+            await orgService.deactivate(
+                organizationCode,
                 data,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User deactivated",
+                message: "Organization deactivated",
                 data,
             });
 
@@ -186,20 +186,20 @@ class UserController {
         }
     }
 
-    //  DELETE User
+    //  DELETE Organization
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const userCode = String(req.params.userCode)
+            const organizationCode = String(req.params.organizationCode)
 
-            await userService.delete(
-                userCode,
+            await orgService.delete(
+                organizationCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User permanently deleted"
+                message: "Organization permanently deleted"
             });
 
         } catch (err: any) {
@@ -212,4 +212,4 @@ class UserController {
     }
 }
 
-export default  new UserController();
+export default  new organizationController();

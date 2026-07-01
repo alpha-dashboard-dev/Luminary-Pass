@@ -4,19 +4,15 @@ import { authenticate } from "../../middleware/authenticate.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
 
-    // ---------------------------
+
     // LOGIN (PUBLIC)
-    // ---------------------------
     fastify.post("/login", authController.login);
 
-    // ---------------------------
+
     // REFRESH TOKEN (PUBLIC)
-    // ---------------------------
     fastify.post("/refresh-token", authController.refreshToken);
 
-    // ---------------------------
     // LOGOUT (PROTECTED)
-    // ---------------------------
     fastify.post(
         "/logout",
         {
@@ -25,9 +21,7 @@ export default async function authRoutes(fastify: FastifyInstance) {
         authController.logout
     );
 
-    // ---------------------------
     // ME (PROTECTED)
-    // ---------------------------
     fastify.get(
         "/me",
         {

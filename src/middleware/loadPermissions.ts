@@ -1,10 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import rolePermissionRepo from "../repositories/user/rolePermission.repository.js";
 
-export async function loadPermissions(
-    req: FastifyRequest,
-    reply: FastifyReply
-) {
+export async function loadPermissions(req: FastifyRequest, reply: FastifyReply) {
     try {
 
         const roleCode = (req as any).user?.roleCode;
@@ -31,10 +28,6 @@ export async function loadPermissions(
             ]
         });
 
-        //--------------------------------------------------
-        // Map to simple array
-        //--------------------------------------------------
-
         const permissions = rolePermissions
             .map((rp: any) => {
                 return rp.permission
@@ -42,10 +35,6 @@ export async function loadPermissions(
                     : null;
             })
             .filter(Boolean);
-
-        //--------------------------------------------------
-        // Attach to request
-        //--------------------------------------------------
 
         (req as any).permissions = permissions;
 

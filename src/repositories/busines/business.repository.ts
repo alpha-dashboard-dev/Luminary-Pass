@@ -4,12 +4,12 @@ import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
 
-class OrganizationRepository {
+class BusinessRepository {
 
     private tables: any;
 
     constructor() {
-        this.tables = db.Organization;
+        this.tables = db.Business;
     }
 
     async create(data: any, options?: any) {
@@ -69,4 +69,4 @@ class OrganizationRepository {
     }
 }
 
-export default new OrganizationRepository();
+export default new BusinessRepository();

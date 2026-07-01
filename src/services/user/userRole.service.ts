@@ -106,9 +106,7 @@ class UserRoleService {
         );
     }
 
-    // ========================
     // DELETE (Hard DELETE)
-    // ========================
 
     async delete(roleCode: string, actor: any) {
         const role = await userRoleRepo.findOne({
@@ -116,16 +114,8 @@ class UserRoleService {
             });
 
         if (!role) {
-            throw new Error(
-                "Role not found"
-            );
+            throw new Error("Role not found");
         }
-
-        // if (actor.userType !== ROLES.ADMIN) {
-        //     throw new Error(
-        //         "Only admin can permanently delete users"
-        //     );
-        // }
 
         return await userRoleRepo.delete({
             role_code: roleCode

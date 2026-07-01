@@ -1,7 +1,27 @@
 export const INCLUDE_CONFIG = {
-    RolePermissions: {
-        permission: {
-            attributes: ["module","name"]
+    Organization: {
+        users: {
+            attributes: ["first_name", "last_name", "email", "status"],
+        }
+
+    },
+
+    User: {
+        role: {
+            attributes: ["role", "rank", "description"],
+
+            include:{
+                permissions: {
+                    attributes: ["module", "name"]
+                }
+            }
         }
     },
+
+
+    // RolePermissions: {
+    //     permission: {
+    //         attributes: ["module","name"]
+    //     }
+    // },
 };

@@ -1,17 +1,20 @@
 import { FastifyInstance } from "fastify";
 import permissionController from "../../controllers/user/permission.controller.js";
-import {authorize} from "../../middleware/authorize.js";
+import {authenticate} from "../../middleware/authenticate.js";
+import {hasPermission} from "../../middleware/hasPermission.js";
+import {loadPermissions} from "../../middleware/loadPermissions.js";
 
 export default async function permissionRoutes(app: FastifyInstance) {
 
     app.post(
         "/create-permission",
-        // {
-        //     preHandler: [
-        //         app.authenticate,
-        //         authorize("admin"),
-        //     ],
-        // },
+        {
+            preHandler: [
+                authenticate,
+                loadPermissions,
+                hasPermission("permission.assign")
+            ],
+        },
         permissionController.create
     );
 

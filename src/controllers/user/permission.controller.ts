@@ -11,6 +11,11 @@ class permissionController {
                 data,
                 req.user
             )
+            return reply.status(200).send({
+                success: true,
+                message: "Permission created successfully",
+                data: result
+            });
         }
         catch (err: any) {
             return reply.status(400).send({

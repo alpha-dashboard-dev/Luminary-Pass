@@ -129,6 +129,12 @@ class User extends Model {
           as: "business",
           constraints: false,
       });
+      User.belongsTo(models.Organization, {
+          foreignKey: "organization_code",
+          targetKey: "organization_code",
+          as: "organization",
+          constraints: false,
+      });
   }
 }
 

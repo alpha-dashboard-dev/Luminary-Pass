@@ -2,10 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 
 export function hasPermission(requiredPermission: string | string[]) {
 
-    return async function (
-        req: FastifyRequest,
-        reply: FastifyReply
-    ) {
+    return async function (req: FastifyRequest, reply: FastifyReply) {
         try {
 
             const permissions = (req as any).permissions || [];
@@ -50,4 +47,4 @@ export function hasPermission(requiredPermission: string | string[]) {
             });
         }
     };
-}s
+}

@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import UserRoleController from "../../controllers/user/userRole.controller";
-import {authorize} from "../../middleware/authorize.js";
 
 export default async function userRoleRoutes(app: FastifyInstance) {
 

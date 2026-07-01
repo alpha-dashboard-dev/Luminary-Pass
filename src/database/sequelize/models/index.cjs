@@ -5,6 +5,7 @@ const UserAbility = require('./userability');
 const Role = require('./roles');
 const Permission = require('./permissions');
 const RolePermissions = require('./role.permissions');
+const Organization = require('./organization');
 const Business = require("./business.js");
 const UserSession = require('./session');
 
@@ -17,6 +18,7 @@ const initModels = () => {
         Role: Role.initModel(sequelize),
         Permission: Permission.initModel(sequelize),
         RolePermissions: RolePermissions.initModel(sequelize),
+        Organization: Organization.initModel(sequelize),
         Business: Business.initModel(sequelize),
         UserSession: UserSession.initModel(sequelize),
     };

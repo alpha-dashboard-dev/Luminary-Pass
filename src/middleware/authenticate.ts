@@ -3,10 +3,7 @@ import { verifyAccessToken } from "../utils/jwt.js";
 import userSessionRepo from "../repositories/user/userSession.repository.js";
 import userRepo from "../repositories/user/user.repository.js";
 
-export async function authenticate(
-    req: FastifyRequest,
-    reply: FastifyReply
-) {
+export async function authenticate(req: FastifyRequest, reply: FastifyReply) {
     try {
 
         const authHeader = req.headers.authorization;
@@ -27,10 +24,7 @@ export async function authenticate(
             });
         }
 
-        //--------------------------------------------------
-        // Verify JWT
-        //--------------------------------------------------
-
+        // Verify JWT ACCESS TOKEN
         const payload: any = verifyAccessToken(token);
 
         if (!payload?.userCode || !payload?.sessionCode) {
@@ -40,10 +34,7 @@ export async function authenticate(
             });
         }
 
-        //--------------------------------------------------
         // Validate session
-        //--------------------------------------------------
-
         const session = await userSessionRepo.findOne({
             session_code: payload.sessionCode,
             status: "active"
@@ -56,10 +47,7 @@ export async function authenticate(
             });
         }
 
-        //--------------------------------------------------
         // Load user
-        //--------------------------------------------------
-
         const user = await userRepo.findOne({
             user_code: payload.userCode,
             status: "active"
@@ -72,9 +60,7 @@ export async function authenticate(
             });
         }
 
-        //--------------------------------------------------
         // Attach to request
-        //--------------------------------------------------
 
         (req as any).user = {
             userCode: user.user_code,

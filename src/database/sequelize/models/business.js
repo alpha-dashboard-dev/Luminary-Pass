@@ -93,11 +93,11 @@ class Business extends Model {
   }
 
   static associate(models) {
-    // Business.belongsTo(models.User, {
-    //     foreignKey: "owner_user_code",
-    //     targetKey: "user_code",
-    //     as: "owner",
-    // });
+    Business.belongsTo(models.User, {
+        foreignKey: "owner_user_code",
+        targetKey: "user_code",
+        as: "owner",
+    });
 
       Business.hasMany(models.Role, {
           foreignKey: "business_code",

@@ -5,6 +5,7 @@ import authRoutes from "./authentication/auth.routes.js";
 import userRoleRoutes from "./user/userRole.routes"
 import permissionRoutes from "./user/permission.routes"
 import rolePermissionRoutes from "./user/rolePermission.routes"
+import organizationRoleRoutes from "./organization/organization.routes"
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -12,4 +13,5 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(userRoleRoutes, { prefix: "/roles" });
     fastify.register(permissionRoutes, { prefix: "/permissions" });
     fastify.register(rolePermissionRoutes,{ prefix: "/role-permissions" })
+    fastify.register(organizationRoleRoutes, { prefix: "/organizations" });
 }

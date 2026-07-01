@@ -9,9 +9,6 @@ import { generateCode } from "../../utils/generateCode.js";
 
 class AuthService {
 
-    /**
-     * Login
-     */
     async login(data: any, request: any) {
 
         // console.log(data);
@@ -21,10 +18,6 @@ class AuthService {
         if (!email || !password) {
             throw new Error("Email and password are required");
         }
-
-        //--------------------------------------------------
-        // Find user
-        //--------------------------------------------------
 
         const user = await userRepo.findOne(
             { email },
@@ -41,17 +34,10 @@ class AuthService {
             throw new Error("Invalid email or password");
         }
 
-        //--------------------------------------------------
-        // Active?
-        //--------------------------------------------------
 
         if (user.status !== "active") {
             throw new Error("Your account is inactive");
         }
-
-        //--------------------------------------------------
-        // Password
-        //--------------------------------------------------
 
         const matched = await comparePassword(password, user.password);
 
@@ -59,15 +45,7 @@ class AuthService {
             throw new Error("Invalid email or password");
         }
 
-        //--------------------------------------------------
-        // Session
-        //--------------------------------------------------
-
         const sessionCode = generateCode();
-
-        //--------------------------------------------------
-        // Tokens
-        //--------------------------------------------------
 
         const accessToken = generateAccessToken({
             userCode: user.user_code,
@@ -80,10 +58,6 @@ class AuthService {
             sessionCode,
             type: "refresh",
         });
-
-        //--------------------------------------------------
-        // Save Session
-        //--------------------------------------------------
 
         const refreshExpiry = new Date(
             Date.now() + 15 * 24 * 60 * 60 * 1000
@@ -116,10 +90,6 @@ class AuthService {
             last_activity_at: new Date(),
 
         });
-
-        //--------------------------------------------------
-        // Response
-        //--------------------------------------------------
 
         return {
 
@@ -186,130 +156,81 @@ class AuthService {
             throw new Error("Refresh token is required");
         }
 
-        //--------------------------------------------------
+        const payload: any = verifyRefreshToken(token);
 
-        const payload: any =
-            verifyRefreshToken(token);
-
-        //--------------------------------------------------
-
-        const session =
-            await userSessionRepo.findOne({
-
-                session_code:
-                payload.sessionCode,
-
+        const session = await userSessionRepo.findOne({
+                session_code: payload.sessionCode,
                 refresh_token: token,
-
                 status: "active",
-
             });
 
         if (!session) {
             throw new Error("Invalid session");
         }
 
-        //--------------------------------------------------
-
-        if (
-            session.expires_at &&
-            new Date(session.expires_at) <
-            new Date()
-        ) {
+        if (session.expires_at && new Date(session.expires_at) < new Date()) {
 
             await userSessionRepo.update(
                 {
-                    session_code:
-                    session.session_code,
+                    session_code: session.session_code,
                 },
                 {
                     status: "expired",
                 }
             );
 
-            throw new Error(
-                "Refresh token expired"
-            );
+            throw new Error("Refresh token expired");
         }
 
-        //--------------------------------------------------
 
-        const accessToken =
-            generateAccessToken({
-
-                userCode:
-                payload.userCode,
-
-                sessionCode:
-                payload.sessionCode,
-
+        const accessToken = generateAccessToken({
+                userCode: payload.userCode,
+                sessionCode: payload.sessionCode,
                 type: "access",
-
             });
 
-        const refreshToken =
-            generateRefreshToken({
-
-                userCode:
-                payload.userCode,
-
-                sessionCode:
-                payload.sessionCode,
-
+        const refreshToken = generateRefreshToken({
+                userCode: payload.userCode,
+                sessionCode: payload.sessionCode,
                 type: "refresh",
-
             });
-
-        //--------------------------------------------------
 
         await userSessionRepo.update(
             {
-                session_code:
-                payload.sessionCode,
+                session_code: payload.sessionCode,
             },
             {
-                refresh_token:
-                refreshToken,
-
-                last_activity_at:
-                    new Date(),
+                refresh_token: refreshToken,
+                last_activity_at: new Date(),
             }
         );
-
-        //--------------------------------------------------
 
         return {
 
             accessToken,
-
             refreshToken,
-
-            expiresIn:
-            process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
-
+            expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
         };
     }
 
-    /**
-     * Current User
-     */
-    async me(userCode: string) {
+    async me(userCode: string, query: any = {}) {
 
         const user = await userRepo.findOne(
             {
                 user_code: userCode,
             },
             {
-                include: [
-                    {
-                        alias: "role",
-                        include: [
-                            {
-                                alias: "permissions",
-                            }
-                        ]
-                    }
-                ]
+                include: Array.isArray(query.include) ? query.include : [],
+                // include: [
+                //     {
+                //         alias: "role",
+                //         include: [
+                //             {
+                //                 alias: "permissions",
+                //             }
+                //         ]
+                //     }
+                // ]
             }
         );
 

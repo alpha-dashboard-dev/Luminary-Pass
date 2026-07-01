@@ -1,4 +1,3 @@
-
 class dbHelper {
 
     get orm(): string {
