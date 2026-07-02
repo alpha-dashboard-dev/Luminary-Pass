@@ -30,10 +30,35 @@ export const INCLUDE_CONFIG = {
         }
     },
 
+    Influencer: {
+        user: {
+            attributes: ["first_name", "last_name", "email", "status"],
+        }
+    },
+
     Venue: {
         business: {
             attributes: ["name", "email", "status"],
         }
+    },
+
+    Event: {
+        creator: {
+            attributes: ["first_name", "last_name", "email", "status"],
+        }
+    },
+
+    Location: {
+        business: {
+            attributes: ["name", "email", "status"],
+        },
+        user: {
+            attributes: ["name", "email", "phone"],
+        },
+        event: {
+            attributes: ["name"],
+        }
+
     },
 
     VenueTimeTable: {

@@ -9,7 +9,7 @@ class UserService {
     // Create Users
 
     async create(data: any, actor: any) {
-        console.log(actor);
+        // console.log(actor);
 
         if (!actor) throw new Error("Unauthorized");
 
@@ -23,17 +23,21 @@ class UserService {
             throw new Error("Email already exists");
         }
 
-        const phoneExists = await userRepo.findOne({
-            phone: data.phone
-        })
-
-        if (phoneExists) {
-            throw new Error("Phone already exists");
-        }
+        // const phoneExists = await userRepo.findOne({
+        //     phone: data.phone
+        // })
+        //
+        // if (phoneExists) {
+        //     throw new Error("Phone already exists");
+        // }
 
         const userCode = generateCode();
+        let password
+        if(data.password){
+             password = await hashPassword(data.password);
+        }
 
-        const password = await hashPassword(data.password);
+
 
         return await userRepo.create({
             user_code: userCode,
@@ -43,8 +47,8 @@ class UserService {
             first_name: data.firstName,
             last_name: data.lastName,
             email: data.email.trim().toLowerCase(),
-            phone: data.phone,
-            password,
+            phone: data.phone || null,
+            password: password || null,
             user_type: data.userType,
             avatar: null,
             status: data.status

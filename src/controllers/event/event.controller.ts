@@ -1,22 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import userService from "../../services/user/user.service";
-// import {validateUser} from "../../utils/validator.js";
+import eventService from "../../services/event/event.service";
+// import {validateevent} from "../../utils/validator.js";
 
-class UserController {
+class eventController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateUser(data);
-            const result =  await userService.create(
+            // validateevent(data);
+            const result =  await eventService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "User created successfully",
+                message: "event created successfully",
                 data: result
             });
         }
@@ -34,21 +33,13 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
             // console.log(include)
             const data =
-                await userService.getAll(
+                await eventService.getAll(
                     {
                         ...req.query,
                         include
@@ -69,28 +60,20 @@ class UserController {
         }
     }
 
-    // Get by User code
-    async getByUserCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by event code
+    async getByEventCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
-            const userCode = String(req.params.userCode)
-            const result = await userService.getByUserCode(
-                userCode,
+            const eventCode = String(req.params.eventCode)
+            const result = await eventService.getByEventCode(
+                eventCode,
                 {
                     ...req.query,
                     include
@@ -119,20 +102,12 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
             const where = {...req.query};
-            const result = await userService.getByField(
+            const result = await eventService.getByField(
                 where,
                 {
                     ...req.query,
@@ -156,23 +131,23 @@ class UserController {
     }
 
 
-    //Update User
+    //Update event
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const userCode = String(req.params.userCode);
+            const eventCode = String(req.params.eventCode);
 
-            const data = await userService.update(
-                userCode,
+            const data = await eventService.update(
+                eventCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User updated successfully",
+                message: "event updated successfully",
                 data,
             });
 
@@ -185,46 +160,20 @@ class UserController {
         }
     }
 
-    async deactivate(req: FastifyRequest, reply: FastifyReply) {
-        try{
-            const userCode = String(req.params.userCode)
-            const data = req.body
-            console.log(data)
-            await userService.deactivate(
-                userCode,
-                data,
-                req.user
-            );
-
-            return reply.status(200).send({
-                success: true,
-                message: "User deactivated",
-                data,
-            });
-
-
-        }catch(err){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-
-    //  DELETE User
+    //  DELETE event
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const userCode = String(req.params.userCode)
+            const eventCode = String(req.params.eventCode)
 
-            await userService.delete(
-                userCode,
+            await eventService.delete(
+                eventCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User permanently deleted"
+                message: "event permanently deleted"
             });
 
         } catch (err: any) {
@@ -237,4 +186,4 @@ class UserController {
     }
 }
 
-export default  new UserController();
+export default  new eventController();

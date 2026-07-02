@@ -33,6 +33,10 @@ class locationController {
         try {
             let include = req.query.include ?? "";
             include = [
+                {
+                    alias: "business",
+                    attributes: [],
+                }
             ]
             // console.log(include)
             const data = await locationService.getAll(
@@ -62,6 +66,10 @@ class locationController {
         try {
             let include = req.query.include ?? "";
             include = [
+                {
+                    alias: "business",
+                    attributes: [],
+                }
             ]
             const locationCode = String(req.params.locationCode)
             const result = await locationService.getByLocationCode(

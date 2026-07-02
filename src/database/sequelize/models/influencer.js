@@ -67,11 +67,11 @@ class Influencer extends Model {
   }
 
   static associate(models) {
-    // Influencer.belongsTo(models.User, {
-    //     foreignKey: "user_code",
-    //     targetKey: "user_code",
-    //     as: "user",
-    // });
+    Influencer.belongsTo(models.User, {
+        foreignKey: "user_code",
+        targetKey: "user_code",
+        as: "user",
+    });
   }
 }
 

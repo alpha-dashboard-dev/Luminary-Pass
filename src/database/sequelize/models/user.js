@@ -135,6 +135,18 @@ class User extends Model {
           as: "organization",
           constraints: false,
       });
+      User.hasMany(models.Influencer, {
+          foreignKey: "user_code",
+          sourceKey: "user_code",
+          as: "influencer",
+          constraints: false,
+      })
+      User.hasMany(models.Event, {
+          foreignKey: "created_by",
+          sourceKey: "user_code",
+          as: "creator",
+          constraints: false,
+      })
   }
 }
 

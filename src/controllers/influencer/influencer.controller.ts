@@ -1,22 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import userService from "../../services/user/user.service";
-// import {validateUser} from "../../utils/validator.js";
+import influencerService from "../../services/influencer/influencer.service";
+// import {validateinfluencer} from "../../utils/validator.js";
 
-class UserController {
+class InfluencerController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateUser(data);
-            const result =  await userService.create(
+            // validateinfluencer(data);
+            const result =  await influencerService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "User created successfully",
+                message: "influencer created successfully",
                 data: result
             });
         }
@@ -34,21 +33,13 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "user",
                     attributes: [],
                 },
             ]
             // console.log(include)
             const data =
-                await userService.getAll(
+                await influencerService.getAll(
                     {
                         ...req.query,
                         include
@@ -69,28 +60,20 @@ class UserController {
         }
     }
 
-    // Get by User code
-    async getByUserCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by influencer code
+    async getByInfluencerCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "user",
                     attributes: [],
                 },
             ]
-            const userCode = String(req.params.userCode)
-            const result = await userService.getByUserCode(
-                userCode,
+            const influencerCode = String(req.params.influencerCode)
+            const result = await influencerService.getByInfluencerCode(
+                influencerCode,
                 {
                     ...req.query,
                     include
@@ -119,20 +102,12 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "role",
-                    attributes: [],
-                },
-                {
-                    alias: "organization",
-                    attributes: [],
-                },
-                {
-                    alias: "business",
+                    alias: "user",
                     attributes: [],
                 },
             ]
             const where = {...req.query};
-            const result = await userService.getByField(
+            const result = await influencerService.getByField(
                 where,
                 {
                     ...req.query,
@@ -156,23 +131,23 @@ class UserController {
     }
 
 
-    //Update User
+    //Update influencer
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const userCode = String(req.params.userCode);
+            const influencerCode = String(req.params.influencerCode);
 
-            const data = await userService.update(
-                userCode,
+            const data = await influencerService.update(
+                influencerCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User updated successfully",
+                message: "influencer updated successfully",
                 data,
             });
 
@@ -187,18 +162,18 @@ class UserController {
 
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
-            const userCode = String(req.params.userCode)
+            const influencerCode = String(req.params.influencerCode)
             const data = req.body
             console.log(data)
-            await userService.deactivate(
-                userCode,
+            await influencerService.deactivate(
+                influencerCode,
                 data,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User deactivated",
+                message: "influencer deactivated",
                 data,
             });
 
@@ -211,20 +186,20 @@ class UserController {
         }
     }
 
-    //  DELETE User
+    //  DELETE influencer
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const userCode = String(req.params.userCode)
+            const influencerCode = String(req.params.influencerCode)
 
-            await userService.delete(
-                userCode,
+            await influencerService.delete(
+                influencerCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "User permanently deleted"
+                message: "influencer permanently deleted"
             });
 
         } catch (err: any) {
@@ -237,4 +212,4 @@ class UserController {
     }
 }
 
-export default  new UserController();
+export default  new InfluencerController();

@@ -1,49 +1,49 @@
 import { FastifyInstance } from "fastify";
-import userController from "../../controllers/user/user.controller";
+import influencerController from "../../controllers/influencer/influencer.controller";
 
 import { authenticate } from "../../middleware/authenticate";
 import { hasPermission } from "../../middleware/hasPermission";
 import {loadPermissions} from "../../middleware/loadPermissions";
 
-export default async function userRoutes(fastify: FastifyInstance) {
+export default async function influencerRoutes(fastify: FastifyInstance) {
 
-    // CREATE USER
+    // CREATE influencer
     fastify.post(
-        "/create-user",
+        "/create-influencer",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.create")
+                hasPermission("influencer.create")
             ]
         },
-        userController.create
+        influencerController.create
     );
 
-    // GET ALL USERS
+    // GET ALL influencer
     fastify.get(
-        "/get-all-users",
+        "/get-all-influencers",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("influencer.read")
             ]
         },
-        userController.getAll
+        influencerController.getAll
     );
 
-    // GET USER BY CODE
+    // GET influencer BY CODE
     fastify.get(
-        "/get-one-user/:userCode",
+        "/get-one-influencer/:influencerCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("influencer.read")
             ]
         },
-        userController.getByUserCode
+        influencerController.getByInfluencerCode
     );
 
     fastify.get(
@@ -52,49 +52,49 @@ export default async function userRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("influencer.read")
             ]
         },
-        userController.getByField
+        influencerController.getByField
     );
 
-    // UPDATE USER
+    // UPDATE influencer
     fastify.put(
-        "/update-user/:userCode",
+        "/update-influencer/:influencerCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.update")
+                hasPermission("influencer.update")
             ]
         },
-        userController.update
+        influencerController.update
     );
 
-    // Deactivate User
+    // Deactivate influencer
 
     fastify.patch(
-        "/deactivate-user/:userCode",
+        "/deactivate-influencer/:influencerCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.update")
+                hasPermission("influencer.update")
             ]
         },
-        userController.deactivate
+        influencerController.deactivate
     )
 
-    // DELETE USER
+    // DELETE influencer
     fastify.delete(
-        "/delete-user/:userCode",
+        "/delete-influencer/:influencerCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.delete")
+                hasPermission("influencer.delete")
             ]
         },
-        userController.delete
+        influencerController.delete
     );
 }
