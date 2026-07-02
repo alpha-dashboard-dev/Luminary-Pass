@@ -1,0 +1,151 @@
+import locationRepo from "../../repositories/location/location.repository";
+import { generateCode } from "../../utils/generateCode";
+import {buildWhere} from "../../utils/buildWhere.js";
+
+class LocationService {
+
+    async create(data: any, actor: any) {
+        // console.log(actor);
+
+        if (!actor) throw new Error("Unauthorized");
+
+
+        // const location = await locationRepo.findOne({
+        //     name: data.name
+        // })
+        //
+        // if (location) {
+        //     throw new Error("location already exists");
+        // }
+
+        // Add Status column in Location Table
+
+        const locationCode = generateCode();
+
+        return await locationRepo.create({
+            location_code: locationCode,
+            entity_type: data.entityType,
+            entity_code: data.entityCode,
+            address_line_1: data.addressLine1,
+            address_line_2: data.addressLine2,
+            city: data.city,
+            state: data.state,
+            country: data.country,
+            postal_code: data.postalCode,
+        });
+    }
+
+    // Get all Locations
+
+    async getAll(query: any = {}, actor: any) {
+        // console.log(query.where)
+        const where = buildWhere(query);
+
+        if(!actor){
+            throw new Error("Unauthorized Access");
+        }
+
+        return locationRepo.findAll({
+            where,
+            include: Array.isArray(query.include)
+                ? query.include
+                : [],
+            limit: query.limit ? Number(query.limit) : undefined,
+            offset: query.offset ? Number(query.offset) : undefined,
+            order: [
+                [
+                    query.sort_by || "created_at",
+                    query.sort_order || "DESC"
+                ]
+            ]
+        });
+    }
+
+    // Get location By location Code
+    async getByLocationCode(locationCode: string, query: any = {}, actor: any) {
+
+        const location = await locationRepo.findOne(
+            {
+                location_code: locationCode
+            },
+            {
+                include: Array.isArray(query.include) ? query.include : [],
+            }
+        );
+
+        if (!location) {
+            throw new Error("location not found");
+        }
+
+        return location;
+    }
+
+    // Get location By Any Field
+    async getByField(where: any, query: any = {}, actor: any) {
+        // console.log(where);
+        const location = await locationRepo.findOne(
+            where,
+            {
+                include: query.include || []
+            }
+        );
+
+        if (!location) {
+            throw new Error("location not found");
+        }
+
+        return location;
+    }
+
+    // Update location
+    async update(locationCode: string, data: any, actor: any) {
+
+        const location = await locationRepo.findOne({
+            location_code: locationCode
+        });
+
+        if (!location) throw new Error("location not found");
+
+        return await locationRepo.update(
+            { location_code: locationCode },
+            data
+        );
+    }
+
+    // Delete location
+
+    async delete(locationCode: string, actor: any) {
+        const location = await locationRepo.findOne({
+            location_code: locationCode
+        });
+
+        if (!location) {
+            throw new Error("location not found");
+        }
+
+        return await locationRepo.delete({
+            location_code: locationCode
+        });
+    }
+
+    // Deactivate location
+
+    async deactivate(locationCode: string, data: any, actor: any) {
+
+        const location = await locationRepo.findOne({
+            location_code: locationCode
+        });
+
+        if (!location) {
+            throw new Error("location not found");
+        }
+
+        return await locationRepo.deactivate({
+                location_code: locationCode
+            },
+            data
+        );
+    }
+}
+
+export default new LocationService();
