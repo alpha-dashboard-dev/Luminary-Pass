@@ -67,12 +67,22 @@ class dbHelper {
         }
     }
 
-    async delete(table: any, where: any) {
+    async delete(table: any, where: any, options: any = {}) {
 
         if (this.orm === "sequelize") {
 
             return await table.destroy({
                 where,
+                ...options
+            });
+        }
+    }
+
+    async count(table: any, where: any, options: any = {}) {
+        if (this.orm === "sequelize") {
+            return await table.count({
+                where,
+                ...options,
             });
         }
     }

@@ -45,7 +45,7 @@ export default async function businessRoutes(fastify: FastifyInstance) {
     )
 
     fastify.get(
-        '/get-buisness-by-field',
+        '/get-business-by-field',
         {
             preHandler: [
                 authenticate,
@@ -86,7 +86,7 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("businesss.delete"),
+                hasPermission("business.delete"),
             ]
         },
         businessController.delete

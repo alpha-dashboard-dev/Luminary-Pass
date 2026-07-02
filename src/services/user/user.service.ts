@@ -122,12 +122,25 @@ class UserService {
 
         if (!user) throw new Error("User not found");
 
-        if (data.password) {data.password = await hashPassword(data.password);
+        const allowed: any = {};
+        if (data.firstName !== undefined)
+            allowed.first_name = data.firstName;
+        if (data.lastName !== undefined)
+            allowed.last_name = data.lastName;
+        if (data.email !== undefined)
+            allowed.email = data.email;
+        if (data.phone !== undefined)
+            allowed.phone = data.phone;
+        if (data.password !== undefined) {
+            allowed.password = await hashPassword(data.password);
         }
+        if (data.status !== undefined)
+            allowed.status = data.status;
+
 
         return await userRepo.update(
             { user_code: userCode },
-            data
+            allowed
         );
     }
 

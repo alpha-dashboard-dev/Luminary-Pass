@@ -28,9 +28,8 @@ class BusinessService {
             const business = await businessRepo.create(
                 {
                     business_code: businessCode,
-                    owner_user_code: null,
-
-                    // organization_code: data.organization_code,
+                    organization_code: data.organizationCode,
+                    owner_user_code: ownerCode,
 
                     name: data.name.trim(),
 
@@ -51,20 +50,17 @@ class BusinessService {
                 {
                     user_code: ownerCode,
 
-                    organization_code: data.organization_code,
+                    organization_code: data.organizationCode,
 
                     business_code: businessCode,
                     role_code: data.roleCode,
                     first_name: data.first_name || null,
                     last_name: data.last_name || null,
-                    email: data.email || null,
-
-                    phone: data.phone || null,
-
-                    password: defaultPassword,
-
-                    user_type: "business_owner",
-                    status: data.status || "active",
+                    email:  null,
+                    phone: null,
+                    password: null,
+                    user_type: null,
+                    status: "inactive",
                 },
                 { transaction }
             );
@@ -179,7 +175,7 @@ class BusinessService {
 
     // Get business By Any Field
     async getByField(where: any, query: any = {}, actor: any) {
-        console.log(where);
+        // console.log(where);
         const business = await businessRepo.findOne(
             where,
             {
@@ -215,19 +211,19 @@ class BusinessService {
 
     // Delete business
 
-    async delete(businessCode: string, actor: any) {
-        const business = await businessRepo.findOne({
-            business_code: businessCode
-        });
-
-        if (!business) {
-            throw new Error("business not found");
-        }
-
-        return await businessRepo.delete({
-            business_code: businessCode
-        });
-    }
+    // async delete(businessCode: string, actor: any) {
+    //     const business = await businessRepo.findOne({
+    //         business_code: businessCode
+    //     });
+    //
+    //     if (!business) {
+    //         throw new Error("business not found");
+    //     }
+    //
+    //     return await businessRepo.delete({
+    //         business_code: businessCode
+    //     });
+    // }
 
     // Deactivate business
 
@@ -246,6 +242,69 @@ class BusinessService {
             },
             data
         );
+    }
+
+
+    //    Delete business + their owner from user table
+    async delete(businessCode: string, actor: any) {
+
+        const transaction = await db.sequelize.transaction();
+
+        try{
+            const business = await businessRepo.findOne({
+                business_code: businessCode
+            });
+
+            // console.log(business);
+
+            if (!business) {
+                throw new Error("business not found");
+            }
+
+            const ownerCode = business.owner_user_code;
+            // console.log(ownerCode);
+
+            const owner = await userRepo.findOne({
+                user_code: ownerCode
+            })
+
+            // console.log(owner);
+
+            if(!owner){
+                throw new Error("User not found");
+            }
+
+            const businessCount = await businessRepo.count({
+                owner_user_code: business.owner_user_code
+            }, { transaction });
+
+            console.log(businessCount);
+
+
+            await businessRepo.delete(
+                {   business_code: businessCode },
+                { transaction }
+            )
+
+            if (businessCount === 1) {
+                await userRepo.delete(
+                    { user_code: ownerCode },
+                    { transaction }
+                );
+            }
+
+            await transaction.commit();
+
+            return {
+                success: true,
+                message: "Business and owner deleted successfully."
+            };
+        } catch (err) {
+
+            await transaction.rollback();
+            throw err;
+        }
+
     }
 }
 

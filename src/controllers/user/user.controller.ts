@@ -33,7 +33,15 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "role",
+                    attributes: [],
+                },
+                {
+                    alias: "organization",
+                    attributes: [],
+                },
+                {
+                    alias: "business",
                     attributes: [],
                 },
             ]
@@ -67,7 +75,15 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "role",
+                    attributes: [],
+                },
+                {
+                    alias: "organization",
+                    attributes: [],
+                },
+                {
+                    alias: "business",
                     attributes: [],
                 },
             ]
@@ -102,7 +118,15 @@ class UserController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "role",
+                    attributes: [],
+                },
+                {
+                    alias: "organization",
+                    attributes: [],
+                },
+                {
+                    alias: "business",
                     attributes: [],
                 },
             ]

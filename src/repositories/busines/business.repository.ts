@@ -17,6 +17,7 @@ class BusinessRepository {
     }
 
     async findOne(where: any = {}, options: any = {}) {
+        // console.log(where);
         return await dbHelper.findOne(
             this.tables,
             {
@@ -61,11 +62,20 @@ class BusinessRepository {
         )
     }
 
-    async delete(where: any) {
+    async delete(where: any, options: any = {}) {
         return await dbHelper.delete(
             this.tables,
             where,
+            options,
         );
+    }
+
+    async count(where: any, options: any = {}) {
+        return await dbHelper.count(
+            this.tables,
+            where,
+            options
+        )
     }
 }
 

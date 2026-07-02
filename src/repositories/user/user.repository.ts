@@ -13,7 +13,7 @@ class UserRepository {
     }
 
     async create(data: any, options?: any) {
-        return await dbHelper.create(data, options);
+        return await dbHelper.create(this.tables, data, options);
     }
 
     async findOne(where: any = {}, options: any = {}) {
@@ -61,10 +61,11 @@ class UserRepository {
         )
     }
 
-    async delete(where: any) {
+    async delete(where: any, options: any = {}) {
         return await dbHelper.delete(
             this.tables,
             where,
+            options
         );
     }
 }

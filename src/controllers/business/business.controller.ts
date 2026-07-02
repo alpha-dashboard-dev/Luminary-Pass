@@ -8,7 +8,7 @@ class businessController {
 
         try{
             const data = req.body;
-            validateBusiness(data);
+            // validateBusiness(data);
             const result =  await businessService.create(
                 data,
                 req.user
