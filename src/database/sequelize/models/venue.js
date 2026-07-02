@@ -87,11 +87,11 @@ class Venue extends Model {
         as: "business",
     });
 
-    Venue.hasMany(models.Location, {
-        foreignKey: "venue_code",
-        sourceKey: "venue_code",
-        as: "locations",
-    });
+    // Venue.hasMany(models.Location, {
+    //     foreignKey: "venue_code",
+    //     sourceKey: "venue_code",
+    //     as: "locations",
+    // });
 
       Venue.hasMany(models.VenueTimeTable, {
           foreignKey: "venue_code",
