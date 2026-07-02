@@ -34,6 +34,12 @@ export const INCLUDE_CONFIG = {
         business: {
             attributes: ["name", "email", "status"],
         }
+    },
+
+    VenueTimeTable: {
+        venue: {
+            attributes: ["name", "email", "status"],
+        }
     }
 
 

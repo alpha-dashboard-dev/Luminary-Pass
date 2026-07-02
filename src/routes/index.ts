@@ -8,6 +8,7 @@ import rolePermissionRoutes from "./user/rolePermission.routes"
 import organizationRoleRoutes from "./organization/organization.routes"
 import businessRoutes from "./business/business.routes"
 import venueRoutes from "./venue/venue.routes"
+import venueScheduleRoutes from "./venue/venueSchedule.routes.js";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -18,4 +19,5 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(organizationRoleRoutes, { prefix: "/organizations" });
     fastify.register(businessRoutes, { prefix: "/businesses" });
     fastify.register(venueRoutes, { prefix: "/venues" });
+    fastify.register(venueScheduleRoutes, { prefix: "/venue-schedules" });
 }

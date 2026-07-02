@@ -80,11 +80,11 @@ class VenueTimeTable extends Model {
   }
 
   static associate(models) {
-    // VenueTimeTable.belongsTo(models.Venue, {
-    //     foreignKey: "venue_code",
-    //     targetKey: "venue_code",
-    //     as: "venue",
-    // });
+    VenueTimeTable.belongsTo(models.Venue, {
+        foreignKey: "venue_code",
+        targetKey: "venue_code",
+        as: "venue",
+    });
   }
 }
 

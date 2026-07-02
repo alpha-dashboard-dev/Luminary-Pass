@@ -4,7 +4,7 @@ import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
 
-class VenueTimeTableRepository {
+class VenueScheduleRepository {
 
     private tables: any;
 
@@ -14,6 +14,10 @@ class VenueTimeTableRepository {
 
     async create(data: any, options?: any) {
         return await dbHelper.create(this.tables, data, options);
+    }
+
+    async bulkCreate(data: any){
+        dbHelper.bulkCreate(this.tables, data)
     }
 
     async findOne(where: any = {}, options: any = {}) {
@@ -70,4 +74,4 @@ class VenueTimeTableRepository {
     }
 }
 
-export default new VenueTimeTableRepository();
+export default new VenueScheduleRepository();

@@ -92,6 +92,12 @@ class Venue extends Model {
         sourceKey: "venue_code",
         as: "locations",
     });
+
+      Venue.hasMany(models.VenueTimeTable, {
+          foreignKey: "venue_code",
+          sourceKey: "venue_code",
+          as: "schedule",
+      });
   }
 }
 
