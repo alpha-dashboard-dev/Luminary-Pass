@@ -30,6 +30,12 @@ export const INCLUDE_CONFIG = {
         }
     },
 
+    Venue: {
+        business: {
+            attributes: ["name", "email", "status"],
+        }
+    }
+
 
     // RolePermissions: {
     //     permission: {

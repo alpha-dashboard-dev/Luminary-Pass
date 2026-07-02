@@ -1,100 +1,100 @@
 import { FastifyInstance } from "fastify";
-import userController from "../../controllers/user/user.controller";
+import venueController from "../../controllers/venue/venue.controller";
 
 import { authenticate } from "../../middleware/authenticate";
 import { hasPermission } from "../../middleware/hasPermission";
 import {loadPermissions} from "../../middleware/loadPermissions";
 
-export default async function userRoutes(fastify: FastifyInstance) {
+export default async function venueRoutes(fastify: FastifyInstance) {
 
-    // CREATE USER
+    // CREATE VENUE
     fastify.post(
-        "/create-user",
+        "/create-venue",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.create")
+                hasPermission("venue.create")
             ]
         },
-        userController.create
+        venueController.create
     );
 
-    // GET ALL USERS
+    // GET ALL VENUES
     fastify.get(
-        "/get-all-users",
+        "/get-all-venues",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("venue.read")
             ]
         },
-        userController.getAll
+        venueController.getAll
     );
 
-    // GET USER BY CODE
+    // GET VENUE BY CODE
     fastify.get(
-        "/get-one-user/:userCode",
+        "/get-one-venue/:venueCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("venue.read")
             ]
         },
-        userController.getByUserCode
+        venueController.getByVenueCode
     );
 
     fastify.get(
-        "/get-by-any-field",
+        "/get-venue-by-field",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.read")
+                hasPermission("venue.read")
             ]
         },
-        userController.getByField
+        venueController.getByField
     );
 
-    // UPDATE USER
+    // UPDATE VENUE
     fastify.put(
-        "/update-user/:userCode",
+        "/update-venue/:venueCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.update")
+                hasPermission("venue.update")
             ]
         },
-        userController.update
+        venueController.update
     );
 
-    // Deactivate User
+    // Deactivate Venue
 
     fastify.patch(
-        "/deactivate-user/:userCode",
+        "/deactivate-venue/:venueCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.update")
+                hasPermission("venue.update")
             ]
         },
-        userController.deactivate
+        venueController.deactivate
     )
 
     // DELETE USER
     fastify.delete(
-        "/delete-use/:userCode",
+        "/delete-venue/:venueCode",
         {
             preHandler: [
                 authenticate,
                 loadPermissions,
-                hasPermission("user.delete")
+                hasPermission("venue.delete")
             ]
         },
-        userController.delete
+        venueController.delete
     );
 }

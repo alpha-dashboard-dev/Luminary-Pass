@@ -125,6 +125,12 @@ class Business extends Model {
             as: "users",
             constraints: false
         });
+        Business.hasMany(models.Venue, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "venue",
+            constraints: false
+        })
   }
 }
 
