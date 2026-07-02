@@ -10,7 +10,7 @@ const db = initModels();
 
 class BusinessService {
 
-    // Create Business + Owner
+    // Create Business + Owner + send email to create their user information
     async create(data: any, actor?: any) {
 
         // validateBusiness(data);
@@ -25,7 +25,7 @@ class BusinessService {
 
             const defaultPassword = await hashPassword(businessCode);
 
-            const business = await businessCode.create(
+            const business = await businessRepo.create(
                 {
                     business_code: businessCode,
                     owner_user_code: null,
@@ -51,15 +51,15 @@ class BusinessService {
                 {
                     user_code: ownerCode,
 
-                    // organization_code: data.organization_code,
+                    organization_code: data.organization_code,
 
                     business_code: businessCode,
-                    role_code: data.role_code,
-                    first_name: data.first_name,
-                    last_name: data.last_name,
+                    role_code: data.roleCode,
+                    first_name: data.first_name || null,
+                    last_name: data.last_name || null,
                     email: data.email || null,
 
-                    phone: data.phone,
+                    phone: data.phone || null,
 
                     password: defaultPassword,
 

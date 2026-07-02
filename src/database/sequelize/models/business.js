@@ -18,6 +18,14 @@ class Business extends Model {
               is: /^[A-Za-z0-9]{8}$/,
             },
           },
+            organization_code: {
+                type: DataTypes.STRING(8),
+                allowNull: true,
+                validate: {
+                    is: /^[A-Za-z0-9]{8}$/,
+                },
+            },
+
 
           owner_user_code: {
             type: DataTypes.STRING(8),
@@ -93,6 +101,11 @@ class Business extends Model {
   }
 
   static associate(models) {
+      Business.belongsTo(models.Organization, {
+          foreignKey: "organization_code",
+          targetKey: "organization_code",
+          as: "organization",
+      });
     Business.belongsTo(models.User, {
         foreignKey: "owner_user_code",
         targetKey: "user_code",
