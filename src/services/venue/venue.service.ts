@@ -1,6 +1,4 @@
 import venueRepo from "../../repositories/venue/venue.repository";
-
-import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 
@@ -9,9 +7,6 @@ class VenueService {
     // Create Venue
 
     async create(data: any, actor: any) {
-        // console.log(actor);
-
-        // if (!actor) throw new Error("Unauthorized");
 
         const emailExists = await venueRepo.findOne(
             {

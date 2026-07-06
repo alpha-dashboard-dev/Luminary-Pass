@@ -4,7 +4,7 @@ import { generateCode} from "../../utils/generateCode.js";
 class PermissionService {
 
     async create(data: any, actor: any){
-        console.log(actor.roleCode);
+        // console.log(actor.roleCode);
 
         if(!actor || actor.roleCode !== "ROL00001"){
             throw new Error("Unauthorized Access");

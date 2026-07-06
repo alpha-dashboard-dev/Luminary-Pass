@@ -17,6 +17,7 @@ const InfluencerRating = require('./influencer_ratings');
 const Event = require('./event');
 const EventInvitation = require('./event_invitation');
 const VenueLocation = require('./venue-location');
+const VenueAttachment = require('./venue_attachment');
 
 
 const initModels = () => {
@@ -35,6 +36,7 @@ const initModels = () => {
         Venue: Venue.initModel(sequelize),
         VenueTimeTable: VenueTimeTable.initModel(sequelize),
         VenueLocation: VenueLocation.initModel(sequelize),
+        VenueAttachment: VenueAttachment.initModel(sequelize),
 
         Location: Location.initModel(sequelize),
         Influencer: Influencer.initModel(sequelize),

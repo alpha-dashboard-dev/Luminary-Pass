@@ -101,6 +101,13 @@ class Venue extends Model {
           as: "venue",
           constraints: false
       })
+
+      Venue.hasMany(models.VenueAttachment, {
+          foreignKey: "venue_code",
+          sourceKey: "venue_code",
+          as: "venueAttachment",
+          constraints: false
+      })
   }
 }
 
