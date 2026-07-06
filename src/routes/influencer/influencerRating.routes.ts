@@ -47,7 +47,7 @@ export default async function ratingRoutes(fastify: FastifyInstance) {
     );
 
     fastify.get(
-        "/get-by-any-field",
+        "/get-rating-by-field",
         {
             preHandler: [
                 authenticate,

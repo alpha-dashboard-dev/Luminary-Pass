@@ -152,6 +152,12 @@ class Event extends Model {
         as: "event",
         constraints: false
     })
+      Event.hasMany(models.EventInvitation, {
+          foreignKey: "event_code",
+          sourceKey: "event_code",
+          as: "eventInvitation",
+          constraints: false
+      })
   }
 }
 

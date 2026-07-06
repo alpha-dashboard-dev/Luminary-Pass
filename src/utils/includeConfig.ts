@@ -35,10 +35,23 @@ export const INCLUDE_CONFIG = {
             attributes: ["first_name", "last_name", "email", "status"],
         }
     },
+
     InfluencerRating: {
         influencer: {
-            attributes: []
+            attributes: ["bio", "gender", "date_of_birth"],
+            include: {
+                user: {
+                    attributes: ["first_name", "last_name", "email", "status"],
+                }
+            }
+        },
+        event: {
+            attributes: ["title", "description"],
+        },
+        rater: {
+            attributes: ["first_name", "last_name", "email", "status"],
         }
+
     },
 
     Venue: {
@@ -47,8 +60,33 @@ export const INCLUDE_CONFIG = {
         }
     },
 
+    VenueTimeTable: {
+        venue: {
+            attributes: ["name", "email", "status"],
+        }
+    },
+
+    VenueLocation: {
+        venue: {
+            attributes: ["name", "email", "phone", "description", "status"],
+        }
+    },
+
+
     Event: {
         creator: {
+            attributes: ["first_name", "last_name", "email", "status"],
+        }
+    },
+
+    EventInvitation: {
+        eventInvitation: {
+            attributes: ["title", "description", "influencer_capacity", "dress_code"],
+        },
+        influencerInvitation: {
+            attributes: ["bio", "gender", "date_of_birth"],
+        },
+        inviter: {
             attributes: ["first_name", "last_name", "email", "status"],
         }
     },
@@ -65,13 +103,6 @@ export const INCLUDE_CONFIG = {
         }
 
     },
-
-    VenueTimeTable: {
-        venue: {
-            attributes: ["name", "email", "status"],
-        }
-    }
-
 
     // RolePermissions: {
     //     permission: {

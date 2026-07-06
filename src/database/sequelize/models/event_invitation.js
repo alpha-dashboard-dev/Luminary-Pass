@@ -89,23 +89,26 @@ class EventInvitation extends Model {
   }
 
   static associate(models) {
-    // EventInvitation.belongsTo(models.Event, {
-    //     foreignKey: "event_code",
-    //     targetKey: "event_code",
-    //     as: "event",
-    // });
+    EventInvitation.belongsTo(models.Event, {
+        foreignKey: "event_code",
+        targetKey: "event_code",
+        as: "eventInvitation",
+        constraints: false,
+    });
 
-    // EventInvitation.belongsTo(models.Influencer, {
-    //     foreignKey: "influencer_code",
-    //     targetKey: "influencer_code",
-    //     as: "influencer",
-    // });
+    EventInvitation.belongsTo(models.Influencer, {
+        foreignKey: "influencer_code",
+        targetKey: "influencer_code",
+        as: "influencerInvitation",
+        constraints: false,
+    });
 
-    // EventInvitation.belongsTo(models.User, {
-    //     foreignKey: "invited_by",
-    //     targetKey: "user_code",
-    //     as: "inviter",
-    // });
+    EventInvitation.belongsTo(models.User, {
+        foreignKey: "invited_by",
+        targetKey: "user_code",
+        as: "inviter",
+        constraints: false
+    });
   }
 }
 

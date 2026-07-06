@@ -79,6 +79,13 @@ class Influencer extends Model {
         as: "influencer",
         constraints: false,
     })
+
+    Influencer.hasMany(models.EventInvitation, {
+        foreignKey: "influencer_code",
+        sourceKey: "influencer_code",
+        as: "influencerInvitation",
+        constraints: false,
+    })
   }
 }
 

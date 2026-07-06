@@ -153,6 +153,13 @@ class User extends Model {
           as: "rater",
           constraints: false,
       })
+
+      User.hasMany(models.EventInvitation, {
+          foreignKey: "invited_by",
+          sourceKey: "user_code",
+          as: "inviter",
+          constraints: false,
+      })
   }
 }
 

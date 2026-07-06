@@ -79,13 +79,6 @@ class PermissionService {
 
         if (!permission) throw new Error("Permission not found");
 
-        // this.assertBusinessAccess(actor, user.business_code);
-        //
-        // if (actor.userType !== ROLES.ADMIN && data.user_type && !STAFF_USER_TYPES.includes(data.user_type)) {
-        //     throw new Error(
-        //         "Invalid role assignment"
-        //     );
-        // }
 
         const allowed: any = {};
         if (data.module !== undefined)

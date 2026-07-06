@@ -77,12 +77,12 @@ class VenueLocation extends Model {
   }
 
   static associate(models) {
-    // VenueLocation.belongsTo(models.Venue, {
-    //     foreignKey: "venue_code",
-    //     targetKey: "venue_code",
-    //     as: "venue",
-    //     constraints: false
-    // });
+    VenueLocation.belongsTo(models.Venue, {
+        foreignKey: "venue_code",
+        targetKey: "venue_code",
+        as: "venue",
+        constraints: false
+    });
   }
 }
 

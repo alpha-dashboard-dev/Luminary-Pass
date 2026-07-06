@@ -1,20 +1,20 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import ratingService from "../../services/influencer/influencerRating.service";
+import invitationService from "../../services/event/invitation.service";
 
-class ratingController {
+class invitationController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            // validaterating(data);
-            const result =  await ratingService.create(
+            // validateinvitation(data);
+            const result =  await invitationService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "rating created successfully",
+                message: "invitation created successfully",
                 data: result
             });
         }
@@ -32,21 +32,21 @@ class ratingController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
+                    alias: "eventInvitation",
                     attributes: [],
                 },
                 {
-                    alias: "influencer",
+                    alias: "influencerInvitation",
                     attributes: [],
                 },
-                {
-                    alias: "rater",
-                    attributes: [],
-                },
+                // {
+                //     alias: "inviter",
+                //     attributes: [],
+                // }
             ]
             // console.log(include)
             const data =
-                await ratingService.getAll(
+                await invitationService.getAll(
                     {
                         ...req.query,
                         include
@@ -67,28 +67,28 @@ class ratingController {
         }
     }
 
-    // Get by rating code
-    async getByRatingCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by invitation code
+    async getByInvitationCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
+                    alias: "eventInvitation",
                     attributes: [],
                 },
                 {
-                    alias: "influencer",
+                    alias: "influencerInvitation",
                     attributes: [],
                 },
                 {
-                    alias: "rater",
+                    alias: "inviter",
                     attributes: [],
-                },
+                }
             ]
-            const ratingCode = String(req.params.ratingCode)
-            const result = await ratingService.getByRatingCode(
-                ratingCode,
+            const invitationCode = String(req.params.invitationCode)
+            const result = await invitationService.getByInvitationCode(
+                invitationCode,
                 {
                     ...req.query,
                     include
@@ -117,20 +117,20 @@ class ratingController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
+                    alias: "eventInvitation",
                     attributes: [],
                 },
                 {
-                    alias: "influencer",
+                    alias: "influencerInvitation",
                     attributes: [],
                 },
                 {
-                    alias: "rater",
+                    alias: "inviter",
                     attributes: [],
-                },
+                }
             ]
             const where = {...req.query};
-            const result = await ratingService.getByField(
+            const result = await invitationService.getByField(
                 where,
                 {
                     ...req.query,
@@ -154,23 +154,23 @@ class ratingController {
     }
 
 
-    //Update rating
+    //Update invitation
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const ratingCode = String(req.params.ratingCode);
+            const invitationCode = String(req.params.invitationCode);
 
-            const data = await ratingService.update(
-                ratingCode,
+            const data = await invitationService.update(
+                invitationCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "rating updated successfully",
+                message: "invitation updated successfully",
                 data,
             });
 
@@ -183,20 +183,20 @@ class ratingController {
         }
     }
 
-    //  DELETE rating
+    //  DELETE invitation
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const ratingCode = String(req.params.ratingCode)
+            const invitationCode = String(req.params.invitationCode)
 
-            await ratingService.delete(
-                ratingCode,
+            await invitationService.delete(
+                invitationCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "rating permanently deleted"
+                message: "invitation permanently deleted"
             });
 
         } catch (err: any) {
@@ -209,4 +209,4 @@ class ratingController {
     }
 }
 
-export default  new ratingController();
+export default  new invitationController();

@@ -1,20 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import ratingService from "../../services/influencer/influencerRating.service";
+import venueLocationService from "../../services/venue/venueLocation.service"
+// import {validatevenue} from "../../utils/validator.js";
 
-class ratingController {
+class VenueLocationController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            // validaterating(data);
-            const result =  await ratingService.create(
+            // validatevenue(data);
+            const result =  await venueLocationService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "rating created successfully",
+                message: "Venue Location created successfully",
                 data: result
             });
         }
@@ -32,21 +33,13 @@ class ratingController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
-                    attributes: [],
-                },
-                {
-                    alias: "influencer",
-                    attributes: [],
-                },
-                {
-                    alias: "rater",
+                    alias: "venue",
                     attributes: [],
                 },
             ]
             // console.log(include)
             const data =
-                await ratingService.getAll(
+                await venueLocationService.getAll(
                     {
                         ...req.query,
                         include
@@ -67,28 +60,20 @@ class ratingController {
         }
     }
 
-    // Get by rating code
-    async getByRatingCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by Venue code
+    async getByVenueLocationCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
-                    attributes: [],
-                },
-                {
-                    alias: "influencer",
-                    attributes: [],
-                },
-                {
-                    alias: "rater",
+                    alias: "venue",
                     attributes: [],
                 },
             ]
-            const ratingCode = String(req.params.ratingCode)
-            const result = await ratingService.getByRatingCode(
-                ratingCode,
+            const venueCode = String(req.params.locationCode)
+            const result = await venueLocationService.getByVenueLocationCode(
+                venueCode,
                 {
                     ...req.query,
                     include
@@ -117,20 +102,12 @@ class ratingController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "event",
-                    attributes: [],
-                },
-                {
-                    alias: "influencer",
-                    attributes: [],
-                },
-                {
-                    alias: "rater",
+                    alias: "venue",
                     attributes: [],
                 },
             ]
             const where = {...req.query};
-            const result = await ratingService.getByField(
+            const result = await venueLocationService.getByField(
                 where,
                 {
                     ...req.query,
@@ -154,23 +131,23 @@ class ratingController {
     }
 
 
-    //Update rating
+    //Update venue
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const ratingCode = String(req.params.ratingCode);
+            const venueCode = String(req.params.locationCode);
 
-            const data = await ratingService.update(
-                ratingCode,
+            const data = await venueLocationService.update(
+                venueCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "rating updated successfully",
+                message: "venue updated successfully",
                 data,
             });
 
@@ -183,20 +160,46 @@ class ratingController {
         }
     }
 
-    //  DELETE rating
-    async delete(req: FastifyRequest, reply: FastifyReply) {
-
-        try {
-            const ratingCode = String(req.params.ratingCode)
-
-            await ratingService.delete(
-                ratingCode,
+    async deactivate(req: FastifyRequest, reply: FastifyReply) {
+        try{
+            const venueCode = String(req.params.locationCode)
+            const data = req.body
+            console.log(data)
+            await venueLocationService.deactivate(
+                venueCode,
+                data,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "rating permanently deleted"
+                message: "venue deactivated",
+                data,
+            });
+
+
+        }catch(err){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+    }
+
+    //  DELETE venue
+    async delete(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+            const venueCode = String(req.params.locationCode)
+
+            await venueLocationService.delete(
+                venueCode,
+                req.user
+            );
+
+            return reply.status(200).send({
+                success: true,
+                message: "venue permanently deleted"
             });
 
         } catch (err: any) {
@@ -209,4 +212,4 @@ class ratingController {
     }
 }
 
-export default  new ratingController();
+export default  new VenueLocationController();
