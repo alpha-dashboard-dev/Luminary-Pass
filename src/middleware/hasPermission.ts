@@ -1,13 +1,14 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import rolePermissionRepo from "../repositories/user/rolePermission.repository.js";
+import {Op} from "sequelize";
 
-export function hasPermission(permissionCode: string[]) {
+export function hasPermission(permissionCodes: string[]) {
 
     return async function (req: FastifyRequest, reply: FastifyReply) {
         try {
 
             const roleCode = (req as any).user?.roleCode;
-            console.log(roleCode, permissionCode);
+            // console.log(permissionCodes);
 
             if (!roleCode) {
                 return reply.status(403).send({
@@ -15,11 +16,13 @@ export function hasPermission(permissionCode: string[]) {
                     message: "Role not found"
                 });
             }
-
-            const rolePermissions = await rolePermissionRepo.findOne(
+            let hasPermission = false
+            for(const permission of permissionCodes) {
+                // console.log(permission);
+             rolePermissions = await rolePermissionRepo.findOne(
                 {
                     role_code: roleCode,
-                    permission_code: permissionCode
+                    permission_code: permission
                 },
                 {
                     include: [
@@ -28,7 +31,8 @@ export function hasPermission(permissionCode: string[]) {
                         }
                     ]
                 }
-            );
+            )}
+            // console.log(rolePermissions);
             return;
 
         } catch (err: any) {
