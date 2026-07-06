@@ -12,9 +12,36 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                loadPermissions,
-                hasPermission("organization.create"),
+                hasPermission("A93ABD2D"),
 
+            ]
+        },
+        orgController.create
+    )
+
+    // fastify.post(
+    //     "/create-organization",
+    //     {
+    //         preHandler: [
+    //             authenticate,
+    //             hasPermission([{"code":"","name":""}],required:"any/all")
+    //         ]
+    //     },
+    //     orgController.create
+    // )
+
+    fastify.post(
+        "/create-organization",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    [
+                        {   "code": "A93ABD2D", "name": "create organization"   },
+                        {   "code": "7425701C", "name": "read organization" },
+                    ],
+                    "any"
+                )
             ]
         },
         orgController.create

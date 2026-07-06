@@ -15,9 +15,12 @@ import influencerRoutes from "./influencer/influencer.routes"
 import eventRoutes from "./event/event.routes"
 import ratingRoutes from "./influencer/influencerRating.routes";
 import invitationRoutes from "./event/invitation.routes";
-import venueLocationRoutes  from "./venue/venueLocation.routes.js";
-import venueAttachmentRoutes from "./venue/venueAttachment.routes.js";
-import abilityRoutes from "./user/ability.routes.js";
+import venueLocationRoutes  from "./venue/venueLocation.routes";
+import venueAttachmentRoutes from "./venue/venueAttachment.routes";
+import abilityRoutes from "./user/ability.routes";
+import attachmentRoutes from "./mediaAttachment/attachement.routes";
+
+import participantRoutes from "./event/participant.routes";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -44,4 +47,7 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(eventRoutes, { prefix: "/events" });
 
     fastify.register(invitationRoutes, { prefix: "/invitations" });
+
+    fastify.register(attachmentRoutes, { prefix: "/attachments" });
+    fastify.register(participantRoutes, { prefix: "/event-participants" });
 }

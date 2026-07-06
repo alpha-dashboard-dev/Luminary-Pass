@@ -91,6 +91,12 @@ export const INCLUDE_CONFIG = {
         }
     },
 
+    // EventParticipant: {
+    //     eventParticipant: {
+    //         attributes: ["first_name", "last_name", "email", "status"],
+    //     }
+    // },
+
     Location: {
         business: {
             attributes: ["name", "email", "status"],

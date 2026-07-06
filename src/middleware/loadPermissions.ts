@@ -13,13 +13,10 @@ export async function loadPermissions(req: FastifyRequest, reply: FastifyReply) 
             });
         }
 
-        //--------------------------------------------------
-        // Fetch permissions via join table
-        //--------------------------------------------------
-
-        const rolePermissions = await rolePermissionRepo.findAll({
+        const rolePermissions = await rolePermissionRepo.findOne({
             where: {
-                role_code: roleCode
+                role_code: roleCode,
+                permission_code: permissionCOde
             },
             include: [
                 {

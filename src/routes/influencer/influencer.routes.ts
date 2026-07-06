@@ -8,17 +8,17 @@ import {loadPermissions} from "../../middleware/loadPermissions";
 export default async function influencerRoutes(fastify: FastifyInstance) {
 
     // CREATE influencer
-    fastify.post(
-        "/create-influencer",
-        {
-            preHandler: [
-                authenticate,
-                loadPermissions,
-                hasPermission("influencer.create")
-            ]
-        },
-        influencerController.create
-    );
+    // fastify.post(
+    //     "/create-influencer",
+    //     {
+    //         preHandler: [
+    //             authenticate,
+    //             loadPermissions,
+    //             hasPermission("can-create-influencer",code)
+    //         ]
+    //     },
+    //     influencerController.create
+    // );
 
     // GET ALL influencer
     fastify.get(

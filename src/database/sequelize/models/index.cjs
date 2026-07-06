@@ -14,10 +14,15 @@ const VenueTimeTable = require('./venue_timetable');
 const Location = require('./location');
 const Influencer = require('./influencer');
 const InfluencerRating = require('./influencer_ratings');
+
 const Event = require('./event');
 const EventInvitation = require('./event_invitation');
+const EventParticipant = require('./event_participants');
+
 const VenueLocation = require('./venue-location');
 const VenueAttachment = require('./venue_attachment');
+const Attachment = require('./attachment');
+
 
 
 const initModels = () => {
@@ -41,8 +46,13 @@ const initModels = () => {
         Location: Location.initModel(sequelize),
         Influencer: Influencer.initModel(sequelize),
         InfluencerRating: InfluencerRating.initModel(sequelize),
+
         Event: Event.initModel(sequelize),
         EventInvitation: EventInvitation.initModel(sequelize),
+        EventParticipant: EventParticipant.initModel(sequelize),
+
+        Attachment: Attachment.initModel(sequelize),
+
     };
 
     Object.values(models).forEach((model) => {

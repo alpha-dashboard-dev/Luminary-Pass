@@ -1,13 +1,12 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import attachmentService from "../../services/venue/venueAttachment.service.js";
+import attachmentService from "../../services/mediaAttachment/attachment.service";
 
 class attachmentController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
-            const data = req.body;
-            // validateattachment(data);
+            const data = req.body;;
             const result =  await attachmentService.create(
                 data,
                 req.user
@@ -31,10 +30,6 @@ class attachmentController {
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "venueAttachment",
-                    attributes: [],
-                },
             ]
             // console.log(include)
             const data =
@@ -65,10 +60,6 @@ class attachmentController {
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "venueAttachment",
-                    attributes: [],
-                },
             ]
             const attachmentCode = String(req.params.attachmentCode)
             const result = await attachmentService.getByAttachmentCode(
@@ -100,10 +91,6 @@ class attachmentController {
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "venueAttachment",
-                    attributes: [],
-                },
             ]
             const where = {...req.query};
             const result = await attachmentService.getByField(
@@ -146,7 +133,7 @@ class attachmentController {
 
             return reply.status(200).send({
                 success: true,
-                message: "attachment updated successfully",
+                message: "Attachment updated successfully",
                 data,
             });
 
@@ -172,7 +159,7 @@ class attachmentController {
 
             return reply.status(200).send({
                 success: true,
-                message: "attachment deactivated",
+                message: "Attachment deactivated",
                 data,
             });
 
@@ -198,7 +185,7 @@ class attachmentController {
 
             return reply.status(200).send({
                 success: true,
-                message: "attachment permanently deleted"
+                message: "Attachment permanently deleted"
             });
 
         } catch (err: any) {

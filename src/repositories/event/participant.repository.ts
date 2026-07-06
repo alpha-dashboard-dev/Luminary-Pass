@@ -2,34 +2,29 @@ import initModels from "../../database/sequelize/models/index.cjs"
 import dbHelper from "../../dbHelper/dbHelper"
 import {buildIncludes} from "../../utils/buildInclude.js";
 
-const db = initModels()
+const db = initModels();
 
-class RolePermissionRepository {
+class participantRepository {
 
-    private tables: any
+    private tables: any;
 
     constructor() {
-        this.tables = db.RolePermissions
+        this.tables = db.EventParticipant;
     }
 
-    async create(data: any){
-        dbHelper.create(this.tables, data)
-    }
-
-    async bulkCreate(data: any){
-        dbHelper.bulkCreate(this.tables, data)
+    async create(data: any, options?: any) {
+        return await dbHelper.create(this.tables, data, options);
     }
 
     async findOne(where: any = {}, options: any = {}) {
-        // console.log(where)
-        return dbHelper.findOne(
+        return await dbHelper.findOne(
             this.tables,
             {
                 where,
                 include: buildIncludes(
                     this.tables,
-                    options.include || []
-                ),
+                    options.include || [],
+                )
             }
         );
     }
@@ -38,10 +33,9 @@ class RolePermissionRepository {
 
         const include = buildIncludes(
             this.tables,
-            options.include || []
-        );
-
-        return dbHelper.findAll(
+            options.include || [],
+        )
+        return await dbHelper.findAll(
             this.tables,
             {
                 ...options,
@@ -50,12 +44,21 @@ class RolePermissionRepository {
         );
     }
 
-    async delete(where: any) {
-        return dbHelper.delete(
+    async update(where: any, data: any, options: any = {}) {
+        return dbHelper.update(
             this.tables,
-            where
+            where,
+            data,
+            options
+        );
+    }
+
+    async delete(where: any) {
+        return await dbHelper.delete(
+            this.tables,
+            where,
         );
     }
 }
 
-export default new RolePermissionRepository()
+export default new participantRepository();

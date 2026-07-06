@@ -1,20 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import attachmentService from "../../services/venue/venueAttachment.service.js";
+import participantService from "../../services/event/participant.service";
+// import {validateparticipant} from "../../utils/validator.js";
 
-class attachmentController {
+class participantController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            // validateattachment(data);
-            const result =  await attachmentService.create(
+            // validateparticipant(data);
+            const result =  await participantService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "attachment created successfully",
+                message: "participant created successfully",
                 data: result
             });
         }
@@ -32,13 +33,17 @@ class attachmentController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "venueAttachment",
+                    alias: "eventParticipant",
+                    attributes: [],
+                },
+                {
+                    alias: "influencerParticipant",
                     attributes: [],
                 },
             ]
             // console.log(include)
             const data =
-                await attachmentService.getAll(
+                await participantService.getAll(
                     {
                         ...req.query,
                         include
@@ -59,20 +64,20 @@ class attachmentController {
         }
     }
 
-    // Get by attachment code
-    async getByAttachmentCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by participant code
+    async getByParticipantCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "venueAttachment",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
-            const attachmentCode = String(req.params.attachmentCode)
-            const result = await attachmentService.getByAttachmentCode(
-                attachmentCode,
+            const participantCode = String(req.params.participantCode)
+            const result = await participantService.getByParticipantCode(
+                participantCode,
                 {
                     ...req.query,
                     include
@@ -101,12 +106,12 @@ class attachmentController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "venueAttachment",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
             const where = {...req.query};
-            const result = await attachmentService.getByField(
+            const result = await participantService.getByField(
                 where,
                 {
                     ...req.query,
@@ -130,23 +135,23 @@ class attachmentController {
     }
 
 
-    //Update attachment
+    //Update participant
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const attachmentCode = String(req.params.attachmentCode);
+            const participantCode = String(req.params.participantCode);
 
-            const data = await attachmentService.update(
-                attachmentCode,
+            const data = await participantService.update(
+                participantCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "attachment updated successfully",
+                message: "participant updated successfully",
                 data,
             });
 
@@ -159,46 +164,20 @@ class attachmentController {
         }
     }
 
-    async deactivate(req: FastifyRequest, reply: FastifyReply) {
-        try{
-            const attachmentCode = String(req.params.attachmentCode)
-            const data = req.body
-            console.log(data)
-            await attachmentService.deactivate(
-                attachmentCode,
-                data,
-                req.user
-            );
-
-            return reply.status(200).send({
-                success: true,
-                message: "attachment deactivated",
-                data,
-            });
-
-
-        }catch(err){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-
-    //  DELETE attachment
+    //  DELETE participant
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const attachmentCode = String(req.params.attachmentCode)
+            const participantCode = String(req.params.participantCode)
 
-            await attachmentService.delete(
-                attachmentCode,
+            await participantService.delete(
+                participantCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "attachment permanently deleted"
+                message: "participant permanently deleted"
             });
 
         } catch (err: any) {
@@ -211,4 +190,4 @@ class attachmentController {
     }
 }
 
-export default  new attachmentController();
+export default  new participantController();
