@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import rolePermissionRepo from "../repositories/user/rolePermission.repository.js";
 
-export function hasPermission(permissionCode: any, mode: string) {
+export function hasPermission(permissionCode: string[]) {
 
     return async function (req: FastifyRequest, reply: FastifyReply) {
         try {

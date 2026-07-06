@@ -36,11 +36,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    [
-                        {   "code": "A93ABD2D", "name": "create organization"   },
-                        {   "code": "7425701C", "name": "read organization" },
-                    ],
-                    "any"
+                    ["A93ABD2D", "7425701C"],
                 )
             ]
         },
