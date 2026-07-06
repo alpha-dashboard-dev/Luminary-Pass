@@ -131,20 +131,27 @@ class Event extends Model {
         as: "business",
         constraints: false
     });
-    //
+
     Event.belongsTo(models.Venue, {
         foreignKey: "venue_code",
         targetKey: "venue_code",
         as: "venue",
         constraints: false
     });
-    //
+
     Event.belongsTo(models.User, {
         foreignKey: "created_by",
         targetKey: "user_code",
         as: "creator",
         constraints: false
     });
+
+    Event.hasMany(models.InfluencerRating, {
+        foreignKey: "event_code",
+        sourceKey: "event_code",
+        as: "event",
+        constraints: false
+    })
   }
 }
 

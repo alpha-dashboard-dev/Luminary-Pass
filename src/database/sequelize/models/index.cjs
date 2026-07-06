@@ -13,7 +13,7 @@ const Category = require('./category');
 const VenueTimeTable = require('./venue_timetable');
 const Location = require('./location');
 const Influencer = require('./influencer');
-const InfluencerRatings = require('./influencer_ratings');
+const InfluencerRating = require('./influencer_ratings');
 const Event = require('./event');
 
 
@@ -33,7 +33,7 @@ const initModels = () => {
         VenueTimeTable: VenueTimeTable.initModel(sequelize),
         Location: Location.initModel(sequelize),
         Influencer: Influencer.initModel(sequelize),
-        InfluencerRatings: InfluencerRatings.initModel(sequelize),
+        InfluencerRating: InfluencerRating.initModel(sequelize),
         Event: Event.initModel(sequelize),
     };
 

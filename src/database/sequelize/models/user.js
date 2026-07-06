@@ -147,6 +147,12 @@ class User extends Model {
           as: "creator",
           constraints: false,
       })
+      User.hasMany(models.InfluencerRating, {
+          foreignKey: "rated_by",
+          sourceKey: "user_code",
+          as: "rater",
+          constraints: false,
+      })
   }
 }
 

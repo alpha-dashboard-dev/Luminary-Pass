@@ -72,6 +72,13 @@ class Influencer extends Model {
         targetKey: "user_code",
         as: "user",
     });
+
+    Influencer.hasMany(models.InfluencerRating, {
+        foreignKey: "influencer_code",
+        sourceKey: "influencer_code",
+        as: "influencer",
+        constraints: false,
+    })
   }
 }
 
