@@ -1,10 +1,11 @@
 import { FastifyInstance } from "fastify";
 
 import authRoutes from "./authentication/auth.routes.js";
-// import userRoutes from "./user/user.routes";
-// import userRoleRoutes from "./user/userRole.routes"
-// import permissionRoutes from "./user/permission.routes"
-// import rolePermissionRoutes from "./user/rolePermission.routes"
+import userRoutes from "./user/user.routes";
+import userRoleRoutes from "./user/userRole.routes"
+import permissionRoutes from "./user/permission.routes"
+import rolePermissionRoutes from "./user/rolePermission.routes"
+import abilityRoutes from "./user/ability.routes";
 import organizationRoleRoutes from "./organization/organization.routes"
 import businessRoutes from "./business/business.routes"
 // import venueRoutes from "./venue/venue.routes"
@@ -17,7 +18,7 @@ import businessRoutes from "./business/business.routes"
 // import invitationRoutes from "./event/invitation.routes";
 // import venueLocationRoutes  from "./venue/venueLocation.routes";
 // import venueAttachmentRoutes from "./venue/venueAttachment.routes";
-// import abilityRoutes from "./user/ability.routes";
+
 // import attachmentRoutes from "./mediaAttachment/attachement.routes";
 //
 // import participantRoutes from "./event/participant.routes";
@@ -28,11 +29,11 @@ import businessRoutes from "./business/business.routes"
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
 
-    // fastify.register(userRoutes, { prefix: "/users" });
-    // fastify.register(userRoleRoutes, { prefix: "/roles" });
-    // fastify.register(permissionRoutes, { prefix: "/permissions" });
-    // fastify.register(rolePermissionRoutes,{ prefix: "/role-permissions" })
-    // fastify.register(abilityRoutes, { prefix: "/abilities" });
+    fastify.register(userRoutes, { prefix: "/users" });
+    fastify.register(userRoleRoutes, { prefix: "/roles" });
+    fastify.register(permissionRoutes, { prefix: "/permissions" });
+    fastify.register(rolePermissionRoutes,{ prefix: "/role-permissions" })
+    fastify.register(abilityRoutes, { prefix: "/abilities" });
 
     fastify.register(organizationRoleRoutes, { prefix: "/organizations" });
     fastify.register(businessRoutes, { prefix: "/businesses" });
