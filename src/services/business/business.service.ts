@@ -1,5 +1,6 @@
 import businessRepo from "../../repositories/busines/business.repository";
 import userRepo from "../../repositories/user/user.repository"
+import orgRepo from "../../repositories/organization/organization.repository"
 
 import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
@@ -11,13 +12,38 @@ const db = initModels();
 class BusinessService {
 
     // Create Business + Owner + send email to create their user information
-    async create(data: any, actor?: any) {
-
-        // validateBusiness(data);
+    async create(data: any) {
 
         const transaction = await db.sequelize.transaction();
 
         try {
+
+            const organization = await orgRepo.findOne({
+                organization_code: data.organizationCode,
+            })
+            // console.log(organization)
+
+            if(!organization) {
+                throw new Error("Organization not found");
+            }
+
+            const emailExists = await businessRepo.findOne(
+                {
+                    email: data.email
+                }
+            );
+
+            if (emailExists) {
+                throw new Error("Email already exists");
+            }
+
+            const phoneExists = await businessRepo.findOne({
+                phone: data.phone
+            })
+
+            if (phoneExists) {
+                throw new Error("Phone already exists");
+            }
 
             const businessCode = generateCode();
 
@@ -89,44 +115,6 @@ class BusinessService {
             throw err;
         }
     }
-
-
-    // async create(data: any, actor: any) {
-    //     console.log(actor);
-    //
-    //     if (!actor) throw new Error("Unauthorized");
-    //
-    //     const emailExists = await businessRepo.findOne(
-    //         {
-    //             email: data.email
-    //         }
-    //     );
-    //
-    //     if (emailExists) {
-    //         throw new Error("Email already exists");
-    //     }
-    //
-    //     const phoneExists = await businessRepo.findOne({
-    //         phone: data.phone
-    //     })
-    //
-    //     if (phoneExists) {
-    //         throw new Error("Phone already exists");
-    //     }
-    //
-    //     const businessCode = generateCode();
-    //
-    //     const password = await hashPassword(data.password);
-    //
-    //     return await businessRepo.create({
-    //         business_code: businessCode,
-    //         name: data.name,
-    //         email: data.email.trim().toLowerCase(),
-    //         phone: data.phone,
-    //         password,
-    //         status: data.status
-    //     });
-    // }
 
     // Get all Businesses
 
@@ -208,22 +196,6 @@ class BusinessService {
             data
         );
     }
-
-    // Delete business
-
-    // async delete(businessCode: string, actor: any) {
-    //     const business = await businessRepo.findOne({
-    //         business_code: businessCode
-    //     });
-    //
-    //     if (!business) {
-    //         throw new Error("business not found");
-    //     }
-    //
-    //     return await businessRepo.delete({
-    //         business_code: businessCode
-    //     });
-    // }
 
     // Deactivate business
 

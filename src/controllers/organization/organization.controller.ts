@@ -71,7 +71,8 @@ class organizationController {
                     attributes: [],
                 },
             ]
-            const organizationCode = String(req.params.organizationCode)
+            const organizationCode = String(req.params.organizationCode);
+            console.log(organizationCode);
             const result = await orgService.getByOrganizationCode(
                     organizationCode,
                     {

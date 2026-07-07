@@ -1,21 +1,19 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import businessService from "../../services/business/business.service";
-import {validateBusiness} from "../../utils/validator.js";
+import socialLoginService from "../../services/socialLogin/socialLogin.service";
 
-class businessController {
+class socialLoginController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            validateBusiness(data);
-            const result =  await businessService.create(
+            const result =  await socialLoginService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "Business created successfully",
+                message: "socialLogin created successfully",
                 data: result
             });
         }
@@ -32,14 +30,10 @@ class businessController {
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "users",
-                    attributes: [],
-                },
             ]
             // console.log(include)
             const data =
-                await businessService.getAll(
+                await socialLoginService.getAll(
                     {
                         ...req.query,
                         include
@@ -60,20 +54,16 @@ class businessController {
         }
     }
 
-    // Get by business code
-    async getByBusinessCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by socialLogin code
+    async getBySocialLoginCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "users",
-                    attributes: [],
-                },
             ]
-            const businessCode = String(req.params.businessCode)
-            const result = await businessService.getByBusinessCode(
-                businessCode,
+            const socialLoginCode = String(req.params.socialLoginCode)
+            const result = await socialLoginService.getBySocialLoginCode(
+                socialLoginCode,
                 {
                     ...req.query,
                     include
@@ -95,19 +85,15 @@ class businessController {
         }
     }
 
-    // Get Business By Any Field
+    // Get By Any Field
     async getByField(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "users",
-                    attributes: [],
-                },
             ]
             const where = {...req.query};
-            const result = await businessService.getByField(
+            const result = await socialLoginService.getByField(
                 where,
                 {
                     ...req.query,
@@ -131,23 +117,23 @@ class businessController {
     }
 
 
-    //Update Business
+    //Update socialLogin
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const businessCode = String(req.params.businessCode);
+            const socialLoginCode = String(req.params.socialLoginCode);
 
-            const data = await businessService.update(
-                businessCode,
+            const data = await socialLoginService.update(
+                socialLoginCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "business updated successfully",
+                message: "socialLogin updated successfully",
                 data,
             });
 
@@ -160,21 +146,20 @@ class businessController {
         }
     }
 
-    // Deactivate Business
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
-            const businessCode = String(req.params.businessCode)
+            const socialLoginCode = String(req.params.socialLoginCode)
             const data = req.body
             console.log(data)
-            await businessService.deactivate(
-                businessCode,
+            await socialLoginService.deactivate(
+                socialLoginCode,
                 data,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "Business deactivated",
+                message: "socialLogin deactivated",
                 data,
             });
 
@@ -187,20 +172,20 @@ class businessController {
         }
     }
 
-    //  Delete Business
+    //  DELETE socialLogin
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const businessCode = String(req.params.businessCode)
+            const socialLoginCode = String(req.params.socialLoginCode)
 
-            await businessService.delete(
-                businessCode,
+            await socialLoginService.delete(
+                socialLoginCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "Business permanently deleted"
+                message: "socialLogin permanently deleted"
             });
 
         } catch (err: any) {
@@ -213,4 +198,4 @@ class businessController {
     }
 }
 
-export default  new businessController();
+export default new socialLoginController();

@@ -6,12 +6,9 @@ import {buildWhere} from "../../utils/buildWhere.js";
 
 class OrganizationService {
 
-    // CREATE Organization
+    // Create Organization
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
-
-        if (!actor) throw new Error("Unauthorized");
+    async create(data: any) {
 
         const emailExists = await orgRepo.findOne(
             {
@@ -47,13 +44,9 @@ class OrganizationService {
 
     // Get all organizations
 
-    async getAll(query: any = {}, actor: any) {
+    async getAll(query: any = {}) {
         // console.log(query.where)
         const where = buildWhere(query);
-
-        if(!actor){
-            throw new Error("Unauthorized Access");
-        }
 
         return orgRepo.findAll({
             where,
@@ -72,7 +65,7 @@ class OrganizationService {
     }
 
     // Get Organization By Organization Code
-    async getByOrganizationCode(organizationCode: string, query: any = {}, actor: any) {
+    async getByOrganizationCode(organizationCode: string, query: any = {}) {
 
         const organization = await orgRepo.findOne(
             {
@@ -91,7 +84,7 @@ class OrganizationService {
     }
 
     // Get Organization By Any Field
-    async getByField(where: any, query: any = {}, actor: any) {
+    async getByField(where: any, query: any = {}) {
         console.log(where);
         const organization = await orgRepo.findOne(
             where,
@@ -108,7 +101,7 @@ class OrganizationService {
     }
 
     // Update Organization
-    async update(organizationCode: string, data: any, actor: any) {
+    async update(organizationCode: string, data: any) {
 
         const organization = await orgRepo.findOne({
             organization_code: organizationCode
@@ -127,7 +120,7 @@ class OrganizationService {
 
     // Delete Organization
 
-    async delete(organizationCode: string, actor: any) {
+    async delete(organizationCode: string) {
         const organization = await orgRepo.findOne({
                 organization_code: organizationCode
             });

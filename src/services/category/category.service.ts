@@ -1,6 +1,4 @@
 import categoryRepo from "../../repositories/category/category.repository";
-
-import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 
@@ -11,14 +9,6 @@ class CategoryService {
 
         if (!actor) throw new Error("Unauthorized");
 
-
-        // const category = await categoryRepo.findOne({
-        //     name: data.name
-        // })
-        //
-        // if (category) {
-        //     throw new Error("Category already exists");
-        // }
 
         const categoryCode = generateCode();
 

@@ -10,7 +10,6 @@ export function hasPermission(  { permissions, required }: PermissionOptions) {
     return async (req: FastifyRequest, reply: FastifyReply) => {
         try {
 
-            // console.log(required)
             const roleCode = (req as any).user?.roleCode;
 
             if (!roleCode) {
@@ -35,7 +34,6 @@ export function hasPermission(  { permissions, required }: PermissionOptions) {
                             }
                         ]
                     });
-                // console.log(permission.dataValues)
 
                 if (required === "any" && permission) {
                     return;
