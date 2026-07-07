@@ -34,7 +34,6 @@ class RolePermissionRepository {
     }
 
     async findAll(options: any = {}) {
-
         const include = buildIncludes(
             this.tables,
             options.include || []
@@ -48,6 +47,23 @@ class RolePermissionRepository {
             }
         );
     }
+
+    // async findAll(where: any = {}, options: any = {}) {
+    //
+    //     const include = buildIncludes(
+    //         this.tables,
+    //         options.include || []
+    //     );
+    //
+    //     return dbHelper.findAll(
+    //         this.tables,
+    //         where,
+    //         {
+    //             ...options,
+    //             include
+    //         }
+    //     );
+    // }
 
     async delete(where: any) {
         return dbHelper.delete(

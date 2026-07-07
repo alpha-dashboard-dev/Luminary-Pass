@@ -49,6 +49,16 @@ class dbHelper {
         }
     }
 
+    // async findAll(table: any, where: any = {}, options: any = {}) {
+    //
+    //     if (this.orm === "sequelize") {
+    //         return await table.findAll({
+    //             where,
+    //             ...options
+    //         });
+    //     }
+    // }
+
 
     async update(table: any, where: any, data: any, options?: any) {
         if (this.orm === "sequelize") {

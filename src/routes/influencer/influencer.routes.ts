@@ -3,7 +3,6 @@
 //
 // import { authenticate } from "../../middleware/authenticate";
 // import { hasPermission } from "../../middleware/hasPermission";
-// import {loadPermissions} from "../../middleware/loadPermissions";
 //
 // export default async function influencerRoutes(fastify: FastifyInstance) {
 //
@@ -26,7 +25,6 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
 //                 hasPermission("influencer.read")
 //             ]
 //         },
@@ -39,7 +37,7 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
+//
 //                 hasPermission("influencer.read")
 //             ]
 //         },
@@ -51,7 +49,6 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
 //                 hasPermission("influencer.read")
 //             ]
 //         },
@@ -64,7 +61,6 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
 //                 hasPermission("influencer.update")
 //             ]
 //         },
@@ -78,7 +74,6 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
 //                 hasPermission("influencer.update")
 //             ]
 //         },
@@ -91,7 +86,6 @@
 //         {
 //             preHandler: [
 //                 authenticate,
-//                 loadPermissions,
 //                 hasPermission("influencer.delete")
 //             ]
 //         },

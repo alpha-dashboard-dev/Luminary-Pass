@@ -11,11 +11,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["E0762CD1"],
-                    required: "any"
-                })
-
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.create
@@ -26,10 +25,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["8A496AEC"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.getAll
@@ -40,10 +39,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["8A496AEC"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.getByBusinessCode
@@ -54,10 +53,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["8A496AEC"],
-                    required: "all"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.getByField
@@ -68,10 +67,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["E70C0852"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.update
@@ -82,10 +81,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["E70C0852"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.deactivate
@@ -96,10 +95,10 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["E23A69A8"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    true
+                )
             ]
         },
         businessController.delete

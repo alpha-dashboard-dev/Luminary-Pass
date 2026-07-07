@@ -22,10 +22,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D"],
-                    required: "any"
-                })
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.create
@@ -36,10 +36,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    false
+                )
             ]
         },
         orgController.getAll
@@ -50,10 +50,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABDD", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.getByOrganizationCode
@@ -64,10 +64,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.getByField
@@ -78,10 +78,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABDD", "0C42B426"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.update
@@ -92,10 +92,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D", "0C42B426"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.deactivate
@@ -106,10 +106,10 @@ export default async function orgRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2", "45191262"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    true
+                )
             ]
         },
         orgController.delete

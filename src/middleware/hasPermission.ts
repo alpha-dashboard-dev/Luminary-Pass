@@ -1,12 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import rolePermissionRepo from "../repositories/user/rolePermission.repository.js";
+import {Op} from "sequelize";
 
-type PermissionOptions = {
-    permissions: string[];
-    required?: "any" | "all";
-};
-
-export function hasPermission(  { permissions, required }: PermissionOptions) {
+export function hasPermission(permissionCodes: string[], mode: Boolean) {
     return async (req: FastifyRequest, reply: FastifyReply) => {
         try {
 
@@ -18,43 +14,43 @@ export function hasPermission(  { permissions, required }: PermissionOptions) {
                     message: "Role not found",
                 });
             }
-            // console.log(permissions)
+            console.log(roleCode, permissionCodes, mode)
 
-            for (const permissionCode of permissions) {
-                const permission = await rolePermissionRepo.findOne(
-                    {
-                        role_code: roleCode,
-                        permission_code: permissionCode,
-                    },
-                    {
-                        include: [
-                            {
-                                alias: "permission",
-                                attributes: []
-                            }
-                        ]
-                    });
-
-                if (required === "any" && permission) {
-                    return;
+            const rolePermissions = await rolePermissionRepo.findAll({
+                where: {
+                    role_code: roleCode,
+                    permission_code: {
+                        [Op.in]: permissionCodes
+                    }
+                }},
+                {
+                    include: [
+                        {
+                            alias: "permission"
+                        }
+                    ]
                 }
+            );
 
-                if (required === "all" && !permission) {
+            console.log(rolePermissions.length);
+            // all permission
+            if (mode) {
+                if (rolePermissions.length !== permissionCodes.length) {
                     return reply.status(403).send({
                         success: false,
-                        message: "Permission denied",
+                        message: "Permission denied.",
+                    });
+                }
+            } else {
+                if (rolePermissions.length === 0) {
+                    return reply.status(403).send({
+                        success: false,
+                        message: "Permission denied.",
                     });
                 }
             }
 
-            if (required === "all") {
-                return;
-            }
-
-            return reply.status(403).send({
-                success: false,
-                message: "Permission denied",
-            });
+            return;
 
         } catch (err: any) {
             return reply.status(500).send({
