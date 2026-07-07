@@ -1,27 +1,29 @@
 import { FastifyInstance } from "fastify";
 
 import authRoutes from "./authentication/auth.routes.js";
-import userRoutes from "./user/user.routes";
-import userRoleRoutes from "./user/userRole.routes"
-import permissionRoutes from "./user/permission.routes"
-import rolePermissionRoutes from "./user/rolePermission.routes"
+// import userRoutes from "./user/user.routes";
+// import userRoleRoutes from "./user/userRole.routes"
+// import permissionRoutes from "./user/permission.routes"
+// import rolePermissionRoutes from "./user/rolePermission.routes"
 import organizationRoleRoutes from "./organization/organization.routes"
-import businessRoutes from "./business/business.routes"
-import venueRoutes from "./venue/venue.routes"
-import venueScheduleRoutes from "./venue/venueSchedule.routes";
-import categoryRoutes from "./category/category.routes"
-import locationRoutes from "./location/location.routes"
-import influencerRoutes from "./influencer/influencer.routes"
-import eventRoutes from "./event/event.routes"
-import ratingRoutes from "./influencer/influencerRating.routes";
-import invitationRoutes from "./event/invitation.routes";
-import venueLocationRoutes  from "./venue/venueLocation.routes";
-import venueAttachmentRoutes from "./venue/venueAttachment.routes";
-import abilityRoutes from "./user/ability.routes";
-import attachmentRoutes from "./mediaAttachment/attachement.routes";
-
-import participantRoutes from "./event/participant.routes";
-import checklistRoutes from "./event/checklist.routes.js";
+// import businessRoutes from "./business/business.routes"
+// import venueRoutes from "./venue/venue.routes"
+// import venueScheduleRoutes from "./venue/venueSchedule.routes";
+// import categoryRoutes from "./category/category.routes"
+// import locationRoutes from "./location/location.routes"
+// import influencerRoutes from "./influencer/influencer.routes"
+// import eventRoutes from "./event/event.routes"
+// import ratingRoutes from "./influencer/influencerRating.routes";
+// import invitationRoutes from "./event/invitation.routes";
+// import venueLocationRoutes  from "./venue/venueLocation.routes";
+// import venueAttachmentRoutes from "./venue/venueAttachment.routes";
+// import abilityRoutes from "./user/ability.routes";
+// import attachmentRoutes from "./mediaAttachment/attachement.routes";
+//
+// import participantRoutes from "./event/participant.routes";
+// import checklistRoutes from "./event/checklist.routes.js";
+// import badgeRoutes from "./badge/badge.routes.js";
+// import settingRoutes from "./setting/setting.routes.js";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -52,4 +54,7 @@ export default async function routes(fastify: FastifyInstance) {
     // fastify.register(attachmentRoutes, { prefix: "/attachments" });
     // fastify.register(participantRoutes, { prefix: "/event-participants" });
     // fastify.register(checklistRoutes, { prefix: "/event-checklist" });
+
+    // fastify.register(badgeRoutes, { prefix: "/badges" });
+    // fastify.register(settingRoutes, { prefix: "/settings" });
 }
