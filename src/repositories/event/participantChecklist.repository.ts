@@ -4,12 +4,12 @@ import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
 
-class LocationRepository {
+class participantChecklistRepository {
 
     private tables: any;
 
     constructor() {
-        this.tables = db.Location;
+        this.tables = db.EventParticipantChecklist;
     }
 
     async create(data: any, options?: any) {
@@ -53,21 +53,12 @@ class LocationRepository {
         );
     }
 
-    async deactivate(where: any, data: any) {
-        return dbHelper.update(
-            this.tables,
-            where,
-            data
-        )
-    }
-
-    async delete(where: any, options: any = {}) {
+    async delete(where: any) {
         return await dbHelper.delete(
             this.tables,
             where,
-            options
         );
     }
 }
 
-export default new LocationRepository();
+export default new participantChecklistRepository();

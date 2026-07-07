@@ -18,10 +18,17 @@ const InfluencerRating = require('./influencer_ratings');
 const Event = require('./event');
 const EventInvitation = require('./event_invitation');
 const EventParticipant = require('./event_participants');
+const EventCheckList = require('./event_checklist');
+const ChecklistAttachment = require('./checklist_attachment');
+const EventParticipantChecklist = require('./event_participant_checklist');
 
 const VenueLocation = require('./venue-location');
 const VenueAttachment = require('./venue_attachment');
 const Attachment = require('./attachment');
+
+const Badge = require('./badges');
+const SocialLogin = require('./social_logins');
+const Settings = require("./settings");
 
 
 
@@ -50,9 +57,14 @@ const initModels = () => {
         Event: Event.initModel(sequelize),
         EventInvitation: EventInvitation.initModel(sequelize),
         EventParticipant: EventParticipant.initModel(sequelize),
+        EventCheckList: EventCheckList.initModel(sequelize),
+        ChecklistAttachment: ChecklistAttachment.initModel(sequelize),
+        EventParticipantChecklist: EventParticipantChecklist.initModel(sequelize),
 
         Attachment: Attachment.initModel(sequelize),
-
+        Badge: Badge.initModel(sequelize),
+        SocialLogin: SocialLogin.initModel(sequelize),
+        Settings: Settings.initModel(sequelize),
     };
 
     Object.values(models).forEach((model) => {

@@ -1,21 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import orgService from "../../services/organization/organization.service";
-import {validateOrganization} from "../../utils/validator.js";
+import checklistService from "../../services/event/checklist.service";
+// import {validateevent} from "../../utils/validator.js";
 
-class organizationController {
+class checklistController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
             const data = req.body;
-            validateOrganization(data);
-            const result =  await orgService.create(
+            // validatechecklist(data);
+            const result =  await checklistService.create(
                 data,
                 req.user
             )
             return reply.status(200).send({
                 success: true,
-                message: "Organization created successfully",
+                message: "checklist created successfully",
                 data: result
             });
         }
@@ -33,13 +33,13 @@ class organizationController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
             // console.log(include)
             const data =
-                await orgService.getAll(
+                await checklistService.getAll(
                     {
                         ...req.query,
                         include
@@ -60,26 +60,26 @@ class organizationController {
         }
     }
 
-    // Get by organization code
-    async getByOrganizationCode(req: FastifyRequest, reply: FastifyReply) {
+    // Get by checklist code
+    async getByChecklistCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
-            const organizationCode = String(req.params.organizationCode)
-            const result = await orgService.getByOrganizationCode(
-                    organizationCode,
-                    {
-                        ...req.query,
-                        include
-                    },
-                    req.user,
-                );
+            const checklistCode = String(req.params.checklistCode)
+            const result = await checklistService.getByChecklistCode(
+                checklistCode,
+                {
+                    ...req.query,
+                    include
+                },
+                req.user,
+            );
 
             return reply.status(200).send({
                 success: true,
@@ -102,19 +102,19 @@ class organizationController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "users",
+                    alias: "creator",
                     attributes: [],
                 },
             ]
             const where = {...req.query};
-            const result = await orgService.getByField(
-                    where,
-                    {
-                        ...req.query,
-                        include
-                    },
-                    req.user,
-                );
+            const result = await checklistService.getByField(
+                where,
+                {
+                    ...req.query,
+                    include
+                },
+                req.user,
+            );
 
             return reply.status(200).send({
                 success: true,
@@ -131,23 +131,23 @@ class organizationController {
     }
 
 
-    //Update Organization
+    //Update checklist
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const organizationCode = String(req.params.organizationCode);
+            const checklistCode = String(req.params.checklistCode);
 
-            const data = await orgService.update(
-                organizationCode,
+            const data = await checklistService.update(
+                checklistCode,
                 req.body,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "Organization updated successfully",
+                message: "checklist updated successfully",
                 data,
             });
 
@@ -160,46 +160,20 @@ class organizationController {
         }
     }
 
-    async deactivate(req: FastifyRequest, reply: FastifyReply) {
-        try{
-            const organizationCode = String(req.params.organizationCode)
-            const data = req.body
-            // console.log(data)
-            await orgService.deactivate(
-                organizationCode,
-                data,
-                req.user
-            );
-
-            return reply.status(200).send({
-                success: true,
-                message: "Organization deactivated",
-                data,
-            });
-
-
-        }catch(err){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-
-    //  DELETE Organization
+    //  DELETE checklist
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const organizationCode = String(req.params.organizationCode)
+            const checklistCode = String(req.params.checklistCode)
 
-            await orgService.delete(
-                organizationCode,
+            await checklistService.delete(
+                checklistCode,
                 req.user
             );
 
             return reply.status(200).send({
                 success: true,
-                message: "Organization permanently deleted"
+                message: "checklist permanently deleted"
             });
 
         } catch (err: any) {
@@ -212,4 +186,4 @@ class organizationController {
     }
 }
 
-export default  new organizationController();
+export default  new checklistController();

@@ -21,6 +21,7 @@ import abilityRoutes from "./user/ability.routes";
 import attachmentRoutes from "./mediaAttachment/attachement.routes";
 
 import participantRoutes from "./event/participant.routes";
+import checklistRoutes from "./event/checklist.routes.js";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -50,4 +51,5 @@ export default async function routes(fastify: FastifyInstance) {
     //
     // fastify.register(attachmentRoutes, { prefix: "/attachments" });
     // fastify.register(participantRoutes, { prefix: "/event-participants" });
+    // fastify.register(checklistRoutes, { prefix: "/event-checklist" });
 }

@@ -1,5 +1,5 @@
 import initModels from "../../database/sequelize/models/index.cjs"
-import dbHelper from "../../dbHelper/dbHelper"
+import dbHelper from "../../database/dbHelper/dbHelper"
 import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels()
@@ -21,7 +21,6 @@ class RolePermissionRepository {
     }
 
     async findOne(where: any = {}, options: any = {}) {
-        // console.log(where)
         return dbHelper.findOne(
             this.tables,
             {

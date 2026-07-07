@@ -100,11 +100,11 @@ class EventChecklist extends Model {
   }
 
   static associate(models) {
-    // EventChecklist.belongsTo(models.Event, {
-    //     foreignKey: "event_code",
-    //     targetKey: "event_code",
-    //     as: "event",
-    // });
+    EventChecklist.belongsTo(models.Event, {
+        foreignKey: "event_code",
+        targetKey: "event_code",
+        as: "event",
+    });
   }
 }
 

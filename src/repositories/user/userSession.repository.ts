@@ -1,5 +1,5 @@
 import initModels from "../../database/sequelize/models/index.cjs";
-import dbHelper from "../../dbHelper/dbHelper.js";
+import dbHelper from "../../database/dbHelper/dbHelper.js";
 import { buildIncludes } from "../../utils/buildInclude.js";
 
 const db = initModels();

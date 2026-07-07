@@ -1,24 +1,24 @@
 import { FastifyInstance} from "fastify";
-import orgController from "../../controllers/organization/organization.controller";
-import {authenticate} from "../../middleware/authenticate.js";
-import {hasPermission} from "../../middleware/hasPermission.js";
+import checklistController from "../../controllers/event/checklist.controller";
+import {authenticate} from "../../middleware/authenticate";
+import {hasPermission} from "../../middleware/hasPermission";
 
 
-export default async function orgRoutes(fastify: FastifyInstance) {
+export default async function checklistRoutes(fastify: FastifyInstance) {
 
     // fastify.post(
-    //     "/create-organization",
+    //     "/create-checklist",
     //     {
     //         preHandler: [
     //             authenticate,
     //             hasPermission([{"code":"","name":""}],required:"any/all")
     //         ]
     //     },
-    //     orgController.create
+    //     checklistController.create
     // )
 
     fastify.post(
-        "/create-organization",
+        "/create-checklist",
         {
             preHandler: [
                 authenticate,
@@ -28,11 +28,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 })
             ]
         },
-        orgController.create
+        checklistController.create
     )
 
     fastify.get(
-        '/get-all-organizations',
+        '/get-all-checklists',
         {
             preHandler: [
                 authenticate,
@@ -42,11 +42,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.getAll
+        checklistController.getAll
     )
 
     fastify.get(
-        '/get-one-organization/:organizationCode',
+        '/get-one-checklist/:checklistCode',
         {
             preHandler: [
                 authenticate,
@@ -56,11 +56,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.getByOrganizationCode
+        checklistController.getByChecklistCode
     )
 
     fastify.get(
-        '/get-organization-by-field',
+        '/get-checklist-by-field',
         {
             preHandler: [
                 authenticate,
@@ -70,11 +70,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.getByField
+        checklistController.getByField
     )
 
     fastify.put(
-        "/update-organization/:organizationCode",
+        "/update-checklist/:checklistCode",
         {
             preHandler: [
                 authenticate,
@@ -84,11 +84,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.update
+        checklistController.update
     )
 
     fastify.patch(
-        "/deactivate-organization/:organizationCode",
+        "/deactivate-checklist/:checklistCode",
         {
             preHandler: [
                 authenticate,
@@ -98,11 +98,11 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.deactivate
+        checklistController.deactivate
     )
 
     fastify.delete(
-        "/delete-organization/:organizationCode",
+        "/delete-checklist/:checklistCode",
         {
             preHandler: [
                 authenticate,
@@ -112,6 +112,6 @@ export default async function orgRoutes(fastify: FastifyInstance) {
                 }),
             ]
         },
-        orgController.delete
+        checklistController.delete
     )
 }

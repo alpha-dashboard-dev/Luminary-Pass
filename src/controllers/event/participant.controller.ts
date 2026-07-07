@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import participantService from "../../services/event/participant.service";
-// import {validateparticipant} from "../../utils/validator.js";
 
 class participantController {
 

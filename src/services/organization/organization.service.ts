@@ -9,7 +9,7 @@ class OrganizationService {
     // CREATE Organization
 
     async create(data: any, actor: any) {
-        console.log(actor);
+        // console.log(actor);
 
         if (!actor) throw new Error("Unauthorized");
 
@@ -143,7 +143,7 @@ class OrganizationService {
 
     // Deactivate Organization
 
-    async deactivate(organizationCode: string, data: any, actor: any) {
+    async deactivate(organizationCode: string, data: any) {
 
         const organization = await orgRepo.findOne({
             organization_code: organizationCode
