@@ -2,8 +2,7 @@
 
 const bcrypt = require("bcrypt");
 
-module.exports = {
-    async up(queryInterface, Sequelize) {
+module.exports = { async up(queryInterface, Sequelize) {
         const now = new Date();
         const {Op} = Sequelize;
 

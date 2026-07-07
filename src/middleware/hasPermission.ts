@@ -14,7 +14,6 @@ export function hasPermission(permissionCodes: string[], mode: Boolean) {
                     message: "Role not found",
                 });
             }
-            console.log(roleCode, permissionCodes, mode)
 
             const rolePermissions = await rolePermissionRepo.findAll({
                 where: {
@@ -32,7 +31,6 @@ export function hasPermission(permissionCodes: string[], mode: Boolean) {
                 }
             );
 
-            console.log(rolePermissions.length);
             // all permission
             if (mode) {
                 if (rolePermissions.length !== permissionCodes.length) {
