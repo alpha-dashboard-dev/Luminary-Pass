@@ -6,6 +6,7 @@ export function hasPermission(permissionCodes: string[], mode: Boolean) {
     return async (req: FastifyRequest, reply: FastifyReply) => {
         try {
 
+            //  also return missing permissions, and tell that you have not these permissions and you have these permissions
             const roleCode = (req as any).user?.roleCode;
 
             if (!roleCode) {
