@@ -17,6 +17,11 @@ module.exports = {
         unique: true,
       },
 
+      venue_code: {
+        type: Sequelize.STRING(8),
+        allowNull: false,
+      },
+
       attachment_type: {
         type: Sequelize.ENUM("image", "video", "link"),
         allowNull: false,
