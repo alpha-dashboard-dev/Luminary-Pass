@@ -7,9 +7,10 @@ const VALID_STATUSES = ["active", "inactive"];
 
 const VALID_ATTACHMENT_TYPES = ["image", "video", "link"];
 const VALID_ATTACHMENT_PLATFORM_CATEGORY = ["instagram", "facebook", "twitter", "youtube", "website", "tiktok"];
-const VALID_ATTACHMENT_VISIBILITY = ["public", "private"]
+const VALID_VISIBILITY = ["public", "private"]
 const VALID_ATTACHMENT_PRIMARY = ["yes", "no"]
 const VALID_ATTACHMENT_STATUSES = ["active", "deleted"]
+const VALID_CATEGORY_ENTITY_TYPES = ["venue", "influencer"];
 
 
 
@@ -132,8 +133,22 @@ export const validateUser = (data: any) => {
     if (status !== undefined && !VALID_STATUSES.includes(status)) {
         throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
     }
+}
 
+// Validation for Influencer
 
+export const validateInfluencer = (data: any) => {
+    const { userCode, gender, dateOfBirth } = data
+
+    if(userCode && !isValidCode(userCode)) {
+        throw new Error("Valid 8-character userCode is required");
+    }
+
+    const VALID_INFLUENCER_GENDER = ["male", "female", "other"];
+
+    if(gender && !VALID_INFLUENCER_GENDER.includes(gender)) {
+        throw new Error("Invalid gender. Must be one of: " + VALID_INFLUENCER_GENDER.join(", "));
+    }
 }
 
 
@@ -223,11 +238,116 @@ export const validateVenueAttachment = (data: any) => {
         throw new Error("Invalid attachment primary value. Must be one of: " + VALID_ATTACHMENT_PRIMARY.join(", ") );
     }
 
-    if(!visibility || !VALID_ATTACHMENT_VISIBILITY.includes(visibility)) {
-        throw new Error("Invalid attachment visibility. Must be one of: " + VALID_ATTACHMENT_VISIBILITY.join(", ") );
+    if(!visibility || !VALID_VISIBILITY.includes(visibility)) {
+        throw new Error("Invalid attachment visibility. Must be one of: " + VALID_VISIBILITY.join(", ") );
     }
 
     if(!status || !VALID_ATTACHMENT_STATUSES.includes(status)) {
         throw new Error("Invalid attachment status. Must be one of: " + VALID_ATTACHMENT_STATUSES.join(", "));
     }
+}
+
+export const validateCategory = (data: any) => {
+    const { entityType, entityCode, name, status } = data;
+
+    if(!entityType || !VALID_CATEGORY_ENTITY_TYPES.includes(entityType)) {
+        throw new Error("Invalid Entity Type. Must be one of: " + VALID_CATEGORY_ENTITY_TYPES.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+
+    if (!name || name.trim().length < 2) {
+        throw new Error("Category name must be at least 2 characters long");
+    }
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
+    }
+}
+
+
+// Validation for Event
+export const validateEvent = (data: any) => {
+    const { businessCode, venueCode, visibility, status } = data;
+
+    const VALID_EVENT_STATUSES = ["draft", "published", "closed", "live", "completed", "cancelled"];
+
+    if(businessCode && !isValidCode(businessCode)) {
+        throw new Error("Valid 8-character businessCode is required");
+    }
+
+    if(!venueCode || !isValidCode(venueCode)) {
+        throw new Error("Valid 8-character venueCode is required");
+    }
+
+    if(!visibility || !VALID_VISIBILITY.includes(visibility)) {
+        throw new Error("Invalid attachment visibility. Must be one of: " + VALID_VISIBILITY.join(", ") );
+    }
+
+    if(!status || !VALID_EVENT_STATUSES.includes(status)) {
+        throw new Error("Invalid Event status. Must be one of: " + VALID_EVENT_STATUSES.join(", "));
+    }
+}
+
+// Validation for Influencer Rating
+export const validateInfluencerRating = (data: any) => {
+    const { influencerCode, eventCode, ratedBy, ratingSource, ratingType, rating } = data
+
+    const VALID_RATING_SOURCE = ["event", "social"]
+    const VALID_RATING_TYPE = ["attendance", "content_quality", "engagement", "professionalism", "communication", "overall"]
+
+    if(!influencerCode || !isValidCode(influencerCode)) {
+        throw new Error("Valid 8-character influencerCode is required")
+    }
+
+    if(!eventCode || !isValidCode(eventCode)) {
+        throw new Error("Valid 8-character eventCode is required")
+    }
+
+    if(!ratedBy || !isValidCode(ratedBy)) {
+        throw new Error("Valid 8-character userCode is required, to confirm who rated the influencer")
+    }
+
+    if(!ratingSource || !VALID_RATING_SOURCE.includes(ratingSource)) {
+        throw new Error("Invalid Rating Source. Must be one of: " + VALID_RATING_SOURCE.join(", "));
+    }
+
+    if(!ratingType || !VALID_RATING_TYPE.includes(ratingType)) {
+        throw new Error("Invalid Rating Type. Must be one of: " + VALID_RATING_TYPE.join(", "));
+    }
+}
+
+export const validateEventInvitation = (data: any) => {
+
+    const { eventCode, entityType, entityCode, influencerCode, invitedBy, status } = data
+
+    const VALID_INVITATION_ENTITY_TYPE = ["influencer", "business", "customer"]
+    const VALID_INVITATION_STATUSES = ["pending", "accepted", "declined", "expired"]
+
+    if(!eventCode || !isValidCode(eventCode)) {
+        throw new Error("Valid 8-character eventCode is required")
+    }
+
+    if(!entityType || !VALID_INVITATION_ENTITY_TYPE.includes(entityType)) {
+        throw new Error("Invalid Entity Type. Must be one of: " + VALID_INVITATION_ENTITY_TYPE.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+
+    if(!influencerCode || !isValidCode(influencerCode)) {
+        throw new Error("Valid 8-character influencerCode is required")
+    }
+
+    if(!invitedBy || !isValidCode(invitedBy)) {
+        throw new Error("Valid 8-character userCode is required, who invite the influencer")
+    }
+
+    if(!status || !VALID_INVITATION_STATUSES.includes(status)) {
+        throw new Error("Invalid Event status. Must be one of: " + VALID_INVITATION_STATUSES.join(", "));
+    }
+
 }
