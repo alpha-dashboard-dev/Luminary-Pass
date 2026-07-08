@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import userService from "../../services/user/user.service";
-// import {validateUser} from "../../utils/validator.js";
+import {validateUser} from "../../utils/validator.js";
 
 class UserController {
 
@@ -8,8 +8,8 @@ class UserController {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateUser(data);
+            // console.log(data);
+            validateUser(data);
             const result =  await userService.create(
                 data,
                 req.user
@@ -189,7 +189,7 @@ class UserController {
         try{
             const userCode = String(req.params.userCode)
             const data = req.body
-            console.log(data)
+            // console.log(data)
             await userService.deactivate(
                 userCode,
                 data,

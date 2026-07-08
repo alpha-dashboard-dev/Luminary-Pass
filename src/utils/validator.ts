@@ -91,6 +91,52 @@ export const validateBusiness = (data: any) => {
     }
 };
 
+// Validation for User
+
+export const validateUser = (data: any) => {
+    const { organizationCode, businessCode, roleCode, firstName, lastName, email, phone, password, status } = data;
+
+    if(organizationCode && !isValidCode(organizationCode)) {
+        throw new Error("Valid 8-character organizationCode is required");
+    }
+
+    if(businessCode && !isValidCode(businessCode)) {
+        throw new Error("Valid 8-character businessCode is required");
+    }
+
+    if(!roleCode || !isValidCode(roleCode)) {
+        throw new Error("Valid 8-character roleCode is required");
+    }
+
+    if (!firstName || firstName.trim().length < 2) {
+        throw new Error("First name must be at least 2 characters long");
+    }
+
+    if (!lastName || lastName.trim().length < 2) {
+        throw new Error("Last name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address!");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+
+    if (!password || password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
+
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
+    }
+
+
+}
+
+
 export const validateVenue = (data: any, isUpdate: boolean = false) => {
     const { businessCode, name, email, phone, status } = data;
 

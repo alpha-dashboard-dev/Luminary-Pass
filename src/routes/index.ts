@@ -16,7 +16,7 @@ import venueAttachmentRoutes from "./venue/venueAttachment.routes";
 
 // import categoryRoutes from "./category/category.routes"
 // import locationRoutes from "./location/location.routes"
-// import influencerRoutes from "./influencer/influencer.routes"
+import influencerRoutes from "./influencer/influencer.routes"
 // import eventRoutes from "./event/event.routes"
 // import ratingRoutes from "./influencer/influencerRating.routes";
 // import invitationRoutes from "./event/invitation.routes";

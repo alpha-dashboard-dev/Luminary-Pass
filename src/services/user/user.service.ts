@@ -3,15 +3,25 @@ import userRepo from "../../repositories/user/user.repository";
 import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import roleRepo from "../../repositories/user/userRole.repository.js";
 
 class UserService {
 
     // Create Users
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+
+        const userRole = await roleRepo.findOne({
+            role_code: data.roleCode,
+        })
+
+        if(!userRole){
+            throw new Error("Role does not exist")
+        }
+
+        // console.log(userRole.role)
+
 
         const emailExists = await userRepo.findOne(
             {
@@ -23,21 +33,20 @@ class UserService {
             throw new Error("Email already exists");
         }
 
-        // const phoneExists = await userRepo.findOne({
-        //     phone: data.phone
-        // })
-        //
-        // if (phoneExists) {
-        //     throw new Error("Phone already exists");
-        // }
+        const phoneExists = await userRepo.findOne({
+            phone: data.phone
+        })
+
+        if (phoneExists) {
+            throw new Error("Phone already exists");
+        }
 
         const userCode = generateCode();
         let password
+
         if(data.password){
              password = await hashPassword(data.password);
         }
-
-
 
         return await userRepo.create({
             user_code: userCode,
@@ -49,7 +58,7 @@ class UserService {
             email: data.email.trim().toLowerCase(),
             phone: data.phone || null,
             password: password || null,
-            user_type: data.userType,
+            user_type: data.userType || null ,
             avatar: null,
             status: data.status
         });
@@ -102,7 +111,7 @@ class UserService {
 
     // Get User By Any Field
     async getByField(where: any, query: any = {}, actor: any) {
-        console.log(where);
+        // console.log(where);
         const user = await userRepo.findOne(
             where,
             {
