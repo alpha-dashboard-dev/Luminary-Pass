@@ -1,12 +1,21 @@
 import venueLocationRepo from "../../repositories/venue/venueLocation.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import venueRepo from "../../repositories/venue/venue.repository.js";
 
 class venueLocationService {
 
     // Create location
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+        const venueExists = await venueRepo.findOne({
+            venue_code: data.venueCode
+        })
+
+        if(!venueExists) {
+            throw new Error("Venue does not exist");
+        }
 
         const locationCode = generateCode();
 

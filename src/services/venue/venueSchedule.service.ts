@@ -31,13 +31,9 @@ class VenueScheduleService {
 
     // Get all Venue Schedule
 
-    async getAll(query: any = {}, actor: any) {
+    async getAll(query: any = {}) {
         // console.log(query.where)
         const where = buildWhere(query);
-
-        // if(!actor){
-        //     throw new Error("Unauthorized Access");
-        // }
 
         return venueScheduleRepo.findAll({
             where,
@@ -56,7 +52,7 @@ class VenueScheduleService {
     }
 
     // Get schedule By schedule code
-    async getByScheduleCode(scheduleCode: string, query: any = {}, actor: any) {
+    async getByScheduleCode(scheduleCode: string, query: any = {}) {
 
         const schedule = await venueScheduleRepo.findOne(
             {
@@ -101,6 +97,8 @@ class VenueScheduleService {
         if (!schedule) throw new Error("venue not found");
 
         const allowed: any = {};
+        if(data.workingDay !== undefined)
+            allowed.working_day = data.workingDay
         if (data.startTime !== undefined)
             allowed.start_time = data.startTime;
         if (data.endTime !== undefined)

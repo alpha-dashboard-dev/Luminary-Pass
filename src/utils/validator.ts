@@ -134,3 +134,14 @@ export const validateVenueSchedule = (data: any) => {
         throw new Error("Invalid status. Must be one of: " + VALID_SCHEDULE_STATUSES.join(", "));
     }
 }
+
+export const validateVenueLocation = (data: any) => {
+    const { venueCode, status } = data;
+    if(!venueCode || !isValidCode(venueCode)) {
+        throw new Error("Valid 8-character venueCode is required");
+    }
+
+    if (status !== undefined && !VALID_SCHEDULE_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_SCHEDULE_STATUSES.join(", "));
+    }
+}

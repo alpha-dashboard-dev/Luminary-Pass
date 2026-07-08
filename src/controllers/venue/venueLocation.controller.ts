@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueLocationService from "../../services/venue/venueLocation.service"
-// import {validatevenue} from "../../utils/validator.js";
+import {validateVenueLocation} from "../../utils/validator.js";
 
 class VenueLocationController {
 
@@ -8,7 +8,7 @@ class VenueLocationController {
 
         try{
             const data = req.body;
-            // validatevenue(data);
+            validateVenueLocation(data);
             const result =  await venueLocationService.create(
                 data,
                 req.user
@@ -147,7 +147,7 @@ class VenueLocationController {
 
             return reply.status(200).send({
                 success: true,
-                message: "venue updated successfully",
+                message: "venue Location updated successfully",
                 data,
             });
 
@@ -173,7 +173,7 @@ class VenueLocationController {
 
             return reply.status(200).send({
                 success: true,
-                message: "venue deactivated",
+                message: "venue location deactivated",
                 data,
             });
 
@@ -199,7 +199,7 @@ class VenueLocationController {
 
             return reply.status(200).send({
                 success: true,
-                message: "venue permanently deleted"
+                message: "venue location permanently deleted"
             });
 
         } catch (err: any) {

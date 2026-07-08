@@ -478,6 +478,38 @@ module.exports = { async up(queryInterface, Sequelize) {
                 updated_at: now,
             },
 
+        //     Venue Location
+
+            {
+                permission_code: "PER00065",
+                module: "venueLocation",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00066",
+                module: "venueLocation",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00067",
+                module: "venueLocation",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00068",
+                module: "venueLocation",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
+
+
         ]);
     },
 

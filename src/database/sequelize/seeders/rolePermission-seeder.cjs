@@ -473,6 +473,34 @@ module.exports = { async up(queryInterface, Sequelize) {
                 permission_code: "PER00064",
                 created_at: now,
             },
+        //     Venue Location
+            {
+                role_permission_code: "RP000065",
+                role_code: "ROL00001",
+                permission_code: "PER00065",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000066",
+                role_code: "ROL00001",
+                permission_code: "PER00066",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000067",
+                role_code: "ROL00001",
+                permission_code: "PER00067",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000068",
+                role_code: "ROL00001",
+                permission_code: "PER00068",
+                created_at: now,
+            },
 
         ]);
     },
