@@ -1,15 +1,22 @@
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 import { generateCode } from "../../utils/generateCode.js";
 import {buildWhere} from "../../utils/buildWhere.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class InfluencerService {
 
     // Create Influencer
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+
+        const user = await userRepo.findOne({
+            user_code: data.userCode,
+        })
+
+        if(!user){
+            throw new Error("Influencer does not exist");
+        }
 
         const influencer = await influencerRepo.findOne(
             {
@@ -20,7 +27,6 @@ class InfluencerService {
         if (influencer) {
             throw new Error("Influencer already exists");
         }
-
 
         const influencerCode = generateCode();
 
@@ -125,25 +131,6 @@ class InfluencerService {
             influencer_code: influencerCode
         });
     }
-
-    // Deactivate influencer
-
-    // async deactivate(influencerCode: string, data: any, actor: any) {
-    //
-    //     const influencer = await influencerRepo.findOne({
-    //         influencer_code: influencerCode
-    //     });
-    //
-    //     if (!influencer) {
-    //         throw new Error("influencer not found");
-    //     }
-    //
-    //     return await influencerRepo.deactivate({
-    //             influencer_code: influencerCode
-    //         },
-    //         data
-    //     );
-    // }
 }
 
 export default new InfluencerService();

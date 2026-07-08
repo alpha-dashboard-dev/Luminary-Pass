@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import invitationService from "../../services/event/invitation.service";
+import {validateEventInvitation} from "../../utils/validator.js";
 
 class invitationController {
 
@@ -7,7 +8,7 @@ class invitationController {
 
         try{
             const data = req.body;
-            // validateinvitation(data);
+            validateEventInvitation(data);
             const result =  await invitationService.create(
                 data,
                 req.user
@@ -39,10 +40,10 @@ class invitationController {
                     alias: "influencerInvitation",
                     attributes: [],
                 },
-                // {
-                //     alias: "inviter",
-                //     attributes: [],
-                // }
+                {
+                    alias: "inviter",
+                    attributes: [],
+                }
             ]
             // console.log(include)
             const data =

@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import ratingService from "../../services/influencer/influencerRating.service";
+import {validateInfluencerRating} from "../../utils/validator.js";
 
 class ratingController {
 
@@ -7,7 +8,7 @@ class ratingController {
 
         try{
             const data = req.body;
-            // validaterating(data);
+            validateInfluencerRating(data);
             const result =  await ratingService.create(
                 data,
                 req.user

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import categoryService from "../../services/category/category.service";
-// import {validatecategory} from "../../utils/validator.js";
+import {validateCategory} from "../../utils/validator.js";
 
 class categoryController {
 
@@ -8,7 +8,7 @@ class categoryController {
 
         try{
             const data = req.body;
-            // validatecategory(data);
+            validateCategory(data)
             const result =  await categoryService.create(
                 data,
                 req.user
@@ -163,7 +163,6 @@ class categoryController {
         try{
             const categoryCode = String(req.params.categoryCode)
             const data = req.body
-            console.log(data)
             await categoryService.deactivate(
                 categoryCode,
                 data,

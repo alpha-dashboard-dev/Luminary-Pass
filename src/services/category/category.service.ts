@@ -1,14 +1,36 @@
 import categoryRepo from "../../repositories/category/category.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import venueRepo from "../../repositories/venue/venue.repository.js";
+import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 
 class CategoryService {
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+        // console.log(data.entityType)
 
+        switch (data.entityType) {
+            case "venue":
+                const venue = await venueRepo.findOne({
+                    venue_code: data.entityCode,
+                });
+
+                if(!venue){
+                    throw new Error("Venue doesn't exist");
+                }
+                break;
+
+            case "influencer":
+
+                const influencer = await influencerRepo.findOne({
+                    influencer_code: data.entityCode,
+                })
+                if (!influencer){
+                    throw new Error("Influencer doesn't exist");
+                }
+                break;
+        }
 
         const categoryCode = generateCode();
 

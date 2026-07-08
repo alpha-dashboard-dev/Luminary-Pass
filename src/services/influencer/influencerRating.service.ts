@@ -1,15 +1,39 @@
 import ratingRepo from "../../repositories/influencer/influencerRating.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere";
+import influencerRepo from "../../repositories/influencer/influencer.repository";
+import eventRepo from "../../repositories/event/event.repository";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class influencerRatingService {
 
     // Create rating
 
     async create(data: any) {
-        // console.log(actor);
 
-        // if (!actor) throw new Error("Unauthorized");
+        const influencer = await influencerRepo.findOne({
+            influencer_code: data.influencerCode,
+        })
+
+        if(!influencer) {
+            throw new Error("Influencer doesn't exist");
+        }
+
+        const event = await eventRepo.findOne({
+            event_code: data.eventCode
+        })
+
+        if(!event) {
+            throw new Error("Event doesn't exist");
+        }
+
+        const user = await userRepo.findOne({
+            user_code: data.ratedBy
+        })
+
+        if(!user) {
+            throw new Error("User doesn't exist. Who give the rating to influencer");
+        }
 
         const ratingCode = generateCode();
 

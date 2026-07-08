@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import eventService from "../../services/event/event.service";
-// import {validateevent} from "../../utils/validator.js";
+import {validateEvent} from "../../utils/validator.js";
 
 class eventController {
 
@@ -8,7 +8,7 @@ class eventController {
 
         try{
             const data = req.body;
-            // validateevent(data);
+            validateEvent(data)
             const result =  await eventService.create(
                 data,
                 req.user

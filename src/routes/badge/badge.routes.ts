@@ -11,10 +11,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D"],
-                    required: "any"
-                })
+                hasPermission(
+                    [],
+                    true
+                )
             ]
         },
         badgeController.create

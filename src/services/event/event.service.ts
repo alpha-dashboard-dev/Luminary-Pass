@@ -2,15 +2,39 @@ import eventRepo from "../../repositories/event/event.repository";
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import businessRepo from "../../repositories/busines/business.repository.js";
+import venueRepo from "../../repositories/venue/venue.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class EventService {
 
     // CREATE event
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+        const business = await businessRepo.findOne({
+            business_code: data.businessCode,
+        })
 
+        if(!business) {
+            throw new Error("Business does not exist")
+        }
+
+        const venue = await venueRepo.findOne({
+            venue_code: data.venueCode
+        })
+
+        if(!venue) {
+            throw new Error("Venue does not exist")
+        }
+
+        const creator = await userRepo.findOne({
+            user_code: data.createdBy
+        })
+
+        if(!creator) {
+            throw new Error("Creator does not exist")
+        }
 
         const eventCode = generateCode();
 
@@ -36,13 +60,9 @@ class EventService {
 
     // Get all events
 
-    async getAll(query: any = {}, actor: any) {
+    async getAll(query: any = {}) {
         // console.log(query.where)
         const where = buildWhere(query);
-
-        if(!actor){
-            throw new Error("Unauthorized Access");
-        }
 
         return eventRepo.findAll({
             where,
@@ -61,7 +81,7 @@ class EventService {
     }
 
     // Get event By event Code
-    async getByEventCode(eventCode: string, query: any = {}, actor: any) {
+    async getByEventCode(eventCode: string, query: any = {}) {
 
         const event = await eventRepo.findOne(
             {
@@ -80,7 +100,7 @@ class EventService {
     }
 
     // Get event By Any Field
-    async getByField(where: any, query: any = {}, actor: any) {
+    async getByField(where: any, query: any = {}) {
         console.log(where);
         const event = await eventRepo.findOne(
             where,

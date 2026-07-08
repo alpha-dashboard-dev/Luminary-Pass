@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import influencerService from "../../services/influencer/influencer.service";
-// import {validateinfluencer} from "../../utils/validator.js";
+import {validateInfluencer} from "../../utils/validator.js";
+
 
 class InfluencerController {
 
@@ -8,7 +9,7 @@ class InfluencerController {
 
         try{
             const data = req.body;
-            // validateinfluencer(data);
+            validateInfluencer(data)
             const result =  await influencerService.create(
                 data,
                 req.user
@@ -156,32 +157,6 @@ class InfluencerController {
             return reply.status(400).send({
                 success: false,
                 message: err.message,
-            });
-        }
-    }
-
-    async deactivate(req: FastifyRequest, reply: FastifyReply) {
-        try{
-            const influencerCode = String(req.params.influencerCode)
-            const data = req.body
-            console.log(data)
-            await influencerService.deactivate(
-                influencerCode,
-                data,
-                req.user
-            );
-
-            return reply.status(200).send({
-                success: true,
-                message: "influencer deactivated",
-                data,
-            });
-
-
-        }catch(err){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
             });
         }
     }
