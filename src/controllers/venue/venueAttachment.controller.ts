@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import attachmentService from "../../services/venue/venueAttachment.service.js";
+import {validateVenueAttachment} from "../../utils/validator.js";
 
 class attachmentController {
 
@@ -7,7 +8,7 @@ class attachmentController {
 
         try{
             const data = req.body;
-            // validateattachment(data);
+            validateVenueAttachment(data);
             const result =  await attachmentService.create(
                 data,
                 req.user

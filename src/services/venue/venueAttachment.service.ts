@@ -1,12 +1,31 @@
 import attachmentRepo from "../../repositories/venue/venueAttachment.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import venueRepo from "../../repositories/venue/venue.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class attachmentService {
 
     // Create attachment
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+        const venueExists = await venueRepo.findOne({
+            venue_code: data.venueCode
+        })
+
+        if(!venueExists) {
+            throw new Error("Venue does not exist");
+        }
+
+        const userExists = await userRepo.findOne({
+            user_code: data.uploadedBy
+        })
+
+        if(!userExists) {
+            throw new Error("User does not exist");
+        }
+
 
         const attachmentCode = generateCode();
 

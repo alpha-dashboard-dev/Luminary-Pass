@@ -5,6 +5,14 @@ function isValidCode(code: string): boolean {
 
 const VALID_STATUSES = ["active", "inactive"];
 
+const VALID_ATTACHMENT_TYPES = ["image", "video", "link"];
+const VALID_ATTACHMENT_PLATFORM_CATEGORY = ["instagram", "facebook", "twitter", "youtube", "website", "tiktok"];
+const VALID_ATTACHMENT_VISIBILITY = ["public", "private"]
+const VALID_ATTACHMENT_PRIMARY = ["yes", "no"]
+const VALID_ATTACHMENT_STATUSES = ["active", "deleted"]
+
+
+
 
 const VALID_WORKING_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 const VALID_SCHEDULE_STATUSES = [true, false];
@@ -137,11 +145,43 @@ export const validateVenueSchedule = (data: any) => {
 
 export const validateVenueLocation = (data: any) => {
     const { venueCode, status } = data;
+
     if(!venueCode || !isValidCode(venueCode)) {
         throw new Error("Valid 8-character venueCode is required");
     }
 
     if (status !== undefined && !VALID_SCHEDULE_STATUSES.includes(status)) {
         throw new Error("Invalid status. Must be one of: " + VALID_SCHEDULE_STATUSES.join(", "));
+    }
+}
+
+
+// Validation for Venue Attachment
+export const validateVenueAttachment = (data: any) => {
+
+    const { venueCode, attachmentType, attachmentPlatformCategory, isPrimary, visibility, status } = data;
+
+    if(!venueCode || !isValidCode(venueCode)) {
+        throw new Error("Valid 8-character venueCode is required");
+    }
+
+    if(!attachmentType || !VALID_ATTACHMENT_TYPES.includes(attachmentType)) {
+        throw new Error("Invalid attachment type. must be one of: " + VALID_ATTACHMENT_TYPES.join(", "));
+    }
+
+    if(!attachmentPlatformCategory || !VALID_ATTACHMENT_PLATFORM_CATEGORY.includes(attachmentPlatformCategory)) {
+        throw new Error("Invalid Platform. Must be one of: " + VALID_ATTACHMENT_PLATFORM_CATEGORY.join(", "));
+    }
+
+    if(!isPrimary || !VALID_ATTACHMENT_PRIMARY.includes(isPrimary)) {
+        throw new Error("Invalid attachment primary value. Must be one of: " + VALID_ATTACHMENT_PRIMARY.join(", ") );
+    }
+
+    if(!visibility || !VALID_ATTACHMENT_VISIBILITY.includes(visibility)) {
+        throw new Error("Invalid attachment visibility. Must be one of: " + VALID_ATTACHMENT_VISIBILITY.join(", ") );
+    }
+
+    if(!status || !VALID_ATTACHMENT_STATUSES.includes(status)) {
+        throw new Error("Invalid attachment status. Must be one of: " + VALID_ATTACHMENT_STATUSES.join(", "));
     }
 }
