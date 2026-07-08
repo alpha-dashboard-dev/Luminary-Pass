@@ -24,7 +24,7 @@ class BusinessService {
             // console.log(organization)
 
             if(!organization) {
-                throw new Error("Organization not found");
+                throw new Error("Organization Not Found!");
             }
 
             const emailExists = await businessRepo.findOne(
@@ -49,8 +49,6 @@ class BusinessService {
 
             const ownerCode = generateCode();
 
-            const defaultPassword = await hashPassword(businessCode);
-
             const business = await businessRepo.create(
                 {
                     business_code: businessCode,
@@ -65,9 +63,9 @@ class BusinessService {
 
                     timezone: data.timezone || null,
 
-                    description: data.description,
+                    description: data.description || null,
 
-                    status: data.status || "active",
+                    status: data.status,
                 },
                 { transaction }
             );
@@ -80,26 +78,26 @@ class BusinessService {
 
                     business_code: businessCode,
                     role_code: data.roleCode,
-                    first_name: data.first_name || null,
-                    last_name: data.last_name || null,
-                    email:  null,
-                    phone: null,
-                    password: null,
-                    user_type: null,
+                    // first_name: data.first_name || null,
+                    // last_name: data.last_name || null,
+                    // email:  null,
+                    // phone: null,
+                    // password: null,
+                    // user_type: null,
                     status: "inactive",
                 },
                 { transaction }
             );
 
-            await businessRepo.update(
-                {
-                    business_code: businessCode
-                },
-                {
-                    owner_user_code: ownerCode,
-                },
-                { transaction }
-            );
+            // await businessRepo.update(
+            //     {
+            //         business_code: businessCode
+            //     },
+            //     {
+            //         owner_user_code: ownerCode,
+            //     },
+            //     { transaction }
+            // );
 
             await transaction.commit();
 
@@ -250,7 +248,7 @@ class BusinessService {
                 owner_user_code: business.owner_user_code
             }, { transaction });
 
-            console.log(businessCount);
+            // console.log(businessCount);
 
 
             await businessRepo.delete(

@@ -3,11 +3,13 @@ function isValidCode(code: string): boolean {
     return typeof code === "string" && CODE_REGEX.test(code);
 }
 
+const VALID_STATUSES = ["active", "inactive"];
+
+
 const VALID_WORKING_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+const VALID_SCHEDULE_STATUSES = [true, false];
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
-
-const VALID_STATUSES = ["active", "inactive"];
 
 function validatePhone(phone) {
     if (!phone) {
@@ -58,9 +60,7 @@ export const validateOrganization = (data: any) => {
 
 
 export const validateBusiness = (data: any) => {
-    const { organizationCode, name, email, phone, password, status } = data;
-
-    console.log(organizationCode)
+    const { organizationCode, name, email, phone, status } = data;
 
     if(!organizationCode || !isValidCode(organizationCode)) {
         throw new Error("Valid 8-character organizationCode is required");
@@ -74,10 +74,8 @@ export const validateBusiness = (data: any) => {
         throw new Error("Invalid email address!");
     }
 
-    validatePhone(phone)
-
-    if (!password || password.length < 6) {
-        throw new Error("Password must be at least 6 characters long");
+    if(phone){
+        validatePhone(phone)
     }
 
     if (status !== undefined && !VALID_STATUSES.includes(status)) {
@@ -85,8 +83,41 @@ export const validateBusiness = (data: any) => {
     }
 };
 
+export const validateVenue = (data: any, isUpdate: boolean = false) => {
+    const { businessCode, name, email, phone, status } = data;
+
+    if (!isUpdate || businessCode !== undefined) {
+        if (!businessCode || !isValidCode(businessCode)) {
+            throw new Error("Valid 8-character businessCode is required");
+        }
+    }
+    if (!isUpdate || name !== undefined) {
+        if (!name || name.trim().length < 2) {
+            throw new Error("Venue name must be at least 2 characters long");
+        }
+    }
+    if (!isUpdate || email !== undefined) {
+        if (!email || !isValidEmail(email)) {
+            throw new Error("Invalid email address!");
+        }
+    }
+
+    if (phone) {
+        validatePhone(phone);
+    }
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
+    }
+};
+
+
 export const validateVenueSchedule = (data: any) => {
-    const { workingDay, startTime, endTime } = data;
+    const { venueCode ,workingDay, startTime, endTime, status } = data;
+
+    if(!venueCode || !isValidCode(venueCode)) {
+        throw new Error("Valid 8-character venueCode is required");
+    }
 
     if (!workingDay || !VALID_WORKING_DAYS.includes(workingDay)) {
         throw new Error("Invalid workingDays. Must be one of: " + VALID_WORKING_DAYS.join(", "));
@@ -98,5 +129,8 @@ export const validateVenueSchedule = (data: any) => {
 
     if (!endTime || !TIME_REGEX.test(endTime)) {
         throw new Error("Invalid endTime format. Use HH:MM (e.g. 17:00)");
+    }
+    if (status !== undefined && !VALID_SCHEDULE_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_SCHEDULE_STATUSES.join(", "));
     }
 }

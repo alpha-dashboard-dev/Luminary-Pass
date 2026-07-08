@@ -8,8 +8,8 @@ import rolePermissionRoutes from "./user/rolePermission.routes"
 import abilityRoutes from "./user/ability.routes";
 import organizationRoleRoutes from "./organization/organization.routes"
 import businessRoutes from "./business/business.routes"
-// import venueRoutes from "./venue/venue.routes"
-// import venueScheduleRoutes from "./venue/venueSchedule.routes";
+import venueRoutes from "./venue/venue.routes"
+import venueScheduleRoutes from "./venue/venueSchedule.routes";
 // import categoryRoutes from "./category/category.routes"
 // import locationRoutes from "./location/location.routes"
 // import influencerRoutes from "./influencer/influencer.routes"
@@ -37,8 +37,8 @@ export default async function routes(fastify: FastifyInstance) {
 
     fastify.register(organizationRoleRoutes, { prefix: "/organizations" });
     fastify.register(businessRoutes, { prefix: "/businesses" });
-    // fastify.register(venueRoutes, { prefix: "/venues" });
-    // fastify.register(venueScheduleRoutes, { prefix: "/venue-schedules" });
+    fastify.register(venueRoutes, { prefix: "/venues" });
+    fastify.register(venueScheduleRoutes, { prefix: "/venue-schedules" });
     // fastify.register(venueLocationRoutes, { prefix: "/venue-locations" });
     // fastify.register(venueAttachmentRoutes, { prefix: "/venue-attachments" });
     //

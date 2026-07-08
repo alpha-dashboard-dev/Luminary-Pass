@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueService from "../../services/venue/venue.service";
-// import {validatevenue} from "../../utils/validator.js";
+import {validateVenue} from "../../utils/validator.js";
 
 class VenueController {
 
@@ -8,7 +8,7 @@ class VenueController {
 
         try{
             const data = req.body;
-            // validatevenue(data);
+            validateVenue(data);
             const result =  await venueService.create(
                 data,
                 req.user
@@ -138,8 +138,10 @@ class VenueController {
         try {
 
             const venueCode = String(req.params.venueCode);
+            const data = req.body;
+            validateVenue(data, true);
 
-            const data = await venueService.update(
+            const result = await venueService.update(
                 venueCode,
                 req.body,
                 req.user
@@ -148,7 +150,7 @@ class VenueController {
             return reply.status(200).send({
                 success: true,
                 message: "venue updated successfully",
-                data,
+                result,
             });
 
         } catch (err: any) {
@@ -164,7 +166,8 @@ class VenueController {
         try{
             const venueCode = String(req.params.venueCode)
             const data = req.body
-            console.log(data)
+            validateVenue(data, true);
+            // console.log(data)
             await venueService.deactivate(
                 venueCode,
                 data,

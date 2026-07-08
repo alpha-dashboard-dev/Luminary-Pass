@@ -1,12 +1,21 @@
 import venueRepo from "../../repositories/venue/venue.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import businessRepo from "../../repositories/busines/business.repository";
 
 class VenueService {
 
     // Create Venue
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+        const businessExists = await businessRepo.findOne({
+            business_code: data.businessCode
+        })
+
+        if (!businessExists) {
+            throw new Error("Business does not exist");
+        }
 
         const emailExists = await venueRepo.findOne(
             {
@@ -102,13 +111,15 @@ class VenueService {
     }
 
     // Update venue
-    async update(venueCode: string, data: any, actor: any) {
+    async update(venueCode: string, data: any) {
 
         const venue = await venueRepo.findOne({
             venue_code: venueCode
         });
 
         if (!venue) throw new Error("venue not found");
+
+        console.log(data)
 
         const allowed: any = {};
         if (data.name !== undefined)
@@ -124,7 +135,7 @@ class VenueService {
 
         return await venueRepo.update(
             { venue_code: venueCode },
-            allowed
+           allowed
         );
     }
 

@@ -32,6 +32,8 @@ export function hasPermission(permissionCodes: string[], mode: Boolean) {
                 }
             );
 
+            // console.log(rolePermissions);
+
             // all permission
             if (mode) {
                 if (rolePermissions.length !== permissionCodes.length) {

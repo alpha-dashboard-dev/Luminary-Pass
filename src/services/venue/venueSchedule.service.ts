@@ -1,15 +1,21 @@
 import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import venueRepo from "../../repositories/venue/venue.repository.js";
 
 class VenueScheduleService {
 
     // Create Venue
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
+    async create(data: any) {
 
-        // if (!actor) throw new Error("Unauthorized");
+        const venueExists = await venueRepo.findOne({
+            venue_code: data.venueCode
+        })
+
+        if(!venueExists) {
+                throw new Error("Venue does not exist");
+        }
 
         const scheduleCode = generateCode();
 

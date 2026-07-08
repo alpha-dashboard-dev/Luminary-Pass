@@ -85,7 +85,7 @@ class OrganizationService {
 
     // Get Organization By Any Field
     async getByField(where: any, query: any = {}) {
-        console.log(where);
+        // console.log(where);
         const organization = await orgRepo.findOne(
             where,
             {

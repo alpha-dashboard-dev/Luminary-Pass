@@ -12,8 +12,8 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
-                    true
+                    ["PER00013", "8A496AEC", "E70C0852", "E23A69A8"],
+                    false
                 )
             ]
         },
@@ -26,8 +26,8 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
-                    true
+                    ["E0762CD1", "PER00014", "E70C0852", "E23A69A8"],
+                    false
                 )
             ]
         },
@@ -40,7 +40,7 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    ["PER00013", "PER00014", "PER00015", "PER00016"],
                     true
                 )
             ]
@@ -54,8 +54,8 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
-                    true
+                    ["E0762CD1", "PER00014", "E70C0852", "E23A69A8"],
+                    false
                 )
             ]
         },
@@ -68,8 +68,8 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
-                    true
+                    ["E0762CD1", "8A496AEC", "PER00015", "E23A69A8"],
+                   false
                 )
             ]
         },
@@ -82,8 +82,8 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
-                    true
+                    ["E0762CD1", "8A496AEC", "PER00015", "E23A69A8"],
+                    false
                 )
             ]
         },
@@ -96,7 +96,7 @@ export default async function businessRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["E0762CD1", "8A496AEC", "E70C0852", "E23A69A8"],
+                    ["PER00013", "PER00014", "PER00015", "PER00016"],
                     true
                 )
             ]

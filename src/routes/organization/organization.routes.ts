@@ -23,8 +23,8 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
-                    true
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
+                    false
                 )
             ]
         },
@@ -37,7 +37,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     false
                 )
             ]
@@ -51,7 +51,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     true
                 )
             ]
@@ -65,7 +65,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     true
                 )
             ]
@@ -79,7 +79,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     true
                 )
             ]
@@ -93,7 +93,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     true
                 )
             ]
@@ -107,7 +107,7 @@ export default async function orgRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["A93ABD2D", "7425701C", "0C42B426", "45191262"],
+                    ["PER00009", "PER00010", "PER00011", "PER00012"],
                     true
                 )
             ]

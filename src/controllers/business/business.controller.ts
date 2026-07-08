@@ -32,6 +32,10 @@ class businessController {
         try {
             let include = req.query.include ?? "";
             include = [
+                // {
+                //     alias: "owner",
+                //     attributes: [],
+                // },
                 {
                     alias: "users",
                     attributes: [],
@@ -165,7 +169,7 @@ class businessController {
         try{
             const businessCode = String(req.params.businessCode)
             const data = req.body
-            console.log(data)
+            // console.log(data)
             await businessService.deactivate(
                 businessCode,
                 data,
