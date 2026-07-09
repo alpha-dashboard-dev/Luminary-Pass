@@ -7,7 +7,7 @@ class participantChecklistController {
 
         try{
             const data = req.body;
-            console.log(data);
+            // console.log(data);
             const result =  await participantChecklistService.create(
                 data,
                 req.user
@@ -74,9 +74,9 @@ class participantChecklistController {
                     attributes: [],
                 },
             ]
-            const participantCode = String(req.params.participantCode)
+            const checklistCode = String(req.params.checklistCode)
             const result = await participantChecklistService.getByParticipantChecklistCode(
-                participantCode,
+                checklistCode,
                 {
                     ...req.query,
                     include
@@ -139,10 +139,10 @@ class participantChecklistController {
 
         try {
 
-            const participantCode = String(req.params.participantCode);
+            const checklistCode = String(req.params.checklistCode);
 
             const data = await participantChecklistService.update(
-                participantCode,
+                checklistCode,
                 req.body,
                 req.user
             );
@@ -166,10 +166,10 @@ class participantChecklistController {
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-            const participantCode = String(req.params.participantCode)
+            const checklistCode = String(req.params.checklistCode)
 
             await participantChecklistService.delete(
-                participantCode,
+                checklistCode,
                 req.user
             );
 

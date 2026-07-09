@@ -62,7 +62,7 @@ class participantChecklistService {
 
     async getByParticipantChecklistCode(participantChecklistCode: string, query: any = {}) {
 
-        const event = await participantChecklistRepo.findOne(
+        const participantChecklist = await participantChecklistRepo.findOne(
             {
                 participant_checklist_code: participantChecklistCode
             },
@@ -71,37 +71,37 @@ class participantChecklistService {
             }
         );
 
-        if (!event) {
-            throw new Error("event not found");
+        if (!participantChecklist) {
+            throw new Error("Participant checklist not found");
         }
 
-        return event;
+        return participantChecklist;
     }
 
     // Get event By Any Field
     async getByField(where: any, query: any = {}) {
-        console.log(where);
-        const event = await participantChecklistRepo.findOne(
+        // console.log(where);
+        const checklist = await participantChecklistRepo.findOne(
             where,
             {
                 include: query.include || []
             }
         );
 
-        if (!event) {
-            throw new Error("event not found");
+        if (!checklist) {
+            throw new Error("Participant checklist not found");
         }
 
-        return event;
+        return checklist;
     }
 
     async update(participantChecklistCode: string, data: any) {
 
-        const event = await participantChecklistRepo.findOne({
+        const checklist = await participantChecklistRepo.findOne({
             participant_checklist_code: participantChecklistCode
         });
 
-        if (!event) throw new Error("event not found");
+        if (!checklist) throw new Error("Participant checklist not found");
 
         return await participantChecklistRepo.update(
             { participant_checklist_code: participantChecklistCode },
@@ -111,12 +111,12 @@ class participantChecklistService {
 
 
     async delete(participantChecklistCode: string) {
-        const event = await participantChecklistRepo.findOne({
+        const checklist = await participantChecklistRepo.findOne({
             participant_checklist_code: participantChecklistCode
         });
 
-        if (!event) {
-            throw new Error("event not found");
+        if (!checklist) {
+            throw new Error("Participant checklist not found");
         }
 
         return await participantChecklistRepo.delete({

@@ -12,7 +12,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -27,7 +27,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -42,7 +42,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -56,7 +56,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -71,7 +71,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -87,7 +87,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]
@@ -102,7 +102,7 @@ export default async function abilityRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["3DA62C7C", "98CA7750", "08FCA864", "FDAB9573"],
+                    ["PER00053", "PER00054", "PER00055", "PER00056"],
                     false
                 )
             ]

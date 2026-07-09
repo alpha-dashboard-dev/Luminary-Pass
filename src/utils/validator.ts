@@ -126,7 +126,9 @@ export const validateUser = (data: any) => {
     if (!password || password.length < 6) {
         throw new Error("Password must be at least 6 characters long");
     }
-
+    if(businessCode && !isValidCode(businessCode)) {
+        throw new Error("Valid 8-character businessCode is required");
+    }
 
     if (status !== undefined && !VALID_STATUSES.includes(status)) {
         throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
@@ -484,5 +486,25 @@ export const validateBadge = (data: any) => {
 
     if (status !== undefined && !VALID_BADGE_STATUSES.includes(status)) {
         throw new Error("Invalid Badge status. Must be one of: " + VALID_BADGE_STATUSES.join(", "));
+    }
+}
+
+export const validateAbility = (data: any) => {
+    const { businessCode, userCode, status, addedBy } = data
+
+    if(businessCode && !isValidCode(businessCode)) {
+        throw new Error("Valid 8-character businessCode is required");
+    }
+
+    if(userCode && !isValidCode(userCode)) {
+        throw new Error("Valid 8-character userCode is required");
+    }
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
+    }
+
+    if(addedBy && !isValidCode(addedBy)) {
+        throw new Error("Valid 8-character userCode is required, who added the ability");
     }
 }

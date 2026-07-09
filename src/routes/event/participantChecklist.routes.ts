@@ -1,5 +1,5 @@
 import { FastifyInstance} from "fastify";
-import participantChecklistController from "../../controllers/event/participant.controller";
+import participantChecklistController from "../../controllers/event/participantChecklist.controller";
 import {authenticate} from "../../middleware/authenticate.js";
 import {hasPermission} from "../../middleware/hasPermission.js";
 
@@ -21,7 +21,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
     )
 
     fastify.get(
-        '/get-all-participants',
+        '/get-all-checklists',
         {
             preHandler: [
                 authenticate,
@@ -35,7 +35,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
     )
 
     fastify.get(
-        '/get-one-participant/:participantCode',
+        '/get-one-checklist/:checklistCode',
         {
             preHandler: [
                 authenticate,
@@ -45,11 +45,11 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
                 )
             ]
         },
-        participantChecklistController.getByParticipantCode
+        participantChecklistController.getByParticipantChecklistCode
     )
 
     fastify.get(
-        '/get-participant-by-field',
+        '/get-checklist-by-field',
         {
             preHandler: [
                 authenticate,
@@ -63,7 +63,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
     )
 
     fastify.put(
-        "/update-participant/:participantCode",
+        "/update-checklist/:checklistCode",
         {
             preHandler: [
                 authenticate,
@@ -77,7 +77,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
     )
 
     fastify.delete(
-        "/delete-participant/:participantCode",
+        "/delete-checklist/:checklistCode",
         {
             preHandler: [
                 authenticate,

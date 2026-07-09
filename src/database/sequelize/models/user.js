@@ -160,6 +160,27 @@ class User extends Model {
           as: "inviter",
           constraints: false,
       })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "user_code",
+          sourceKey: "user_code",
+          as: "ability",
+          constraints: false,
+      })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "added_by",
+          sourceKey: "user_code",
+          as: "addedBy",
+          constraints: false,
+      })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "updated_by",
+          sourceKey: "user_code",
+          as: "updatedBy",
+          constraints: false,
+      })
   }
 }
 

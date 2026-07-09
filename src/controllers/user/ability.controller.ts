@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import abilityService from "../../services/user/ability.service";
+import {validateAbility} from "../../utils/validator.js";
 
 class abilityController {
 
@@ -7,8 +8,8 @@ class abilityController {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateability(data);
+            // console.log(data);
+            validateAbility(data);
             const result =  await abilityService.create(
                 data,
                 req.ability
@@ -32,6 +33,22 @@ class abilityController {
         try {
             let include = req.query.include ?? "";
             include = [
+                {
+                    alias: "business",
+                    attributes: []
+                },
+                {
+                    alias: "user",
+                    attributes: []
+                },
+                {
+                    alias: "addedBy",
+                    attributes: []
+                },
+                {
+                    alias: "updatedBy",
+                    attributes: []
+                },
             ]
             // console.log(include)
             const data =
@@ -64,7 +81,7 @@ class abilityController {
             include = [
             ]
             const abilityCode = String(req.params.abilityCode)
-            console.log(abilityCode)
+            // console.log(abilityCode)
             const result = await abilityService.getByAbilityCode(
                 abilityCode,
                 {

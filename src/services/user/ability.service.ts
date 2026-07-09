@@ -1,14 +1,39 @@
 import abilityRepo from "../../repositories/user/ability.repository";
-
-import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import businessRepo from "../../repositories/busines/business.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class abilityService {
 
     // Create ability
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+        const businessExists = await businessRepo.findOne({
+            business_code: data.businessCode,
+        })
+
+        if(!businessExists) {
+            throw new Error("Business doesn't exist");
+        }
+
+        const userExists = await userRepo.findOne({
+                user_code: data.userCode
+        })
+
+        if(!userExists) {
+            throw new Error("User doesn't exist");
+        }
+
+        const user = await userRepo.findOne({
+            user_code: data.userCode
+        })
+
+        if(!user) {
+            throw new Error("User doesn't exist, who want to add ability");
+        }
+
 
         // const abilityCode = generateCode();
 
