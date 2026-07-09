@@ -27,11 +27,21 @@ class abilityService {
         }
 
         const user = await userRepo.findOne({
-            user_code: data.userCode
+            user_code: data.addedBy
         })
 
         if(!user) {
             throw new Error("User doesn't exist, who want to add ability");
+        }
+
+        if(data.updatedBy){
+            const user = await userRepo.findOne({
+                user_code: data.updatedBy
+            })
+
+            if(!user) {
+                throw new Error("User doesn't exist, who want to update ability");
+            }
         }
 
 

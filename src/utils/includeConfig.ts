@@ -115,4 +115,20 @@ export const INCLUDE_CONFIG = {
             attributes: ["module","name"]
         }
     },
+
+    UserAbility: {
+        business: {
+            attributes: ["name", "email", "status"],
+        },
+        user: {
+            attributes: ["first_name", "email", "phone"],
+        },
+        addedBy: {
+            attributes: ["first_name", "email", "phone"],
+        },
+        updatedBy: {
+            attributes: ["first_name", "email", "phone"],
+        },
+
+    }
 };
