@@ -658,6 +658,37 @@ module.exports = { async up(queryInterface, Sequelize) {
                 created_at: now,
                 updated_at: now,
             },
+
+        //     Participant checklist Module
+            {
+                permission_code: "PER00089",
+                module: "participantChecklist",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00090",
+                module: "participantChecklist",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00091",
+                module: "participantChecklist",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00092",
+                module: "participantChecklist",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
+
         ]);
     },
 

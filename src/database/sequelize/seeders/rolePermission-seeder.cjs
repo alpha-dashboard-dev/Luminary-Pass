@@ -651,6 +651,37 @@ module.exports = { async up(queryInterface, Sequelize) {
                 created_at: now,
             },
 
+        //     Participant Checklist module
+
+            {
+                role_permission_code: "RP000089",
+                role_code: "ROL00001",
+                permission_code: "PER00089",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000090",
+                role_code: "ROL00001",
+                permission_code: "PER00090",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000091",
+                role_code: "ROL00001",
+                permission_code: "PER00091",
+                created_at: now,
+
+            },
+            {
+                role_permission_code: "RP000092",
+                role_code: "ROL00001",
+                permission_code: "PER00092",
+                created_at: now,
+            },
+
+
         ]);
     },
 

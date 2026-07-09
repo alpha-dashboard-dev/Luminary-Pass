@@ -146,32 +146,6 @@ class socialLoginController {
         }
     }
 
-    async deactivate(req: FastifyRequest, reply: FastifyReply) {
-        try{
-            const socialLoginCode = String(req.params.socialLoginCode)
-            const data = req.body
-            console.log(data)
-            await socialLoginService.deactivate(
-                socialLoginCode,
-                data,
-                req.user
-            );
-
-            return reply.status(200).send({
-                success: true,
-                message: "socialLogin deactivated",
-                data,
-            });
-
-
-        }catch(err){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
-        }
-    }
-
     //  DELETE socialLogin
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
