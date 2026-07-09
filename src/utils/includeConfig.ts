@@ -102,10 +102,10 @@ export const INCLUDE_CONFIG = {
             attributes: ["name", "email", "status"],
         },
         user: {
-            attributes: ["name", "email", "phone"],
+            attributes: ["first_name", "email", "phone"],
         },
         event: {
-            attributes: ["name"],
+            attributes: ["title"],
         }
 
     },

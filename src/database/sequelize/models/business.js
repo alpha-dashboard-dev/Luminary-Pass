@@ -144,12 +144,12 @@ class Business extends Model {
             as: "userAbility",
             constraints: false
         })
-        // Business.hasMany(models.Location, {
-        //     foreignKey: "business_code",
-        //     sourceKey: "business_code",
-        //     as: "location",
-        //     constraints: false
-        // })
+        Business.hasMany(models.Location, {
+            foreignKey: "entity_code",
+            sourceKey: "business_code",
+            as: "location",
+            constraints: false
+        })
   }
 }
 

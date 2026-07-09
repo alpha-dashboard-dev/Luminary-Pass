@@ -36,7 +36,16 @@ class locationController {
                 {
                     alias: "business",
                     attributes: [],
+                },
+                {
+                    alias: "user",
+                    attributes: [],
+                },
+                {
+                    alias: "event",
+                    attributes: [],
                 }
+
             ]
             // console.log(include)
             const data = await locationService.getAll(
@@ -66,8 +75,12 @@ class locationController {
         try {
             let include = req.query.include ?? "";
             include = [
+                // {
+                //     alias: "business",
+                //     attributes: [],
+                // },
                 {
-                    alias: "business",
+                    alias: "user",
                     attributes: [],
                 }
             ]

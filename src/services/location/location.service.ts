@@ -63,6 +63,8 @@ class LocationService {
         // console.log(query)
         const where = buildWhere(query);
 
+        console.log(query.include);
+
         return locationRepo.findAll({
             where,
             include: Array.isArray(query.include)

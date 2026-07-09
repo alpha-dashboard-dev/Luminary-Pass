@@ -165,6 +165,13 @@ class Event extends Model {
           as: "eventParticipant",
           constraints: false
       })
+
+      Event.hasMany(models.Location, {
+          foreignKey: "entity_code",
+          sourceKey: "event_code",
+          as: "location",
+          constraints: false
+      })
   }
 }
 

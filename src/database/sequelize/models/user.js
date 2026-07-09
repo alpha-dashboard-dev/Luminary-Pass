@@ -181,6 +181,12 @@ class User extends Model {
           as: "updatedBy",
           constraints: false,
       })
+      User.hasMany(models.Location, {
+          foreignKey: "entity_code",
+          sourceKey: "user_code",
+          as: "location",
+          constraints: false,
+      })
   }
 }
 
