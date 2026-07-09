@@ -6,28 +6,24 @@ import {buildWhere} from "../../utils/buildWhere.js";
 class participantChecklistService {
 
 
-    async create(data: any, actor: any) {
-
-        if (!actor) throw new Error("Unauthorized");
+    async create(data: any) {
 
 
         const participantChecklistCode = generateCode();
 
         return await participantChecklistRepo.create({
             participant_checklist_code: participantChecklistCode,
-            business_code: data.businessCode,
-            venue_code: data.venueCode,
-            title: data.title,
-            description: data.description,
-            start_datetime: data.startDateTime,
-            end_datetime: data.endDateTime,
-            application_deadline: data.applicationDeadline,
-            influencer_capacity: data.influencerCapacity,
-            dress_code: data.dressCode,
-            special_instructions: data.specialInstructions,
-            visibility: data.visibility,
-            created_by: data.createdBy,
-            status: data.status,
+            participant_code: data.participantCode,
+            checklist_code: data.checklistCode,
+            submission_url: data.submissionUrl,
+            submission_type: data.submissionType,
+            submitted_at: data.submittedAt,
+            review_status: data.reviewStatus,
+            reviewed_by: data.reviewedBy,
+            reviewed_at: data.reviewedAt,
+            review_notes: data.reviewNotes,
+            completion_status: data.reviewCompletionStatus,
+            points_awarded: data.pointsAwarded,
         });
     }
 

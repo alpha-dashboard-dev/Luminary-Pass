@@ -45,7 +45,7 @@ export default async function socialLoginRoutes(fastify: FastifyInstance) {
                 )
             ]
         },
-        socialLoginController.getBysocialLoginCode
+        socialLoginController.getBySocialLoginCode
     )
 
     fastify.get(
@@ -74,20 +74,6 @@ export default async function socialLoginRoutes(fastify: FastifyInstance) {
             ]
         },
         socialLoginController.update
-    )
-
-    fastify.patch(
-        "/deactivate-socialLogin/:socialLoginCode",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00085", "PER00086", "PER00087", "PER00088"],
-                    true
-                )
-            ]
-        },
-        socialLoginController.deactivate
     )
 
     fastify.delete(
