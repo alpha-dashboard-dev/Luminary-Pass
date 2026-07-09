@@ -12,7 +12,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
@@ -26,7 +26,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
@@ -40,7 +40,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
@@ -54,7 +54,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
@@ -68,7 +68,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
@@ -82,7 +82,7 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
                     true
                 )
             ]
