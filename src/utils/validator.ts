@@ -396,3 +396,95 @@ export const validateAttachment = (data: any) => {
         throw new Error("Invalid Attachment status. Must be one of: " + VALID_ATTACHMENT_STATUSES.join(", "));
     }
 }
+
+export const validateEventParticipant = (data: any) => {
+    const { eventCode, influencerCode, source, sourceCode } = data
+
+    const VALID_SOURCE = ["invitation", "application"]
+
+    if(!influencerCode || !isValidCode(influencerCode)) {
+        throw new Error("Valid 8-character influencerCode is required")
+    }
+
+    if(!eventCode || !isValidCode(eventCode)) {
+        throw new Error("Valid 8-character eventCode is required")
+    }
+
+    if(!source || !VALID_SOURCE.includes(source)) {
+        throw new Error("Invalid Event Participant source. Must be one of: " + VALID_SOURCE.join(", "));
+    }
+
+    if(!sourceCode || !isValidCode(sourceCode)) {
+        throw new Error("Valid 8-character sourceCode is required")
+    }
+}
+
+export const validateEventChecklist = (data: any) => {
+    const { eventCode, checklistType, status, isRequired } = data
+
+    const VALID_CHECKLIST_TYPE = ["story", "reel", "post", "video", "venue_tag", "location_tag", "custom"]
+    const VALID_CHECKLIST_IS_REQUIRED = ["yes", "no"]
+
+    if(!eventCode || !isValidCode(eventCode)) {
+        throw new Error("Valid 8-character eventCode is required")
+    }
+
+    if(!checklistType || !VALID_CHECKLIST_TYPE.includes(checklistType)) {
+        throw new Error("Invalid Event Checklist Type. Must be one of: " + VALID_CHECKLIST_TYPE.join(", "));
+    }
+
+    if(!isRequired || !VALID_CHECKLIST_IS_REQUIRED.includes(isRequired)) {
+    throw new Error("Invalid isRequired value of event checklist. Must be one of: " + VALID_CHECKLIST_IS_REQUIRED.join(", ") );
+    }
+
+    if (status !== undefined && !VALID_STATUSES.includes(status)) {
+        throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
+    }
+
+}
+
+
+export const validateSetting = (data: any) => {
+        const { entityType, entityCode } = data
+
+    const VALID_SETTING_ENTITY_TYPE = ["system", "business", "user"]
+
+    if(!entityType || !VALID_SETTING_ENTITY_TYPE.includes(entityType)) {
+        throw new Error("Invalid Entity Type. Must be one of: " + VALID_SETTING_ENTITY_TYPE.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+}
+
+
+export const validateBadge = (data: any) => {
+    const { entityType, entityCode, badgeType, awardedBy, status } = data
+
+    const VALID_BADGE_ENTITY_TYPE = ["influencer", "business", "venue", "event"]
+    const VALID_BADGE_TYPE = ["attendance", "engagement", "performance", "milestone", "special"]
+    const VALID_BADGE_STATUSES = ["active", "expired", "invoked"]
+
+    if(!entityType || !VALID_BADGE_ENTITY_TYPE.includes(entityType)) {
+        throw new Error("Invalid Badge Entity Type. Must be one of: " + VALID_BADGE_ENTITY_TYPE.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+
+    if(!badgeType || !VALID_BADGE_TYPE.includes(badgeType)) {
+        throw new Error("Invalid Badge Type. Must be one of: " + VALID_BADGE_TYPE.join(", "));
+    }
+
+    if(!awardedBy || !isValidCode(awardedBy)) {
+        throw new Error("Valid 8-character userCode is required, who awarded the badge")
+    }
+
+    if (status !== undefined && !VALID_BADGE_STATUSES.includes(status)) {
+        throw new Error("Invalid Badge status. Must be one of: " + VALID_BADGE_STATUSES.join(", "));
+    }
+
+
+}

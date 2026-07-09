@@ -12,7 +12,7 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    [],
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
                     true
                 )
             ]
@@ -25,10 +25,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.getAll
@@ -39,10 +39,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABDD", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.getByBadgeCode
@@ -53,10 +53,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D", "7425701C"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.getByField
@@ -67,10 +67,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABDD", "0C42B426"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.update
@@ -81,10 +81,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2D", "0C42B426"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.deactivate
@@ -95,10 +95,10 @@ export default async function badgeRoutes(fastify: FastifyInstance) {
         {
             preHandler: [
                 authenticate,
-                hasPermission({
-                    permissions: ["A93ABD2", "45191262"],
-                    required: "any"
-                }),
+                hasPermission(
+                    ["PER00077", "PER00078", "PER00079", "PER00080"],
+                    true
+                )
             ]
         },
         badgeController.delete

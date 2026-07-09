@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import badgeService from "../../services/badge/badge.service";
+import {validateBadge} from "../../utils/validator.js";
 
 class badgeController {
 
@@ -7,8 +8,8 @@ class badgeController {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateBadge(data);
+            // console.log(data);
+            validateBadge(data);
             const result =  await badgeService.create(
                 data,
                 req.user

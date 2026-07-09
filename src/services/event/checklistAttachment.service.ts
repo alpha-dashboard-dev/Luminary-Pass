@@ -2,12 +2,21 @@ import checklistAttachmentRepo from "../../repositories/event/checklistAttachmen
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import checkListRepo from "../../repositories/event/checkList.repository.js";
 
 class checklistAttachmentService {
 
     // CREATE attachment
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+        const checklistExists = await checkListRepo.findOne({
+            checklist_code: data.checklistCode
+        })
+
+        if (!checklistExists) {
+            throw new Error("Checklist does not exist!");
+        }
 
         const attachmentCode = generateCode();
 

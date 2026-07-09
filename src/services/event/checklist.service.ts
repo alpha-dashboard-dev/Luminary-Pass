@@ -2,15 +2,21 @@ import checklistRepo from "../../repositories/event/checkList.repository";
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import eventRepo from "../../repositories/event/event.repository.js";
 
 class checklistService {
 
     // CREATE checklist
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+        const event = await eventRepo.findOne({
+            event_code: data.eventCode
+        })
 
+        if (!event) {
+            throw new Error("Event does not exist");
+        }
 
         const checklistCode = generateCode();
 

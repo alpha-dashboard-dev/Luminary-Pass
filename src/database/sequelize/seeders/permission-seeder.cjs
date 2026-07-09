@@ -508,8 +508,156 @@ module.exports = { async up(queryInterface, Sequelize) {
                 created_at: now,
                 updated_at: now,
             },
+            // Event Checklist
+            {
+                permission_code: "PER00069",
+                module: "eventChecklist",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00070",
+                module: "eventChecklist",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00071",
+                module: "eventChecklist",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00072",
+                module: "eventChecklist",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
 
+        //     Event Checklist Attachment
+            {
+                permission_code: "PER00073",
+                module: "checklistAttachment",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00074",
+                module: "checklistAttachment",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00075",
+                module: "checklistAttachment",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00076",
+                module: "checklistAttachment",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
 
+            // Badge Module
+
+            {
+                permission_code: "PER00077",
+                module: "badge",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00078",
+                module: "badge",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00079",
+                module: "badge",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00080",
+                module: "badge",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
+
+        //     Setting Module
+            {
+                permission_code: "PER00081",
+                module: "setting",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00082",
+                module: "setting",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00083",
+                module: "setting",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00084",
+                module: "setting",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
+
+        //     Social Login Module
+            {
+                permission_code: "PER00085",
+                module: "socialLogin",
+                name: "create",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00086",
+                module: "socialLogin",
+                name: "read",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00087",
+                module: "socialLogin",
+                name: "update",
+                created_at: now,
+                updated_at: now,
+            },
+            {
+                permission_code: "PER00088",
+                module: "socialLogin",
+                name: "delete",
+                created_at: now,
+                updated_at: now,
+            },
         ]);
     },
 

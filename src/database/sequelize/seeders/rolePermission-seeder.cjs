@@ -502,6 +502,155 @@ module.exports = { async up(queryInterface, Sequelize) {
                 created_at: now,
             },
 
+            // Event Checklist
+
+            {
+                role_permission_code: "RP000069",
+                role_code: "ROL00001",
+                permission_code: "PER00069",
+                created_at: now,
+            },
+            {
+                role_permission_code: "RP000070",
+                role_code: "ROL00001",
+                permission_code: "PER00070",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000071",
+                role_code: "ROL00001",
+                permission_code: "PER00071",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000072",
+                role_code: "ROL00001",
+                permission_code: "PER00072",
+                created_at: now,
+                
+            },
+
+            //     Event Checklist Attachment
+            {
+                role_permission_code: "RP000073",
+                role_code: "ROL00001",
+                permission_code: "PER00073",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000074",
+                role_code: "ROL00001",
+                permission_code: "PER00074",
+                created_at: now,
+            },
+            {
+                role_permission_code: "RP000075",
+                role_code: "ROL00001",
+                permission_code: "PER00075",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000076",
+                role_code: "ROL00001",
+                permission_code: "PER00076",
+                created_at: now,
+                
+            },
+
+            // Badge Module
+
+            {
+                role_permission_code: "RP000077",
+                role_code: "ROL00001",
+                permission_code: "PER00077",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000078",
+                role_code: "ROL00001",
+                permission_code: "PER00078",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000079",
+                role_code: "ROL00001",
+                permission_code: "PER00079",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000080",
+                role_code: "ROL00001",
+                permission_code: "PER00080",
+                created_at: now,
+                
+            },
+
+            //     Setting Module
+            {
+                role_permission_code: "RP000081",
+                role_code: "ROL00001",
+                permission_code: "PER00081",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000082",
+                role_code: "ROL00001",
+                permission_code: "PER00082",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000083",
+                role_code: "ROL00001",
+                permission_code: "PER00083",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000084",
+                role_code: "ROL00001",
+                permission_code: "PER00084",
+                created_at: now,
+                
+            },
+
+            //     Social Login Module
+            {
+                role_permission_code: "RP000085",
+                role_code: "ROL00001",
+                permission_code: "PER00085",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000086",
+                role_code: "ROL00001",
+                permission_code: "PER00086",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000087",
+                role_code: "ROL00001",
+                permission_code: "PER00087",
+                created_at: now,
+                
+            },
+            {
+                role_permission_code: "RP000088",
+                role_code: "ROL00001",
+                permission_code: "PER00088",
+                created_at: now,
+            },
+
         ]);
     },
 

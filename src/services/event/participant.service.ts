@@ -2,14 +2,33 @@ import participantRepo from "../../repositories/event/participant.repository";
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import eventRepo from "../../repositories/event/event.repository.js";
+import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 
 class participantService {
 
     // CREATE participant
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+        const event = await eventRepo.findOne({
+            event_code: data.eventCode
+        })
+
+        if (!event) {
+            throw new Error("Event does not exist");
+        }
+
+        const influencer = await influencerRepo.findOne({
+            influencer_code: data.influencerCode
+        })
+
+        if (!influencer) {
+            throw new Error("influencer does not exist");
+        }
+
+        // if source is invitation verify sourceCode from invitation table
+        // or if source is application verify sourceCode from event table (event_code)
 
 
         const participantCode = generateCode();

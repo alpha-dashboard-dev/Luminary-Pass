@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import checklistService from "../../services/event/checklist.service";
-// import {validateevent} from "../../utils/validator.js";
+import {validateEventChecklist} from "../../utils/validator.js";
+
 
 class checklistController {
 
@@ -8,7 +9,7 @@ class checklistController {
 
         try{
             const data = req.body;
-            // validatechecklist(data);
+            validateEventChecklist(data)
             const result =  await checklistService.create(
                 data,
                 req.user
@@ -33,7 +34,7 @@ class checklistController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "creator",
+                    alias: "event",
                     attributes: [],
                 },
             ]
@@ -67,7 +68,7 @@ class checklistController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "creator",
+                    alias: "event",
                     attributes: [],
                 },
             ]
@@ -102,7 +103,7 @@ class checklistController {
             let include = req.query.include ?? "";
             include = [
                 {
-                    alias: "creator",
+                    alias: "event",
                     attributes: [],
                 },
             ]

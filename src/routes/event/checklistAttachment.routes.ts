@@ -1,92 +1,92 @@
 import { FastifyInstance} from "fastify";
-import checklistController from "../../controllers/event/checklist.controller";
+import checklistAttachmentController from "../../controllers/event/checklistAttachment.controller";
 import {authenticate} from "../../middleware/authenticate";
 import {hasPermission} from "../../middleware/hasPermission";
 
 
-export default async function checklistRoutes(fastify: FastifyInstance) {
+export default async function checklistAttachmentRoutes(fastify: FastifyInstance) {
 
     fastify.post(
-        "/create-checklist",
+        "/create-checklistAttachment",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.create
+        checklistAttachmentController.create
     )
 
     fastify.get(
-        '/get-all-checklists',
+        '/get-all-checklistAttachments',
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.getAll
+        checklistAttachmentController.getAll
     )
 
     fastify.get(
-        '/get-one-checklist/:checklistCode',
+        '/get-one-checklistAttachment/:attachmentCode',
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.getByChecklistCode
+        checklistAttachmentController.getByAttachmentCode
     )
 
     fastify.get(
-        '/get-checklist-by-field',
+        '/get-checklistAttachment-by-field',
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.getByField
+        checklistAttachmentController.getByField
     )
 
     fastify.put(
-        "/update-checklist/:checklistCode",
+        "/update-checklistAttachment/:attachmentCode",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.update
+        checklistAttachmentController.update
     )
 
     fastify.delete(
-        "/delete-checklist/:checklistCode",
+        "/delete-checklistAttachment/:attachmentCode",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00069", "PER00070", "PER00071", "PER00072"],
+                    ["PER00073", "PER00074", "PER00075", "PER00076"],
                     true
                 )
             ]
         },
-        checklistController.delete
+        checklistAttachmentController.delete
     )
 }

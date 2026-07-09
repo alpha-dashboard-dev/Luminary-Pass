@@ -1,5 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import settingService from "../../services/setting/setting.service";
+import {validateSetting} from "../../utils/validator.js";
 
 class settingController {
 
@@ -7,8 +8,8 @@ class settingController {
 
         try{
             const data = req.body;
-            console.log(data);
-            // validateSetting(data);
+            // console.log(data);
+            validateSetting(data);
             const result =  await settingService.create(
                 data,
                 req.user
@@ -152,7 +153,7 @@ class settingController {
         try{
             const settingCode = String(req.params.settingCode)
             const data = req.body
-            console.log(data)
+            // console.log(data)
             await settingService.deactivate(
                 settingCode,
                 data,
