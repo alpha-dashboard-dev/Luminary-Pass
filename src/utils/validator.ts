@@ -13,8 +13,6 @@ const VALID_ATTACHMENT_STATUSES = ["active", "deleted"]
 const VALID_CATEGORY_ENTITY_TYPES = ["venue", "influencer"];
 
 
-
-
 const VALID_WORKING_DAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 const VALID_SCHEDULE_STATUSES = [true, false];
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -350,4 +348,51 @@ export const validateEventInvitation = (data: any) => {
         throw new Error("Invalid Event status. Must be one of: " + VALID_INVITATION_STATUSES.join(", "));
     }
 
+}
+
+
+export const validateLocation = (data: any) => {
+    const { entityType, entityCode, } = data
+
+    const VALID_LOCATION_ENTITY_TYPE = ["business", "event", "user"]
+
+    if(!entityType || !VALID_LOCATION_ENTITY_TYPE.includes(entityType)) {
+        throw new Error("Invalid Entity Type. Must be one of: " + VALID_LOCATION_ENTITY_TYPE.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+}
+
+
+export const validateAttachment = (data: any) => {
+    const { entityType, entityCode, mediaType, isPrimary, visibility, status } = data
+
+    const VALID_MEDIA_ENTITY_TYPE = ["users", "influencers", "organization", "business", "events"]
+    const VALID_MEDIA_TYPE = ["image", "video", "document", "website"]
+
+    if(!entityType || !VALID_MEDIA_ENTITY_TYPE.includes(entityType)) {
+        throw new Error("Invalid Entity Type. Must be one of: " + VALID_MEDIA_ENTITY_TYPE.join(", "));
+    }
+
+    if(!entityCode || !isValidCode(entityCode)) {
+        throw new Error("Valid 8-character entityCode is required")
+    }
+
+    if(!mediaType || !VALID_MEDIA_TYPE.includes(mediaType)) {
+        throw new Error("Invalid Media Type. Must be one of: " + VALID_MEDIA_TYPE.join(", "));
+    }
+
+    if(!isPrimary || !VALID_ATTACHMENT_PRIMARY.includes(isPrimary)) {
+        throw new Error("Invalid Attachment primary value. Must be one of: " + VALID_ATTACHMENT_PRIMARY.join(", ") );
+    }
+
+    if(!visibility || !VALID_VISIBILITY.includes(visibility)) {
+        throw new Error("Invalid Attachment visibility. Must be one of: " + VALID_VISIBILITY.join(", ") );
+    }
+
+    if(!status || !VALID_ATTACHMENT_STATUSES.includes(status)) {
+        throw new Error("Invalid Attachment status. Must be one of: " + VALID_ATTACHMENT_STATUSES.join(", "));
+    }
 }

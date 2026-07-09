@@ -1,12 +1,14 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import attachmentService from "../../services/mediaAttachment/attachment.service";
+import {validateAttachment} from "../../utils/validator.js";
 
 class attachmentController {
 
     async create(req: FastifyRequest, reply: FastifyReply) {
 
         try{
-            const data = req.body;;
+            const data = req.body;
+            validateAttachment(data);
             const result =  await attachmentService.create(
                 data,
                 req.user

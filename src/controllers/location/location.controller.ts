@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import locationService from "../../services/location/location.service";
-// import {validatelocation} from "../../utils/validator.js";
+import {validateLocation} from "../../utils/validator.js";
 
 class locationController {
 
@@ -9,7 +9,7 @@ class locationController {
         try{
             const data = req.body;
             // console.log(data);
-            // validatelocation(data);
+            validateLocation(data)
             const result =  await locationService.create(
                 data,
                 req.user

@@ -13,7 +13,7 @@ export default async function attachmentRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00057", "PER00058", "PER00059", "PER00060"],
+                    ["PER00057", "ER00058", "ER00059", "ER00060"],
                     false
                 )
             ]

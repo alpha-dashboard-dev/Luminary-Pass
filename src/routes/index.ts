@@ -16,13 +16,13 @@ import venueAttachmentRoutes from "./venue/venueAttachment.routes";
 import influencerRoutes from "./influencer/influencer.routes"
 import categoryRoutes from "./category/category.routes"
 
-// import locationRoutes from "./location/location.routes"
+import locationRoutes from "./location/location.routes"
 import eventRoutes from "./event/event.routes"
 import ratingRoutes from "./influencer/influencerRating.routes";
 import invitationRoutes from "./event/invitation.routes";
 
-// import attachmentRoutes from "./mediaAttachment/attachement.routes";
-//
+import attachmentRoutes from "./mediaAttachment/attachement.routes";
+
 // import participantRoutes from "./event/participant.routes";
 // import checklistRoutes from "./event/checklist.routes.js";
 // import badgeRoutes from "./badge/badge.routes.js";
@@ -49,13 +49,13 @@ export default async function routes(fastify: FastifyInstance) {
 
     fastify.register(categoryRoutes, { prefix: "/categories" });
 
-    // fastify.register(locationRoutes, { prefix: "/locations" });
+    fastify.register(locationRoutes, { prefix: "/locations" });
 
     fastify.register(eventRoutes, { prefix: "/events" });
-    //
+
     fastify.register(invitationRoutes, { prefix: "/invitations" });
-    //
-    // fastify.register(attachmentRoutes, { prefix: "/attachments" });
+
+    fastify.register(attachmentRoutes, { prefix: "/attachments" });
     // fastify.register(participantRoutes, { prefix: "/event-participants" });
     // fastify.register(checklistRoutes, { prefix: "/event-checklist" });
 

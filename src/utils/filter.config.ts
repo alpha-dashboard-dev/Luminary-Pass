@@ -5,6 +5,11 @@ export const FILTER_CONFIG: any = {
         field: "role_code",
         op: Op.eq,
     },
+
+    city: {
+        field: "city",
+        op: Op.eq,
+    }
 };
 
 

@@ -1,12 +1,75 @@
 import attachmentRepo from "../../repositories/mediaAttachment/attachment.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import businessRepo from "../../repositories/busines/business.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
+import eventRepo from "../../repositories/event/event.repository.js";
+import orgRepo from "../../repositories/organization/organization.repository.js";
+import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 
 class attachmentService {
 
     // Create attachment
 
-    async create(data: any, actor: any) {
+    async create(data: any) {
+
+
+        switch (data.entityType) {
+            case "organization":
+                const organization = orgRepo.findOne({
+                    organization_code: data.entityCode,
+                })
+                if (!organization){
+                    throw new Error("Organization doesn't exist");
+                }
+                break;
+
+            case "business":
+                const business = await businessRepo.findOne({
+                    business_code: data.entityCode,
+                });
+
+                if(!business){
+                    throw new Error("Business doesn't exist");
+                }
+                break;
+
+            case "users":
+
+                const user = await userRepo.findOne({
+                    user_code: data.entityCode,
+                })
+                if (!user){
+                    throw new Error("User doesn't exist");
+                }
+                break;
+
+            case "events":
+                const event = await eventRepo.findOne({
+                    event_code: data.entityCode,
+                })
+                if (!event){
+                    throw new Error("Event doesn't exist");
+                }
+                break;
+
+            case "influencers":
+                const influencer = await influencerRepo.findOne({
+                    influencer_code: data.entityCode,
+                })
+                if (!influencer){
+                    throw new Error("Influencer doesn't exist");
+                }
+                break;
+        }
+
+        const attachmentUploader = await userRepo.findOne({
+            user_code: data.uploadedBy,
+        })
+
+        if (!attachmentUploader){
+            throw new Error("User doesn't exist");
+        }
 
         const attachmentCode = generateCode();
 
@@ -30,7 +93,7 @@ class attachmentService {
 
     // Get all attachments
 
-    async getAll(query: any = {}, actor: any) {
+    async getAll(query: any = {}) {
         const where = buildWhere(query);
         return attachmentRepo.findAll({
             where,

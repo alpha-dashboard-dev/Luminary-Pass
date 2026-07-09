@@ -1,22 +1,44 @@
 import locationRepo from "../../repositories/location/location.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import businessRepo from "../../repositories/busines/business.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
+import eventRepo from "../../repositories/event/event.repository.js";
 
 class LocationService {
 
-    async create(data: any, actor: any) {
-        // console.log(actor);
+    async create(data: any) {
 
-        if (!actor) throw new Error("Unauthorized");
+        switch (data.entityType) {
+            case "business":
+                const business = await businessRepo.findOne({
+                    business_code: data.entityCode,
+                });
 
+                if(!business){
+                    throw new Error("Business doesn't exist");
+                }
+                break;
 
-        // const location = await locationRepo.findOne({
-        //     name: data.name
-        // })
-        //
-        // if (location) {
-        //     throw new Error("location already exists");
-        // }
+            case "user":
+
+                const user = await userRepo.findOne({
+                    user_code: data.entityCode,
+                })
+                if (!user){
+                    throw new Error("User doesn't exist");
+                }
+                break;
+
+            case "event":
+                const event = await eventRepo.findOne({
+                    event_code: data.entityCode,
+                })
+                if (!event){
+                    throw new Error("Event doesn't exist");
+                }
+                break;
+        }
 
         // Add Status column in Location Table
 
@@ -37,13 +59,9 @@ class LocationService {
 
     // Get all Locations
 
-    async getAll(query: any = {}, actor: any) {
-        // console.log(query.where)
+    async getAll(query: any = {}) {
+        // console.log(query)
         const where = buildWhere(query);
-
-        if(!actor){
-            throw new Error("Unauthorized Access");
-        }
 
         return locationRepo.findAll({
             where,
