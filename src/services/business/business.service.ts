@@ -11,7 +11,7 @@ const db = initModels();
 
 class BusinessService {
 
-    // Create Business + Owner + send email to create their user information
+    // Create Business + Owner
     async create(data: any) {
 
         const transaction = await db.sequelize.transaction();
