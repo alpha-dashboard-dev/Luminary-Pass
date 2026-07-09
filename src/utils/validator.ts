@@ -485,6 +485,4 @@ export const validateBadge = (data: any) => {
     if (status !== undefined && !VALID_BADGE_STATUSES.includes(status)) {
         throw new Error("Invalid Badge status. Must be one of: " + VALID_BADGE_STATUSES.join(", "));
     }
-
-
 }

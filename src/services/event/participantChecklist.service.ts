@@ -2,12 +2,20 @@ import participantChecklistRepo from "../../repositories/event/participantCheckl
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
+import participantRepo from "../../repositories/event/participant.repository.js";
 
 class participantChecklistService {
 
 
     async create(data: any) {
 
+        const participantExists = await participantRepo.findOne({
+            participant_code: data.participantCode
+        })
+
+        if (!participantExists) {
+            throw new Error("Participant does not exist");
+        }
 
         const participantChecklistCode = generateCode();
 

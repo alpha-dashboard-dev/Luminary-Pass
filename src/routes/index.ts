@@ -24,11 +24,12 @@ import invitationRoutes from "./event/invitation.routes";
 import attachmentRoutes from "./mediaAttachment/attachement.routes";
 
 import participantRoutes from "./event/participant.routes";
-import checklistRoutes from "./event/checklist.routes.js";
-import checklistAttachmentRoutes from "./event/checklistAttachment.routes.js";
-import badgeRoutes from "./badge/badge.routes.js";
-import settingRoutes from "./setting/setting.routes.js";
-import socialLoginRoutes from "./socialLogin/socialLogin.routes.js";
+import checklistRoutes from "./event/checklist.routes";
+import checklistAttachmentRoutes from "./event/checklistAttachment.routes";
+import badgeRoutes from "./badge/badge.routes";
+import settingRoutes from "./setting/setting.routes";
+import socialLoginRoutes from "./socialLogin/socialLogin.routes";
+import participantChecklistRoutes from "./event/participantChecklist.routes";
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -65,4 +66,5 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(badgeRoutes, { prefix: "/badges" });
     fastify.register(settingRoutes, { prefix: "/settings" });
     fastify.register(socialLoginRoutes, { prefix: "/socialLogin" });
+    fastify.register(participantChecklistRoutes, { prefix: "/participant-checklist" });
 }

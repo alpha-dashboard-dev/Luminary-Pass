@@ -7,7 +7,7 @@ class participantChecklistController {
 
         try{
             const data = req.body;
-            // validateParticipant(data);
+            console.log(data);
             const result =  await participantChecklistService.create(
                 data,
                 req.user

@@ -7,7 +7,7 @@ import {hasPermission} from "../../middleware/hasPermission.js";
 export default async function participantChecklistRoutes(fastify: FastifyInstance) {
 
     fastify.post(
-        "/create-participant",
+        "/create-participantChecklist",
         {
             preHandler: [
                 authenticate,
