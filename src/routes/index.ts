@@ -28,8 +28,11 @@ import checklistRoutes from "./event/checklist.routes";
 import checklistAttachmentRoutes from "./event/checklistAttachment.routes";
 import badgeRoutes from "./badge/badge.routes";
 import settingRoutes from "./setting/setting.routes";
-import socialLoginRoutes from "./socialLogin/socialLogin.routes";
+// import socialLoginRoutes from "./socialMedia/socialMedia.routes";
 import participantChecklistRoutes from "./event/participantChecklist.routes";
+
+import instagramRoutes from "./socialMedia/instagram/instagram.routes.js";
+
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -65,6 +68,7 @@ export default async function routes(fastify: FastifyInstance) {
 
     fastify.register(badgeRoutes, { prefix: "/badges" });
     fastify.register(settingRoutes, { prefix: "/settings" });
-    fastify.register(socialLoginRoutes, { prefix: "/socialLogin" });
+    // fastify.register(socialLoginRoutes, { prefix: "/socialMedia" });
     fastify.register(participantChecklistRoutes, { prefix: "/participant-checklist" });
+    fastify.register(instagramRoutes, { prefix: "/instagram" });
 }

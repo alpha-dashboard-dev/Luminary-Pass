@@ -212,7 +212,7 @@ module.exports = { async up(queryInterface, Sequelize) {
                 
             },
 
-            //     Location module
+            //     Location api
             {
                 role_permission_code: "RP000029",
                 role_code: "ROL00001",
@@ -651,7 +651,7 @@ module.exports = { async up(queryInterface, Sequelize) {
                 created_at: now,
             },
 
-        //     Participant Checklist module
+        //     Participant Checklist api
 
             {
                 role_permission_code: "RP000089",

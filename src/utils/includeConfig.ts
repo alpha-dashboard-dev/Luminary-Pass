@@ -18,7 +18,7 @@ export const INCLUDE_CONFIG = {
 
             // include:{
             //     permissions: {
-            //         attributes: ["module", "name"]
+            //         attributes: ["api", "name"]
             //     }
             // }
         },

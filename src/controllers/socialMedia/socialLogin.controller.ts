@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import socialLoginService from "../../services/socialLogin/socialLogin.service";
+import socialLoginService from "../../services/socialMedia/socialLogin.service";
 
 class socialLoginController {
 
@@ -13,7 +13,7 @@ class socialLoginController {
             )
             return reply.status(200).send({
                 success: true,
-                message: "socialLogin created successfully",
+                message: "socialMedia created successfully",
                 data: result
             });
         }
@@ -54,7 +54,7 @@ class socialLoginController {
         }
     }
 
-    // Get by socialLogin code
+    // Get by socialMedia code
     async getBySocialLoginCode(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -117,7 +117,7 @@ class socialLoginController {
     }
 
 
-    //Update socialLogin
+    //Update socialMedia
 
     async update(req: FastifyRequest, reply: FastifyReply) {
 
@@ -133,7 +133,7 @@ class socialLoginController {
 
             return reply.status(200).send({
                 success: true,
-                message: "socialLogin updated successfully",
+                message: "socialMedia updated successfully",
                 data,
             });
 
@@ -146,7 +146,7 @@ class socialLoginController {
         }
     }
 
-    //  DELETE socialLogin
+    //  DELETE socialMedia
     async delete(req: FastifyRequest, reply: FastifyReply) {
 
         try {
@@ -159,7 +159,7 @@ class socialLoginController {
 
             return reply.status(200).send({
                 success: true,
-                message: "socialLogin permanently deleted"
+                message: "socialMedia permanently deleted"
             });
 
         } catch (err: any) {

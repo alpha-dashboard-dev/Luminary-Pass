@@ -215,7 +215,7 @@ module.exports = { async up(queryInterface, Sequelize) {
                 updated_at: now,
             },
 
-        //     Location module
+        //     Location api
             {
                 permission_code: "PER00029",
                 module: "location",
@@ -632,28 +632,28 @@ module.exports = { async up(queryInterface, Sequelize) {
         //     Social Login Module
             {
                 permission_code: "PER00085",
-                module: "socialLogin",
+                module: "socialMedia",
                 name: "create",
                 created_at: now,
                 updated_at: now,
             },
             {
                 permission_code: "PER00086",
-                module: "socialLogin",
+                module: "socialMedia",
                 name: "read",
                 created_at: now,
                 updated_at: now,
             },
             {
                 permission_code: "PER00087",
-                module: "socialLogin",
+                module: "socialMedia",
                 name: "update",
                 created_at: now,
                 updated_at: now,
             },
             {
                 permission_code: "PER00088",
-                module: "socialLogin",
+                module: "socialMedia",
                 name: "delete",
                 created_at: now,
                 updated_at: now,
