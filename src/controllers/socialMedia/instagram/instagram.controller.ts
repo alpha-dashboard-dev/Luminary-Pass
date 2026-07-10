@@ -6,8 +6,6 @@ import instagramService from "../../../services/socialMedia/instagram/instagram.
 
 class InstagramController {
 
-
-
     async login(req:FastifyRequest, reply:FastifyReply){
 
         const url = instagramService.getLoginUrl();
@@ -46,100 +44,14 @@ class InstagramController {
 
         const {accessToken} = req.query as { accessToken:string };
         // console.log(accessToken);
-
-
         const result = await instagramService.getLongLivedToken(accessToken);
         return reply.send(result);
 
     }
 
+    // async saveSocialLoginInfo(req:FastifyRequest, reply:FastifyReply)
+    // }
 
-
-    // async publish(
-    //     req:FastifyRequest,
-    //     reply:FastifyReply
-    // ){
-    //
-    //
-    //     const body =
-    //         req.body as any;
-    //
-    //
-    //
-    //     const result =
-    //         await instagramService.publishPost(
-    //
-    //             body.userId,
-    //
-    //             body.imageUrl,
-    //
-    //             body.caption,
-    //
-    //             body.token
-    //
-    //         );
-    //
-    //
-    //     return reply.send(result);
-    //
-    // }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    // async verifyWebhook(
-    //     req:FastifyRequest,
-    //     reply:FastifyReply
-    // ){
-    //
-    //
-    //     const query =
-    //         req.query as any;
-    //
-    //
-    //
-    //     const result =
-    //         instagramService.verifyWebhook(
-    //
-    //             query["hub.mode"],
-    //
-    //             query["hub.verify_token"],
-    //
-    //             query["hub.challenge"]
-    //
-    //         );
-    //
-    //
-    //
-    //     return reply.send(result);
-    //
-    // }
-    //
-    //
-    //
-    //
-    //
-    //
-    //
-    // async webhook(
-    //     req:FastifyRequest,
-    //     reply:FastifyReply
-    // ){
-    //
-    //
-    //     await instagramService.handleWebhook(
-    //         req.body
-    //     );
-    //
-    //
-    //     return reply.send({
-    //         success:true
-    //     });
-    //
-    // }
 
 
 }

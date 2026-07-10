@@ -29,23 +29,4 @@ export default async function instagramRoutes(
         controller.tokenInfo
     );
 
-
-    // fastify.post(
-    //     "/post",
-    //     controller.publish
-    // );
-    //
-    //
-    // fastify.get(
-    //     "/webhook",
-    //     controller.verifyWebhook
-    // );
-    //
-    //
-    // fastify.post(
-    //     "/webhook",
-    //     controller.webhook
-    // );
-
-
 }
