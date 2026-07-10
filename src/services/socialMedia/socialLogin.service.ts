@@ -39,7 +39,6 @@ class socialLoginService {
             ]
         });
     }
-
     // Get socials By social code
     async getBySocialLoginCode(socialCode: string, query: any = {}) {
 
@@ -80,7 +79,7 @@ class socialLoginService {
     async update(socialCode: string, data: any) {
 
         const social = await socialLoginRepo.findOne({
-            social_code: socialCode
+            social_login_code: socialCode
         });
 
         if (!social) throw new Error("social not found");

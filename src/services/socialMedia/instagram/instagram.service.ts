@@ -65,7 +65,7 @@ class InstagramService {
 
         } catch(error:any){
 
-            console.log("INSTAGRAM TOKEN ERROR:", error.response?.data);
+            // console.log("INSTAGRAM TOKEN ERROR:", error.response?.data);
             throw error;
 
         }
@@ -100,7 +100,6 @@ class InstagramService {
      * Get Instagram Account
      */
     async getProfile(token: string) {
-
         try {
             const response = await instagramGraphApi.get(
                 "/me",
@@ -133,12 +132,7 @@ class InstagramService {
                 }
             });
 
-
-
-        const expiresAt = tokenData.expires_in ?
-                new Date(Date.now() + tokenData.expires_in * 1000) : null;
-
-
+        const expiresAt = tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : null;
 
         if(existing){
             await existing.update({
@@ -149,23 +143,14 @@ class InstagramService {
             return existing;
         }
 
-
-
         return await SocialLoginRepo.create({
 
             social_login_code: generateCode(),
 
             user_code: userCode,
-
-
             provider: "instagram",
-
-
             provider_user_id: profile.id,
-
-
             access_token: tokenData.access_token,
-
             token_expires_at: expiresAt,
             last_login_at: new Date()
 
