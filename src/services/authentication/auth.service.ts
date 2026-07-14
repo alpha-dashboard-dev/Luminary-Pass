@@ -6,8 +6,107 @@ import {comparePassword,} from "../../utils/hashPassword.js";
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken,} from "../../utils/jwt.js";
 
 import { generateCode } from "../../utils/generateCode.js";
+import {hash} from "bcrypt";
+import userService from "../user/user.service.js";
+import {sequelize} from "../../database/sequelize/sequelize.js";
+import attachmentService from "../mediaAttachment/attachment.service.js";
 
 class AuthService {
+
+    /* first step: create Account
+            1)full name
+            2) Email or phone
+            3) Password
+            4) confirm Password
+        Second Step: Connect Instagram account
+
+        third step: upload instagram dashboard screenshot for verification
+
+        fourth step: add profile details
+            1) bio
+            2)category
+            3) country
+            4) city
+
+        5 step: showcase your work
+        upload at-least 4 photos
+
+        our team review your application within 24 hours
+
+
+     */
+
+    async registerInfluencer(data: any){
+
+        const {
+            fullName,
+            email,
+            phone,
+            password,
+            confirmPassword,
+
+            instagram,
+
+            bio,
+            category,
+            country,
+            city,
+
+            verificationScreenshot,
+            portfolioImages
+
+        } = data;
+
+        const transaction = await sequelize.transaction();
+
+        try {
+            if(password !== confirmPassword){
+                throw new Error("Passwords do not match");
+            }
+
+            // step 1) create user
+            const user = userService.create(
+                {
+                    firstName: fullName,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    role_code: "ROL00003"
+                },
+                {transaction}
+            );
+
+            // Step 2) Connect Instagram
+
+            // Step 3) Media Attachment for verification
+
+            const media = attachmentService.create({
+
+
+            })
+
+            // Step 4) Add influencer profile details
+            const influencer = await influencer.create({
+                user_code: user.user_code,
+                bio: bio,
+
+
+
+            })
+            // step 5) show_case work
+
+            await transaction.commit();
+
+        }
+        catch(error){
+
+            await transaction.rollback();
+
+            throw error;
+
+        }
+
+    }
 
     async login(data: any, request: any) {
 

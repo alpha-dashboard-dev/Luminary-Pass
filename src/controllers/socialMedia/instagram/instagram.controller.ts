@@ -49,6 +49,207 @@ class InstagramController {
 
     }
 
+    async getMedia(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { token } = req.query as any;
+
+            const media =
+                await instagramService.getMedia(token);
+
+            return reply.send({
+
+                success: true,
+
+                data: media
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+    }
+
+    async getMediaById(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const {token, mediaId} = req.query as any;
+            // console.log(mediaId, token);
+
+
+            const media = await instagramService.getMediaById(mediaId, token);
+
+            return reply.send({
+
+                success: true,
+
+                data: media
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+    }
+
+    async getComments(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const {token, mediaId} = req.query as any;
+            // console.log(mediaId, token);
+
+
+            const media = await instagramService.getComments(mediaId, token);
+
+            return reply.send({
+
+                success: true,
+
+                data: media
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+    }
+
+
+    async dashboard(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { token } = req.query as any;
+
+            const dashboard = await instagramService.getDashboard(token);
+
+            return reply.send({
+
+                success: true,
+
+                data: dashboard
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+    }
+
+    async disconnect(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { userCode } = req.body as any;
+
+            await instagramService.disconnect(userCode);
+
+            return reply.send({
+
+                success: true,
+
+                message: "Instagram disconnected."
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+    }
+
+
+    async getAccountInsights(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            const {token, instagramUserId} = req.query as any;
+            // console.log(instagramUserId, token);
+
+
+            const media = await instagramService.getAccountInsights(instagramUserId, token);
+
+            return reply.send({
+
+                success: true,
+
+                data: media
+
+            });
+
+        }
+
+        catch (error: any) {
+
+            return reply.code(500).send({
+
+                success: false,
+
+                message: error.message
+
+            });
+
+        }
+
+
+    }
+
     // async saveSocialLoginInfo(req:FastifyRequest, reply:FastifyReply)
     // }
 

@@ -3,6 +3,31 @@ import authService from "../../services/authentication/auth.service.ts";
 
 class AuthController {
 
+    async register(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { data } = req.body as any;
+
+            const result = await authService.registerInfluencer(data);
+
+            return reply.status(200).send({
+                success: true,
+                message: "Registration successful",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+
     async login(req: FastifyRequest, reply: FastifyReply) {
 
         try {

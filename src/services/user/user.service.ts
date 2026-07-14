@@ -12,17 +12,6 @@ class UserService {
     async create(data: any) {
 
 
-        const userRole = await roleRepo.findOne({
-            role_code: data.roleCode,
-        })
-
-        if(!userRole){
-            throw new Error("Role does not exist")
-        }
-
-        // console.log(userRole.role)
-
-
         const emailExists = await userRepo.findOne(
             {
                 email: data.email

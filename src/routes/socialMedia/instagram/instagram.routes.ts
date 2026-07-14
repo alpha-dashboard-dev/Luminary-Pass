@@ -29,4 +29,29 @@ export default async function instagramRoutes(
         controller.tokenInfo
     );
 
+    fastify.get(
+        "/get-media",
+        controller.getMedia
+    )
+
+    fastify.get(
+        "/get-media-by-id",
+        controller.getMediaById
+    )
+
+    fastify.get(
+        "/dashboard",
+        controller.dashboard
+    )
+
+    fastify.get(
+        "/get-comments",
+        controller.getComments
+    )
+
+    fastify.get(
+        "/get-account-insights",
+        controller.getAccountInsights
+    )
+
 }

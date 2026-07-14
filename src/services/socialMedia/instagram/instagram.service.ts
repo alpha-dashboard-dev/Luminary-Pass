@@ -1,9 +1,23 @@
-import {instagramGraphApi, instagramOAuthApi} from "../../../api/instagram/instagram.api.js";
+import {instagramBusinessApi, instagramGraphApi, instagramOAuthApi} from "../../../api/instagram/instagram.api.js";
 import { env } from "../../../config/env.js";
 import SocialLoginRepo from "../../../repositories/socialLogin/socialLogin.repository.js";
 import {generateCode} from "../../../utils/generateCode.js";
+import {InstagramMedia} from "../../../types/instagram/media.types.js";
 
 class InstagramService {
+
+    private handleInstagramError(error:any){
+        console.error(JSON.stringify(
+            error.response?.data,
+                null,
+                2
+            )
+
+        );
+
+        throw error;
+
+    }
 
      // Generate Instagram Login URL
     getLoginUrl(){
@@ -12,7 +26,8 @@ class InstagramService {
             "instagram_business_basic",
             "instagram_business_content_publish",
             "instagram_business_manage_comments",
-            "instagram_business_manage_messages"
+            "instagram_business_manage_messages",
+            "instagram_business_manage_insights"
         ];
 
 
@@ -64,9 +79,7 @@ class InstagramService {
 
 
         } catch(error:any){
-
-            // console.log("INSTAGRAM TOKEN ERROR:", error.response?.data);
-            throw error;
+            this.handleInstagramError(error);
 
         }
 
@@ -89,13 +102,6 @@ class InstagramService {
         return response.data;
     }
 
-    // when instagram accessToken expires, the token refresh (two possible ways)
-        /*
-                the business wants to fetch latest data from influencer account
-                the influencer wants show their updated profile
-         */
-
-
     /**
      * Get Instagram Account
      */
@@ -113,11 +119,7 @@ class InstagramService {
             return response.data;
 
         } catch (error: any) {
-
-            console.log(JSON.stringify(error.response?.data, null, 2)
-            );
-
-            throw error;
+            this.handleInstagramError(error);
         }
     }
 
@@ -157,390 +159,413 @@ class InstagramService {
         });
     }
 
+    /**
+     * Fetch user media
+     */
+    async getMedia(accessToken: string, limit = 25) {
 
+        try {
+
+            const response = await instagramGraphApi.get(
+
+                    "/me/media",
+
+                    {
+
+                        params: {
+
+                            fields: [
+
+                                "id",
+
+                                "caption",
+
+                                "media_type",
+
+                                "media_url",
+
+                                "thumbnail_url",
+
+                                "permalink",
+
+                                "timestamp",
+
+                                "like_count",
+
+                                "comments_count"
+
+                            ].join(","),
+
+                            limit,
+
+                            access_token: accessToken
+
+                        }
+
+                    }
+
+                );
+
+
+            return response.data;
+
+
+        } catch (error: any) {
+
+            this.handleInstagramError(error);
+
+        }
+
+    }
+
+    async getMediaById(mediaId: string, accessToken: string) {
+        // console.log(accessToken)
+        try {
+
+            const response = await instagramGraphApi.get(
+
+                    `/${mediaId}`,
+
+                    {
+
+                        params: {
+
+                            fields: [
+
+                                "id",
+
+                                "caption",
+
+                                "media_type",
+
+                                "media_url",
+
+                                "thumbnail_url",
+
+                                "permalink",
+
+                                "timestamp",
+
+                                "like_count",
+
+                                "comments_count"
+
+                            ].join(","),
+
+                            access_token: accessToken
+
+                        }
+
+                    }
+
+                );
+
+
+            return response.data;
+
+        } catch (error: any) {
+
+            this.handleInstagramError(error);
+
+        }
+
+    }
+
+    async getComments(mediaId: string, accessToken: string) {
+
+        try {
+
+            const response =
+                await instagramGraphApi.get(
+
+                    `/${mediaId}/comments`,
+
+                    {
+
+                        params: {
+
+                            fields:
+
+                                "id,text,username,timestamp",
+
+                            access_token:
+
+                            accessToken
+
+                        }
+
+                    }
+
+                );
+
+
+            return response.data;
+
+        }
+
+        catch (error: any) {
+
+            this.handleInstagramError(error);
+
+        }
+
+    }
+
+    calculateEngagement(media: InstagramMedia[]) {
+
+
+        const totalPosts = media.length;
+
+        const totalLikes = media.reduce(
+
+                (sum, post) => sum + (post.like_count ?? 0),
+                0
+
+            );
+
+
+        const totalComments = media.reduce(
+                (sum, post) => sum + (post.comments_count ?? 0),
+                0
+
+            );
+
+
+        const averageLikes = totalPosts ? totalLikes / totalPosts : 0;
+
+        const averageComments = totalPosts ? totalComments / totalPosts : 0;
+
+        const averageEngagement = totalPosts ? (totalLikes + totalComments) / totalPosts : 0;
+
+
+        return {
+
+            totalPosts,
+            totalLikes,
+            totalComments,
+            averageLikes,
+            averageComments,
+            averageEngagement
+
+        };
+
+    }
+
+
+    async getDashboard(accessToken: string) {
+
+        const profile = await this.getProfile(accessToken);
+
+        const mediaResponse = await this.getMedia(accessToken);
+
+        const accountInsights = await this.getAccountInsights(profile.id, accessToken);
+
+        const engagement = this.calculateEngagement(mediaResponse.data);
+
+
+        return {
+            profile,
+            statistics: engagement,
+            recentPosts: mediaResponse.data,
+            insights: accountInsights
+
+        };
+
+    }
+
+async getAccountInsights(instagramUserId: string, accessToken: string) {
+
+        // console.log(instagramUserId, accessToken);
+
+        try {
+
+            const metrics = [
+                "reach",
+                "follower_count",
+                "profile_views",
+                "accounts_engaged",
+                "total_interactions"
+            ];
+
+            const response =
+                await instagramGraphApi.get(
+
+                    `/${instagramUserId}/insights`,
+
+                    {
+                        params: {
+
+                            metric: metrics.join(","),
+
+                            period: "day",
+
+                            access_token: accessToken
+
+                        }
+
+                    }
+
+                );
+
+
+            const result: Record<string, number> = {};
+
+            for (const metric of response.data.data) {
+
+                result[metric.name] =
+                    metric.values?.[0]?.value ?? 0;
+
+            }
+
+
+            return result;
+
+        }
+
+        catch (error: any) {
+            this.handleInstagramError(error);
+        }
+
+    }
+
+    // async getAccountInsights(
+    //     instagramUserId: string,
+    //     accessToken: string
+    // ) {
+    //
+    //     const requestedMetrics = [
+    //
+    //         "reach",
+    //
+    //         "profile_views",
+    //
+    //         "follower_count",
+    //
+    //         "accounts_engaged",
+    //
+    //         "total_interactions",
+    //
+    //         "likes",
+    //
+    //         "comments",
+    //
+    //         "shares",
+    //
+    //         "saves"
+    //
+    //     ];
+    //
+    //
+    //     try {
+    //
+    //         const response =
+    //             await instagramGraphApi.get(
+    //
+    //                 `/${instagramUserId}/insights`,
+    //
+    //                 {
+    //                     params: {
+    //
+    //                         metric:
+    //                             requestedMetrics.join(","),
+    //
+    //                         period: "day",
+    //
+    //                         access_token:
+    //                         accessToken
+    //
+    //                     }
+    //
+    //                 }
+    //
+    //             );
+    //
+    //
+    //         const returnedMetrics =
+    //             response.data?.data ?? [];
+    //
+    //
+    //         const result:any = {};
+    //
+    //         const supportedMetrics:string[] = [];
+    //
+    //         const unsupportedMetrics:string[] = [];
+    //
+    //
+    //         /*
+    //             Format returned metrics
+    //         */
+    //
+    //         returnedMetrics.forEach(
+    //             (metric:any)=>{
+    //
+    //                 supportedMetrics.push(
+    //                     metric.name
+    //                 );
+    //
+    //
+    //                 result[metric.name] =
+    //                     metric.values?.[0]?.value ?? 0;
+    //
+    //             }
+    //         );
+    //
+    //
+    //         /*
+    //             Detect missing metrics
+    //         */
+    //
+    //         requestedMetrics.forEach(
+    //             (metric)=>{
+    //
+    //                 if(
+    //                     !supportedMetrics.includes(metric)
+    //                 ){
+    //
+    //                     unsupportedMetrics.push(
+    //                         metric
+    //                     );
+    //
+    //
+    //                     result[metric] = null;
+    //
+    //                 }
+    //
+    //             }
+    //         );
+    //
+    //
+    //         return {
+    //
+    //             metrics: result,
+    //
+    //             supportedMetrics,
+    //
+    //             unsupportedMetrics
+    //
+    //         };
+    //
+    //
+    //     }
+    //     catch(error:any){
+    //
+    //         console.log(
+    //             JSON.stringify(
+    //                 error.response?.data,
+    //                 null,
+    //                 2
+    //             )
+    //         );
+    //
+    //
+    //         throw error;
+    //
+    //     }
+    //
+    // }
 
 
 }
 
 
 export default new InstagramService();
-
-
-
-
-// import axios from "axios";
-// import { env } from "../../config/env.js";
-//
-// import SocialLogin from "../socialLogin/socialLogin.model.js";
-//
-// import { generateCode } from "../../utils/codeGenerator.js";
-//
-//
-// class InstagramService {
-//
-//
-//     /**
-//      * Generate Instagram Login URL
-//      */
-//     getLoginUrl() {
-//
-//         const scopes = [
-//             "instagram_business_basic",
-//             "instagram_business_content_publish"
-//         ];
-//
-//
-//         const params = new URLSearchParams({
-//
-//             client_id:
-//             env.INSTAGRAM_APP_ID,
-//
-//
-//             redirect_uri:
-//             env.INSTAGRAM_REDIRECT_URI,
-//
-//
-//             response_type:
-//                 "code",
-//
-//
-//             scope:
-//                 scopes.join(",")
-//
-//         });
-//
-//
-//         return (
-//             "https://www.instagram.com/oauth/authorize?"
-//             +
-//             params.toString()
-//         );
-//
-//     }
-//
-//
-//
-//     /**
-//      * Exchange authorization code
-//      */
-//     async exchangeCode(
-//         code:string
-//     ){
-//
-//         try {
-//
-//
-//             const response =
-//                 await axios.post(
-//
-//                     "https://api.instagram.com/oauth/access_token",
-//
-//                     new URLSearchParams({
-//
-//                         client_id:
-//                         env.INSTAGRAM_APP_ID,
-//
-//
-//                         client_secret:
-//                         env.INSTAGRAM_APP_SECRET,
-//
-//
-//                         grant_type:
-//                             "authorization_code",
-//
-//
-//                         redirect_uri:
-//                         env.INSTAGRAM_REDIRECT_URI,
-//
-//
-//                         code
-//
-//                     }),
-//
-//                     {
-//                         headers:{
-//                             "Content-Type":
-//                                 "application/x-www-form-urlencoded"
-//                         }
-//                     }
-//
-//                 );
-//
-//
-//             return response.data;
-//
-//
-//         } catch(error:any){
-//
-//             console.log(
-//                 "Instagram exchange error:",
-//                 error.response?.data
-//             );
-//
-//
-//             throw error;
-//
-//         }
-//
-//     }
-//
-//
-//
-//     /**
-//      * Get Instagram account information
-//      */
-//     async getProfile(
-//         token:string
-//     ){
-//
-//         try {
-//
-//
-//             const response =
-//                 await axios.get(
-//
-//                     "https://graph.instagram.com/me",
-//
-//                     {
-//                         params:{
-//
-//                             fields:
-//                                 "id,username,account_type,media_count",
-//
-//                             access_token:
-//                             token
-//
-//                         }
-//
-//                     }
-//
-//                 );
-//
-//
-//             return response.data;
-//
-//
-//         }catch(error:any){
-//
-//             console.log(
-//                 "Instagram profile error:",
-//                 error.response?.data
-//             );
-//
-//
-//             throw error;
-//
-//         }
-//
-//     }
-//
-//
-//
-//     /**
-//      * Save Instagram login
-//      */
-//     async saveSocialLogin(
-//         userCode:string,
-//         tokenData:any,
-//         profile:any
-//     ){
-//
-//
-//         const existing =
-//             await SocialLogin.findOne({
-//
-//                 where:{
-//
-//                     provider:
-//                         "instagram",
-//
-//
-//                     provider_user_id:
-//                     tokenData.user_id
-//
-//                 }
-//
-//             });
-//
-//
-//
-//         const expiresAt =
-//             tokenData.expires_in
-//
-//                 ?
-//                 new Date(
-//                     Date.now()
-//                     +
-//                     tokenData.expires_in * 1000
-//                 )
-//
-//                 :
-//                 null;
-//
-//
-//
-//         if(existing){
-//
-//
-//             await existing.update({
-//
-//                 access_token:
-//                 tokenData.access_token,
-//
-//
-//                 token_expires_at:
-//                 expiresAt,
-//
-//
-//                 last_login_at:
-//                     new Date()
-//
-//             });
-//
-//
-//             return existing;
-//
-//         }
-//
-//
-//
-//         return await SocialLogin.create({
-//
-//             social_login_code:
-//                 generateCode(),
-//
-//
-//             user_code:
-//             userCode,
-//
-//
-//             provider:
-//                 "instagram",
-//
-//
-//             provider_user_id:
-//             profile.id,
-//
-//
-//             access_token:
-//             tokenData.access_token,
-//
-//
-//             token_expires_at:
-//             expiresAt,
-//
-//
-//             last_login_at:
-//                 new Date()
-//
-//         });
-//
-//
-//     }
-//
-//
-//
-//     /**
-//      * Refresh long-lived token
-//      */
-//     async refreshToken(
-//         token:string
-//     ){
-//
-//         try {
-//
-//
-//             const response =
-//                 await axios.get(
-//
-//                     "https://graph.instagram.com/refresh_access_token",
-//
-//                     {
-//
-//                         params:{
-//
-//                             grant_type:
-//                                 "ig_refresh_token",
-//
-//
-//                             access_token:
-//                             token
-//
-//                         }
-//
-//                     }
-//
-//                 );
-//
-//
-//             return response.data;
-//
-//
-//         }catch(error:any){
-//
-//             console.log(
-//                 "Refresh token error:",
-//                 error.response?.data
-//             );
-//
-//
-//             throw error;
-//
-//         }
-//
-//     }
-//
-//
-//
-//     /**
-//      * Get connected Instagram account
-//      */
-//     async getAccount(
-//         userCode:string
-//     ){
-//
-//         return await SocialLogin.findOne({
-//
-//             where:{
-//
-//                 user_code:
-//                 userCode,
-//
-//                 provider:
-//                     "instagram"
-//
-//             }
-//
-//         });
-//
-//     }
-//
-//
-//
-//     /**
-//      * Disconnect Instagram
-//      */
-//     async disconnect(
-//         userCode:string
-//     ){
-//
-//         return await SocialLogin.destroy({
-//
-//             where:{
-//
-//                 user_code:
-//                 userCode,
-//
-//                 provider:
-//                     "instagram"
-//
-//             }
-//
-//         });
-//
-//     }
-//
-// }
-//
-//
-// export default new InstagramService();

@@ -20,3 +20,15 @@ export const instagramGraphApi = axios.create({
     }
 
 });
+
+
+export const instagramBusinessApi =
+    axios.create({
+
+        baseURL: "https://graph.facebook.com/v23.0",
+
+        headers:{
+            "Content-Type": "application/json"
+        }
+
+    });
