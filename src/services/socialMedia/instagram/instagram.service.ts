@@ -135,15 +135,10 @@ class InstagramService {
                 {
 
                     params:{
-
                         client_id: env.FACEBOOK_APP_ID,
-
                         client_secret: env.FACEBOOK_APP_SECRET,
-
                         redirect_uri: env.FACEBOOK_REDIRECT_URI,
-
                         code
-
                     }
 
                 }
@@ -322,28 +317,18 @@ class InstagramService {
         }
 
     }
-
     async getComments(mediaId: string, accessToken: string) {
 
         try {
 
-            const response =
-                await instagramGraphApi.get(
+            const response = await instagramGraphApi.get(
 
                     `/${mediaId}/comments`,
 
                     {
-
                         params: {
-
-                            fields:
-
-                                "id,text,username,timestamp",
-
-                            access_token:
-
-                            accessToken
-
+                            fields: "id,text,username,timestamp",
+                            access_token: accessToken
                         }
 
                     }
