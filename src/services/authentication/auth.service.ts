@@ -1,7 +1,7 @@
 import userRepo from "../../repositories/user/user.repository.js";
 import userSessionRepo from "../../repositories/user/userSession.repository.js";
 
-import {comparePassword,} from "../../utils/hashPassword.js";
+import {comparePassword, hashPassword,} from "../../utils/hashPassword.js";
 
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken,} from "../../utils/jwt.js";
 
@@ -13,99 +13,59 @@ import attachmentService from "../mediaAttachment/attachment.service.js";
 
 class AuthService {
 
-    /* first step: create Account
-            1)full name
-            2) Email or phone
-            3) Password
-            4) confirm Password
-        Second Step: Connect Instagram account
+    async register(data: any) {
 
-        third step: upload instagram dashboard screenshot for verification
+        try{
 
-        fourth step: add profile details
-            1) bio
-            2)category
-            3) country
-            4) city
+            if(data.email){
+                const emailExists = await userRepo.findOne(
+                    {
+                        email: data.email
+                    }
+                );
 
-        5 step: showcase your work
-        upload at-least 4 photos
-
-        our team review your application within 24 hours
-
-
-     */
-
-    async registerInfluencer(data: any){
-
-        const {
-            fullName,
-            email,
-            phone,
-            password,
-            confirmPassword,
-
-            instagram,
-
-            bio,
-            category,
-            country,
-            city,
-
-            verificationScreenshot,
-            portfolioImages
-
-        } = data;
-
-        const transaction = await sequelize.transaction();
-
-        try {
-            if(password !== confirmPassword){
-                throw new Error("Passwords do not match");
+                if (emailExists) {
+                    throw new Error("Email already exists");
+                }
             }
 
-            // step 1) create user
-            const user = userService.create(
-                {
-                    firstName: fullName,
-                    email: email,
-                    phone: phone,
-                    password: password,
-                    role_code: "ROL00003"
-                },
-                {transaction}
-            );
 
-            // Step 2) Connect Instagram
+            if(data.phone){
+                const phoneExists = await userRepo.findOne({
+                    phone: data.phone
+                })
 
-            // Step 3) Media Attachment for verification
+                if (phoneExists) {
+                    throw new Error("Phone already exists");
+                }
 
-            const media = attachmentService.create({
+            }
 
+            const userCode = generateCode();
+            let password
 
-            })
+            if(data.password){
+                password = await hashPassword(data.password);
+            }
 
-            // Step 4) Add influencer profile details
-            const influencer = await influencer.create({
-                user_code: user.user_code,
-                bio: bio,
+            return await userRepo.create({
+                user_code: userCode,
+                organization_code: data.organizationCode || null,
+                business_code: data.businessCode || null,
+                role_code: data.roleCode,
+                first_name: data.fullName || null,
+                last_name: data.lastName || null,
+                email: data.email.trim().toLowerCase(),
+                phone: data.phone || null,
+                password: password || null,
+                user_type: data.userType || null ,
+                avatar: null,
+                status: data.status || "inactive"
+            });
 
-
-
-            })
-            // step 5) show_case work
-
-            await transaction.commit();
-
+        }catch (err){
+            throw err;
         }
-        catch(error){
-
-            await transaction.rollback();
-
-            throw error;
-
-        }
-
     }
 
     async login(data: any, request: any) {
@@ -343,3 +303,237 @@ class AuthService {
 }
 
 export default new AuthService();
+
+/*
+
+async register(data: any) {
+
+    const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        password,
+        confirmPassword,
+
+        bio,
+        gender,
+        dateOfBirth,
+
+        instagram,
+
+        verificationScreenshot,
+
+        portfolioImages
+    } = data;
+
+
+    // 1. Validate password
+
+    if(password !== confirmPassword){
+        throw new Error("Password does not match");
+    }
+
+
+    // 2. Create User
+
+    const user = await userService.create({
+
+        firstName,
+        lastName,
+
+        email,
+        phone,
+
+        password,
+
+        roleCode: "INF00001", // influencer role
+
+        userType: "INFLUENCER",
+
+        status: "ACTIVE"
+
+    });
+
+
+
+    // 3. Create Influencer Profile
+
+    const influencer =
+        await influencerService.create({
+
+            userCode: user.user_code,
+
+            bio,
+
+            gender,
+
+            dateOfBirth
+
+        });
+
+
+
+    // 4. Save Instagram Login Data
+
+    if(instagram){
+
+        await socialLoginService.create({
+
+            userCode: user.user_code,
+
+            influencerCode:
+            influencer.influencer_code,
+
+            provider: "INSTAGRAM",
+
+            socialId: instagram.id,
+
+            username: instagram.username,
+
+            accessToken: instagram.accessToken,
+
+            refreshToken:
+            instagram.refreshToken || null
+
+        });
+
+    }
+
+
+
+    // 5. Save Instagram verification screenshot
+
+    if(verificationScreenshot){
+
+        await attachmentService.create({
+
+            entityType: "influencers",
+
+            entityCode:
+            influencer.influencer_code,
+
+            title:
+            "Instagram Insights Screenshot",
+
+            mediaType:
+            verificationScreenshot.mediaType,
+
+            fileName:
+            verificationScreenshot.fileName,
+
+            fileExtension:
+            verificationScreenshot.fileExtension,
+
+            fileSize:
+            verificationScreenshot.fileSize,
+
+            url:
+            verificationScreenshot.url,
+
+            isPrimary:true,
+
+            visibility:"PRIVATE",
+
+            uploadedBy:
+            user.user_code,
+
+            displayOrder:1,
+
+            status:"ACTIVE"
+
+        });
+
+    }
+
+
+
+    // 6. Save Portfolio Images
+
+    if(!portfolioImages || portfolioImages.length < 4){
+
+        throw new Error(
+            "Minimum 4 portfolio images are required"
+        );
+
+    }
+
+
+    let order = 1;
+
+    for(const image of portfolioImages){
+
+
+        await attachmentService.create({
+
+            entityType:"influencers",
+
+            entityCode:
+            influencer.influencer_code,
+
+
+            title:
+            "Influencer Portfolio",
+
+
+            mediaType:
+            image.mediaType,
+
+
+            fileName:
+            image.fileName,
+
+
+            fileExtension:
+            image.fileExtension,
+
+
+            fileSize:
+            image.fileSize,
+
+
+            url:
+            image.url,
+
+
+            isPrimary:
+            order === 1,
+
+
+            visibility:"PUBLIC",
+
+
+            uploadedBy:
+            user.user_code,
+
+
+            displayOrder:
+            order,
+
+
+            status:"ACTIVE"
+
+        });
+
+
+        order++;
+
+    }
+
+
+
+    return {
+
+        userCode:
+        user.user_code,
+
+        influencerCode:
+        influencer.influencer_code,
+
+        message:
+        "Your application has been submitted. Our team will review within 24 hours."
+
+    };
+
+}
+ */

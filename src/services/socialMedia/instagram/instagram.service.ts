@@ -21,12 +21,11 @@ class InstagramService {
 
      // Generate Instagram Login URL
     getLoginUrl(){
-
         const scopes = [
             "instagram_business_basic",
-            "instagram_business_content_publish",
-            "instagram_business_manage_comments",
-            "instagram_business_manage_messages",
+            // "instagram_business_content_publish",
+            // "instagram_business_manage_comments",
+            // "instagram_business_manage_messages",
             "instagram_business_manage_insights"
         ];
 
@@ -50,7 +49,6 @@ class InstagramService {
         return url;
 
     }
-
     /**
      * Exchange code for token
      */
@@ -384,7 +382,11 @@ async getAccountInsights(instagramUserId: string, accessToken: string) {
                 "follower_count",
                 "profile_views",
                 "accounts_engaged",
-                "total_interactions"
+                "total_interactions",
+                "likes",
+                "comments",
+                "shares",
+                "saves"
             ];
 
             const response =

@@ -3,7 +3,7 @@ import userRepo from "../../repositories/user/user.repository";
 import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import roleRepo from "../../repositories/user/userRole.repository.js";
+// import roleRepo from "../../repositories/user/userRole.repository.js";
 
 class UserService {
 

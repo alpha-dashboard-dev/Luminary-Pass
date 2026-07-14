@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import authService from "../../services/authentication/auth.service.ts";
+import {accountValidation} from "../../utils/validator.js";
 
 class AuthController {
 
@@ -7,9 +8,12 @@ class AuthController {
 
         try {
 
-            const { data } = req.body as any;
+            const  data = req.body as any;
 
-            const result = await authService.registerInfluencer(data);
+            // console.log(data)
+
+            accountValidation(data);
+            const result = await authService.register(data);
 
             return reply.status(200).send({
                 success: true,

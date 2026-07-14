@@ -4,6 +4,11 @@ import { authenticate } from "../../middleware/authenticate.js";
 
 export default async function authRoutes(fastify: FastifyInstance) {
 
+    fastify.post(
+        "/register",
+        authController.register,
+    )
+
 
     // LOGIN (PUBLIC)
     fastify.post("/login", authController.login);

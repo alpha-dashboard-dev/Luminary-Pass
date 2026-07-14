@@ -508,3 +508,30 @@ export const validateAbility = (data: any) => {
         throw new Error("Valid 8-character userCode is required, who added the ability");
     }
 }
+
+export const accountValidation = (data: any) => {
+    const { fullName, email, phone, password, confirmPassword,
+        instagram, bio, category, country, city, verificationScreenshot,
+        portfolioImages} = data;
+
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error("Name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+
+    if (!password || password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
+
+    if(password !== confirmPassword){
+        throw new Error("Passwords do not match");
+    }
+
+}
