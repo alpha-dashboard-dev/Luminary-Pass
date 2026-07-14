@@ -100,6 +100,63 @@ class InstagramService {
         return response.data;
     }
 
+
+    getFacebookLoginUrl() {
+
+        const scopes = [
+
+            "instagram_basic",
+
+            "instagram_manage_insights",
+
+            "pages_show_list",
+
+            "pages_read_engagement"
+
+        ];
+
+        return (
+            "https://www.facebook.com/v23.0/dialog/oauth"
+            + `?client_id=${env.FACEBOOK_APP_ID}`
+            + `&redirect_uri=${encodeURIComponent(env.FACEBOOK_REDIRECT_URI)}`
+            + `&scope=${scopes.join(",")}`
+            + "&response_type=code"
+        );
+
+    }
+
+    async exchangeFacebookCode(code:string){
+
+        const response =
+            await instagramBusinessApi.get(
+
+                "/oauth/access_token",
+
+                {
+
+                    params:{
+
+                        client_id:
+                        env.FACEBOOK_APP_ID,
+
+                        client_secret:
+                        env.FACEBOOK_APP_SECRET,
+
+                        redirect_uri:
+                        env.FACEBOOK_REDIRECT_URI,
+
+                        code
+
+                    }
+
+                }
+
+            );
+
+        return response.data;
+
+    }
+
     /**
      * Get Instagram Account
      */

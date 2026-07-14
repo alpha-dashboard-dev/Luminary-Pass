@@ -1,23 +1,19 @@
 import userRepo from "../../repositories/user/user.repository.js";
 import userSessionRepo from "../../repositories/user/userSession.repository.js";
+import signup_sessionRepo from "../../repositories/user/signup_seesion.repository.js";
 
 import {comparePassword, hashPassword,} from "../../utils/hashPassword.js";
 
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken,} from "../../utils/jwt.js";
 
 import { generateCode } from "../../utils/generateCode.js";
-import {hash} from "bcrypt";
-import userService from "../user/user.service.js";
-import {sequelize} from "../../database/sequelize/sequelize.js";
-import attachmentService from "../mediaAttachment/attachment.service.js";
-
 class AuthService {
 
     async register(data: any) {
 
-        try{
+        try {
 
-            if(data.email){
+            if (data.email) {
                 const emailExists = await userRepo.findOne(
                     {
                         email: data.email
@@ -30,7 +26,7 @@ class AuthService {
             }
 
 
-            if(data.phone){
+            if (data.phone) {
                 const phoneExists = await userRepo.findOne({
                     phone: data.phone
                 })
@@ -42,11 +38,21 @@ class AuthService {
             }
 
             const userCode = generateCode();
+            // const sessionCode = generateCode();
             let password
 
-            if(data.password){
+            if (data.password) {
                 password = await hashPassword(data.password);
             }
+
+            // const signup_session = await signup_sessionRepo.create({
+            //     signup_code: sessionCode,
+            //     user_code: userCode,
+            //     account_type: "Account Creation",
+            //     current_step: 1,
+            //     status: "in_progress"
+            //
+            // })
 
             return await userRepo.create({
                 user_code: userCode,
@@ -58,12 +64,12 @@ class AuthService {
                 email: data.email.trim().toLowerCase(),
                 phone: data.phone || null,
                 password: password || null,
-                user_type: data.userType || null ,
+                user_type: data.userType || null,
                 avatar: null,
                 status: data.status || "inactive"
             });
 
-        }catch (err){
+        } catch (err){
             throw err;
         }
     }

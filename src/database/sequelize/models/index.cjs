@@ -29,6 +29,7 @@ const Attachment = require('./attachment');
 const Badge = require('./badges');
 const SocialLogin = require('./social_logins');
 const Settings = require("./settings");
+const SignupSession = require('./signup_sessions');
 
 
 
@@ -65,6 +66,8 @@ const initModels = () => {
         Badge: Badge.initModel(sequelize),
         SocialLogin: SocialLogin.initModel(sequelize),
         Settings: Settings.initModel(sequelize),
+
+        SignupSession: SignupSession.initModel(sequelize),
     };
 
     Object.values(models).forEach((model) => {

@@ -69,6 +69,12 @@ class SignupSession extends Model {
     }
 
     static associate(models) {
+        SignupSession.belongsTo(models.User, {
+            foreignKey: "user_code",
+            targetKey: "user_code",
+            as: "user",
+            constraints: false
+        })
     }
 }
 
