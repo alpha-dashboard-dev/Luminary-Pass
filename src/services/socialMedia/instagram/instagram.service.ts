@@ -329,14 +329,12 @@ class InstagramService {
 
 
         return {
-
             totalPosts,
             totalLikes,
             totalComments,
             averageLikes,
             averageComments,
             averageEngagement
-
         };
 
     }
