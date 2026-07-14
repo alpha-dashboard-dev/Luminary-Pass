@@ -136,14 +136,11 @@ class InstagramService {
 
                     params:{
 
-                        client_id:
-                        env.FACEBOOK_APP_ID,
+                        client_id: env.FACEBOOK_APP_ID,
 
-                        client_secret:
-                        env.FACEBOOK_APP_SECRET,
+                        client_secret: env.FACEBOOK_APP_SECRET,
 
-                        redirect_uri:
-                        env.FACEBOOK_REDIRECT_URI,
+                        redirect_uri: env.FACEBOOK_REDIRECT_URI,
 
                         code
 

@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-
 export const env = {
 
     PORT: Number(process.env.PORT ?? 5000),
@@ -15,6 +14,11 @@ export const env = {
 
     INSTAGRAM_VERIFY_TOKEN: process.env.INSTAGRAM_VERIFY_TOKEN!,
 
-    INSTAGRAM_API_VERSION: process.env.INSTAGRAM_API_VERSION ?? "v23.0"
+    INSTAGRAM_API_VERSION: process.env.INSTAGRAM_API_VERSION ?? "v23.0",
 
+    FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID!,
+
+    FACEBOOK_REDIRECT_URI: process.env.FACEBOOK_REDIRECT_URI,
+
+    FACEBOOK_APP_SECRET: process.env.FACEBOOK_APP_SECRET!,
 };
