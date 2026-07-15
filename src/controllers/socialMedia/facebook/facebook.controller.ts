@@ -1,5 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import facebookService from "../../../services/socialMedia/facebook/facebook.service.js";
+import {validateBadge} from "../../../utils/validator.js";
+import badgeService from "../../../services/badge/badge.service.js";
 
 class facebookController{
 
@@ -14,7 +16,7 @@ class facebookController{
 
         try{
 
-            const {code}=req.query as { code:string };
+            const { code }=req.query as { code:string };
             const token = await facebookService.exchangeFacebookCode(code);
             const account = await facebookService.getInstagramBusinessAccount(token.access_token);
             return reply.send({
@@ -56,21 +58,71 @@ class facebookController{
 
     }
 
+    async getMedia(req:FastifyRequest, reply:FastifyReply){
+
+        try{
+                const { accessToken, instagramId } = req.query as any;
+
+                const media = await facebookService.getMedia(instagramId, accessToken);
+
+                return reply.status(200).send({
+                    success: true,
+                    // message: "Get Media from Instagram",
+                    media
+                });
+        }
+        catch (err: any) {
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+    }
+
 
     async mediaInsights(request:FastifyRequest, reply:FastifyReply){
 
-        const {mediaId, accessToken} :any = request.query;
+        try{
+            const {mediaId, mediaType, accessToken} :any = request.query;
 
 
 
-        const data = await facebookService.getMediaInsights(
+            const data = await facebookService.getMediaInsights(
                 mediaId,
+                mediaType,
                 accessToken
             );
 
+            return reply.send(data);
 
-        return reply.send(data);
+        }catch(err: any){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
 
+    }
+
+    async getAllMediaInsights(req:FastifyRequest, reply:FastifyReply){
+        try{
+
+            const { accessToken, instagramId } = req.query as any;
+
+            const mediaInsights = await facebookService.getAllMediaInsights(instagramId, accessToken);
+
+            return reply.status(200).send({
+                success: true,
+                // message: "Get Media from Instagram",
+                mediaInsights
+            });
+
+        }catch(err: any){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
     }
 
 
@@ -120,6 +172,27 @@ class facebookController{
 
         return reply.send(data);
 
+    }
+
+    async getEngagementInsightsByContentType(req:FastifyRequest, reply:FastifyReply){
+
+        try{
+
+            const { accessToken, instagramId } : any = req.query;
+
+            const engagement = await facebookService.getEngagementByType(instagramId, accessToken);
+
+            return reply.status(200).send({
+                success: true,
+                engagement
+            });
+
+        }catch(err: any){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            })
+        }
     }
 
 

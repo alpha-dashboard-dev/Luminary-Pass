@@ -356,7 +356,6 @@ class InstagramService {
             statistics: engagement,
             recentPosts: mediaResponse.data,
             insights: accountInsights
-
         };
 
     }

@@ -1,4 +1,4 @@
-import {instagramBusinessApi} from "../../../api/instagram/instagram.api.js";
+import {instagramBusinessApi, instagramGraphApi} from "../../../api/instagram/instagram.api.js";
 import { env } from "../../../config/env.js";
 
 class facebookService {
@@ -103,33 +103,205 @@ class facebookService {
 
     }
 
-    async getMediaInsights(mediaId:string, accessToken:string){
-
-
-        const metrics =
-            [
-                "impressions",
-                "reach",
-                "likes",
-                "comments",
-                "saved",
-                "shares"
-            ].join(",");
-
-
+    async getMedia(instagramId: string, accessToken: string) {
 
         const response = await instagramBusinessApi.get(
-                `/${mediaId}/insights`,
-                {
-                    params:{
-                        metric:metrics,
-                        access_token:accessToken
-                    }
-                }
-            );
+            `/${instagramId}/media`,
+            {
+                params: {
+                    fields: [
+                        "id",
+                        "caption",
+                        "media_type",
+                        "media_product_type",
+                        "timestamp",
+                        "permalink"
+                    ].join(","),
 
+                    access_token: accessToken
+                }
+            }
+        );
 
         return response.data.data;
+    }
+
+    async getMediaInsights(mediaId: string, mediaType: string, accessToken: string) {
+
+        let metrics: string[];
+
+        console.log(mediaType)
+
+        switch (mediaType) {
+
+            case "REELS":
+                metrics = [
+                    "views",
+                    "reach",
+                    "likes",
+                    "comments",
+                    "shares",
+                    "saved",
+                    "total_interactions"
+                ];
+                break;
+
+            case "STORY":
+                metrics = [
+                    "views",
+                    "reach",
+                    "replies"
+                ];
+                break;
+
+            default: // FEED
+                metrics = [
+                    "reach",
+                    "likes",
+                    "comments",
+                    "shares",
+                    "saved",
+                    "total_interactions"
+                ];
+        }
+
+        const response = await instagramBusinessApi.get(
+            `/${mediaId}/insights`,
+            {
+                params: {
+                    metric: metrics.join(","),
+                    metric_type: "total_value",
+                    access_token: accessToken
+                }
+            }
+        );
+
+        return response.data.data;
+    }
+
+    // Fetch Insights for All Media
+    async getAllMediaInsights(instagramId: string, accessToken: string) {
+
+        const media = await this.getMedia(instagramId, accessToken);
+
+        const result = await Promise.all(
+            media.map(async (item: any) => {
+
+                const insights = await this.getMediaInsights(
+                        item.id,
+                        item.media_product_type,
+                        accessToken
+                    );
+
+                return {
+                    ...item,
+                    insights
+                };
+
+            })
+
+        );
+
+        return result;
+
+    }
+
+    // Get Engagement By Content Type
+    async getEngagementByType(instagramId: string, accessToken: string) {
+
+        const media = await this.getAllMediaInsights(instagramId, accessToken);
+
+        const dashboard = {
+
+            FEED: {
+                posts: 0,
+                reach: 0,
+                views: 0,
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                saved: 0,
+                interactions: 0
+            },
+
+            REELS: {
+                posts: 0,
+                reach: 0,
+                views: 0,
+                likes: 0,
+                comments: 0,
+                shares: 0,
+                saved: 0,
+                interactions: 0
+            },
+
+            STORY: {
+                posts: 0,
+                reach: 0,
+                views: 0,
+                replies: 0
+            }
+
+        };
+
+
+        for (const item of media) {
+
+            const group = dashboard[item.media_product_type as keyof typeof dashboard];
+
+            if (!group)
+                continue;
+
+            group.posts++;
+
+            for (const metric of item.insights) {
+
+                const value =
+                    metric.total_value?.value ??
+                    metric.values?.[0]?.value ??
+                    0;
+
+                switch (metric.name) {
+
+                    case "reach":
+                        group.reach += value;
+                        break;
+
+                    case "views":
+                        group.views += value;
+                        break;
+
+                    case "likes":
+                        (group as any).likes += value;
+                        break;
+
+                    case "comments":
+                        (group as any).comments += value;
+                        break;
+
+                    case "shares":
+                        (group as any).shares += value;
+                        break;
+
+                    case "saved":
+                        (group as any).saved += value;
+                        break;
+
+                    case "replies":
+                        (group as any).replies += value;
+                        break;
+
+                    case "total_interactions":
+                        (group as any).interactions += value;
+                        break;
+
+                }
+
+            }
+
+        }
+
+        return dashboard;
 
     }
 
