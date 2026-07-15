@@ -2,9 +2,7 @@ import {FastifyInstance} from "fastify";
 import controller from "../../../controllers/socialMedia/instagram/instagram.controller.js";
 
 
-export default async function instagramRoutes(
-    fastify:FastifyInstance
-){
+export default async function instagramRoutes(fastify:FastifyInstance){
 
 
     fastify.get(

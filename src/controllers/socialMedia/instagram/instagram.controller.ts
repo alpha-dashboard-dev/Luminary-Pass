@@ -9,7 +9,7 @@ class InstagramController {
     async login(req:FastifyRequest, reply:FastifyReply){
 
         const url = instagramService.getLoginUrl();
-        console.log(url);
+        // console.log(url);
         return reply.redirect(url);
     }
 

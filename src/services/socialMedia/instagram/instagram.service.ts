@@ -1,4 +1,4 @@
-import {instagramBusinessApi, instagramGraphApi, instagramOAuthApi} from "../../../api/instagram/instagram.api.js";
+import {instagramGraphApi, instagramOAuthApi} from "../../../api/instagram/instagram.api.js";
 import { env } from "../../../config/env.js";
 import SocialLoginRepo from "../../../repositories/socialLogin/socialLogin.repository.js";
 import {generateCode} from "../../../utils/generateCode.js";
@@ -23,9 +23,9 @@ class InstagramService {
     getLoginUrl(){
         const scopes = [
             "instagram_business_basic",
-            // "instagram_business_content_publish",
-            // "instagram_business_manage_comments",
-            // "instagram_business_manage_messages",
+            "instagram_business_content_publish",
+            "instagram_business_manage_comments",
+            "instagram_business_manage_messages",
             "instagram_business_manage_insights"
         ];
 
@@ -379,8 +379,7 @@ async getAccountInsights(instagramUserId: string, accessToken: string) {
                 "saves"
             ];
 
-            const response =
-                await instagramGraphApi.get(
+            const response = await instagramGraphApi.get(
 
                     `/${instagramUserId}/insights`,
 

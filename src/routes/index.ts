@@ -32,6 +32,7 @@ import settingRoutes from "./setting/setting.routes";
 import participantChecklistRoutes from "./event/participantChecklist.routes";
 
 import instagramRoutes from "./socialMedia/instagram/instagram.routes.js";
+import facebookRoutes from "./socialMedia/facebook/facebook.routes.js";
 
 
 export default async function routes(fastify: FastifyInstance) {
@@ -71,4 +72,5 @@ export default async function routes(fastify: FastifyInstance) {
     // fastify.register(socialLoginRoutes, { prefix: "/socialMedia" });
     fastify.register(participantChecklistRoutes, { prefix: "/participant-checklist" });
     fastify.register(instagramRoutes, { prefix: "/instagram" });
+    fastify.register(facebookRoutes, { prefix: "/facebook" });
 }
