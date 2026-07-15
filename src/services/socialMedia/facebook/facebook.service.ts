@@ -103,6 +103,26 @@ class facebookService {
 
     }
 
+    async getMediaByContent(instagramId: string, accessToken: string){
+        try{
+
+            const respone = await instagramBusinessApi.get(
+                `/${instagramId}/media`,
+                {
+                    params:{
+                        fields:"id,name,access_token,instagram_business_account",
+                        access_token:accessToken
+                    }
+                }
+            )
+
+            return respone.data.data
+
+        }catch(error){
+
+        }
+    }
+
     async getMedia(instagramId: string, accessToken: string) {
 
         const response = await instagramBusinessApi.get(
@@ -126,58 +146,122 @@ class facebookService {
         return response.data.data;
     }
 
-    async getMediaInsights(mediaId: string, mediaType: string, accessToken: string) {
+    async getMediaInsights(mediaId: string, mediaType: string, metrics: string[], accessToken: string, metricType?: "total_value" | "time_series") {
 
-        let metrics: string[];
+        const allowedMetrics: Record<string, string[]> = {
 
-        console.log(mediaType)
+            REELS: [
+                "views",
+                "reach",
+                "likes",
+                "comments",
+                "shares",
+                "saved",
+                "total_interactions"
+            ],
 
-        switch (mediaType) {
+            STORY: [
+                "views",
+                "reach",
+                "replies"
+            ],
 
-            case "REELS":
-                metrics = [
-                    "views",
-                    "reach",
-                    "likes",
-                    "comments",
-                    "shares",
-                    "saved",
-                    "total_interactions"
-                ];
-                break;
+            FEED: [
+                "reach",
+                "likes",
+                "comments",
+                "shares",
+                "saved",
+                "total_interactions"
+            ]
 
-            case "STORY":
-                metrics = [
-                    "views",
-                    "reach",
-                    "replies"
-                ];
-                break;
+        };
 
-            default: // FEED
-                metrics = [
-                    "reach",
-                    "likes",
-                    "comments",
-                    "shares",
-                    "saved",
-                    "total_interactions"
-                ];
+        const supported =
+            allowedMetrics[mediaType.toUpperCase()] ??
+            allowedMetrics.FEED;
+
+        const invalidMetrics = metrics.filter(
+            metric => !supported.includes(metric)
+        );
+
+        if (invalidMetrics.length) {
+            throw new Error(
+                `Metrics [${invalidMetrics.join(", ")}] are not supported for ${mediaType}`
+            );
+        }
+
+        const params: any = {
+            metric: metrics.join(","),
+            access_token: accessToken
+        };
+
+        if (metricType) {
+            params.metric_type = metricType;
         }
 
         const response = await instagramBusinessApi.get(
             `/${mediaId}/insights`,
             {
-                params: {
-                    metric: metrics.join(","),
-                    metric_type: "total_value",
-                    access_token: accessToken
-                }
+                params
             }
         );
 
         return response.data.data;
     }
+
+    // async getMediaInsights(mediaId: string, mediaType: string, accessToken: string) {
+    //
+    //     let metrics: string[];
+    //
+    //     // console.log(mediaType)
+    //
+    //     switch (mediaType) {
+    //
+    //         case "REELS":
+    //             metrics = [
+    //                 "views",
+    //                 "reach",
+    //                 "likes",
+    //                 "comments",
+    //                 "shares",
+    //                 "saved",
+    //                 "total_interactions"
+    //             ];
+    //             break;
+    //
+    //         case "STORY":
+    //             metrics = [
+    //                 "views",
+    //                 "reach",
+    //                 "replies"
+    //             ];
+    //             break;
+    //
+    //         default: // FEED
+    //             metrics = [
+    //                 "reach",
+    //                 "likes",
+    //                 "comments",
+    //                 "shares",
+    //                 "saved",
+    //                 "total_interactions"
+    //             ];
+    //     }
+    //
+    //     const response = await instagramBusinessApi.get(
+    //         `/${mediaId}/insights`,
+    //         {
+    //             params: {
+    //                 metric: metrics.join(","),
+    //                 metric_type: "total_value",
+    //                 access_token: accessToken
+    //             }
+    //         }
+    //     );
+    //
+    //     return response.data.data;
+    // }
 
     // Fetch Insights for All Media
     async getAllMediaInsights(instagramId: string, accessToken: string) {
@@ -205,7 +289,6 @@ class facebookService {
         return result;
 
     }
-
     // Get Engagement By Content Type
     async getEngagementByType(instagramId: string, accessToken: string) {
 
@@ -240,7 +323,7 @@ class facebookService {
                 reach: 0,
                 views: 0,
                 replies: 0
-            }
+            },
 
         };
 

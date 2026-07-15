@@ -79,19 +79,12 @@ class facebookController{
         }
     }
 
-
     async mediaInsights(request:FastifyRequest, reply:FastifyReply){
 
         try{
-            const {mediaId, mediaType, accessToken} :any = request.query;
+            const {mediaId, mediaType, metrics, accessToken, metricType} = request.query as any;
 
-
-
-            const data = await facebookService.getMediaInsights(
-                mediaId,
-                mediaType,
-                accessToken
-            );
+            const data = await facebookService.getMediaInsights(mediaId, mediaType, metrics, accessToken, metricType);
 
             return reply.send(data);
 
@@ -103,6 +96,31 @@ class facebookController{
         }
 
     }
+
+
+    // async mediaInsights(request:FastifyRequest, reply:FastifyReply){
+    //
+    //     try{
+    //         const {mediaId, mediaType, accessToken} :any = request.query;
+    //
+    //
+    //
+    //         const data = await facebookService.getMediaInsights(
+    //             mediaId,
+    //             mediaType,
+    //             accessToken
+    //         );
+    //
+    //         return reply.send(data);
+    //
+    //     }catch(err: any){
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    //
+    // }
 
     async getAllMediaInsights(req:FastifyRequest, reply:FastifyReply){
         try{
