@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import facebookService from "../../../services/socialMedia/facebook/facebook.service.js";
 
 import {validateAccountInsights} from "../../../utils/socialAccount/instagramValidator.js";
+import {validateGetMedia, validateAllMediaInsights} from "../../../utils/socialAccount/instagram/validator.js";
 
 class facebookController{
 
@@ -64,10 +65,8 @@ class facebookController{
         try{
             const data = req.body as any;
 
-            // console.log(data);
-
+            validateGetMedia(data)
             const media = await facebookService.getMedia(data);
-
             return reply.status(200).send({
                 success: true,
                 // message: "Get Media from Instagram",
@@ -111,7 +110,7 @@ class facebookController{
         try{
 
             const data = req.body as any;
-
+            validateAllMediaInsights(data)
             const result = await facebookService.getAllMediaInsights(data);
             return reply.send({
                 success:true,
@@ -134,7 +133,6 @@ class facebookController{
     async getAccountInsights(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-
             const data = req.body as any
             // console.log(data);
 
@@ -157,6 +155,8 @@ class facebookController{
         }
 
     }
+
+
     async getReachInsights(req:FastifyRequest, reply:FastifyReply){
 
         try {
@@ -208,9 +208,7 @@ class facebookController{
     async getEngagementInsightsByContentType(req:FastifyRequest, reply:FastifyReply){
 
         try{
-
             const data = req.body as any;
-
 
             const result = await facebookService.getEngagementInsightsByContentType(data);
 

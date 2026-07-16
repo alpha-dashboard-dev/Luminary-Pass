@@ -5,12 +5,6 @@ const ACCOUNT_METRICS = [
     "views",
     "content_views",
 
-    // Followers
-    "follower_count",
-    "online_followers",
-    "follows_and_unfollows",
-    "follower_demographics",
-
     // Profile
     "profile_views",
     "website_clicks",
@@ -24,6 +18,14 @@ const ACCOUNT_METRICS = [
     "shares",
     "saves",
     "replies",
+
+    // Minimum 100 followers
+
+    // Followers
+    "follower_count",
+    "online_followers",
+    "follows_and_unfollows",
+    "follower_demographics",
 
     // Audience
     "engaged_audience_demographics",
@@ -67,7 +69,7 @@ export const validateAccountInsights = (data: any) => {
         throw new Error("metrics must be a non-empty array");
     }
 
-    // Metrics validation
+    // Metrics validator.ts
 
     const invalidMetrics = metrics.filter(
         (metric: string) => !ACCOUNT_METRICS.includes(metric)
@@ -79,7 +81,7 @@ export const validateAccountInsights = (data: any) => {
         );
     }
 
-    // Period validation
+    // Period validator.ts
 
     if (period && !PERIODS.includes(period)) {
         throw new Error(
@@ -87,7 +89,7 @@ export const validateAccountInsights = (data: any) => {
         );
     }
 
-    // Metric type validation
+    // Metric type validator.ts
 
     if (metricType && !METRIC_TYPES.includes(metricType)) {
         throw new Error(
@@ -172,20 +174,14 @@ export const validateAccountInsights = (data: any) => {
 
     // Don't mix total_value metrics
 
-    if (
-        hasTotalValueMetric &&
-        metrics.some(
+    if (hasTotalValueMetric && metrics.some(
             (metric: string) =>
-                !TOTAL_VALUE_METRICS.includes(metric)
-        )
+                !TOTAL_VALUE_METRICS.includes(metric))
     ) {
-        throw new Error(
-            "total_value metrics cannot be combined with other metrics"
-        );
+        throw new Error("total_value metrics cannot be combined with other metrics");
     }
 
     // since/until allowed only for day period
-
     if ((since || until) && period !== "day") {
         throw new Error(
             "since/until can only be used with period='day'"

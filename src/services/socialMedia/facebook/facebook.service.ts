@@ -127,7 +127,6 @@ class facebookService {
             params.limit = data.limit;
         }
 
-        // const {instagramId, pageAccessToken, fields, limit} = data;
         const response = await instagramBusinessApi.get(
                 `/${data.instagramId}/media`,
                 {
@@ -265,7 +264,7 @@ class facebookService {
         );
 
 
-        return response.data.data;
+        return response.data;
     }
 
 
