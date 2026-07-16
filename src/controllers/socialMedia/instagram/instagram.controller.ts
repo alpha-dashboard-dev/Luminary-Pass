@@ -165,9 +165,9 @@ class InstagramController {
 
         try {
 
-            const { token } = req.query as any;
+            const { userCode, fields, limit } = req.query as any;
 
-            const dashboard = await instagramService.getDashboard(token);
+            const dashboard = await instagramService.getDashboard(userCode, fields, limit);
 
             return reply.send({
 

@@ -295,6 +295,7 @@ class InstagramService {
         }
 
     }
+
     async getComments(mediaId: string, accessToken: string) {
 
         try {
@@ -365,11 +366,11 @@ class InstagramService {
     }
 
 
-    async getDashboard(accessToken: string) {
+    async getDashboard(userCode: string, fields: string, limit: bigint) {
 
-        const profile = await this.getProfile(accessToken);
+        const profile = await this.getProfile(userCode, fields);
 
-        const mediaResponse = await this.getMedia(accessToken);
+        const mediaResponse = await this.getMedia(userCode, fields, limit);
 
         const engagement = this.calculateEngagement(mediaResponse.data);
 

@@ -4,7 +4,6 @@ import controller from "../../../controllers/socialMedia/instagram/instagram.con
 
 export default async function instagramRoutes(fastify:FastifyInstance){
 
-
     fastify.get(
         "/login",
         controller.login
