@@ -257,10 +257,7 @@ class InstagramController {
 
         }
 
-
     }
-
-
 
 }
 

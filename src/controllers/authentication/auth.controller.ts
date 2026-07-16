@@ -111,9 +111,7 @@ class AuthController {
         }
     }
 
-    /**
-     * ME
-     */
+   
     async me(req: FastifyRequest, reply: FastifyReply) {
 
         try {
