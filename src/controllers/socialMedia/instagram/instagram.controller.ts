@@ -65,10 +65,8 @@ class InstagramController {
 
         try {
 
-            const { token } = req.query as any;
-
-            const media =
-                await instagramService.getMedia(token);
+            const { userCode, fields, limit } = req.query as any;
+            const media = await instagramService.getMedia(userCode, fields, limit);
 
             return reply.send({
 

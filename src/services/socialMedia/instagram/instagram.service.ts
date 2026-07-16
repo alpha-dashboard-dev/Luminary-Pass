@@ -126,6 +126,7 @@ class InstagramService {
             if (!user) {
                 throw new Error("User not found");
             }
+
             const fieldArray = fields ? fields.split(",").map(f => f.trim()) : undefined;
 
             // console.log(fields)
@@ -192,43 +193,37 @@ class InstagramService {
     /**
      * Fetch user media
      */
-    async getMedia(accessToken: string, limit = 25) {
+    async getMedia(userCode: string, fields: string, limit: bigint) {
 
         try {
+
+            const user = await socialLoginRepo.findOne(
+                {
+                    user_code: userCode
+                }
+            )
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            const fieldArray = fields ? fields.split(",").map(f => f.trim()) : undefined;
+
+            // console.log(fields)
+            const profileFields = fieldArray ?? [
+                "id", "caption", "media_type", "media_url", "thumbnail_url", "permalink", "timestamp", "like_count", "comments_count"
+            ];
 
             const response = await instagramGraphApi.get(
 
                     "/me/media",
 
                     {
-
                         params: {
 
-                            fields: [
-
-                                "id",
-
-                                "caption",
-
-                                "media_type",
-
-                                "media_url",
-
-                                "thumbnail_url",
-
-                                "permalink",
-
-                                "timestamp",
-
-                                "like_count",
-
-                                "comments_count"
-
-                            ].join(","),
-
+                            fields: profileFields.join(","),
                             limit,
-
-                            access_token: accessToken
+                            access_token: user.access_token
 
                         }
 
