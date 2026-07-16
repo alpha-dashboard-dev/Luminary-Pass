@@ -346,8 +346,6 @@ class InstagramService {
 
         const mediaResponse = await this.getMedia(accessToken);
 
-        // const accountInsights = await this.getAccountInsights(profile.id, accessToken);
-
         const engagement = this.calculateEngagement(mediaResponse.data);
 
 
@@ -355,68 +353,9 @@ class InstagramService {
             profile,
             statistics: engagement,
             recentPosts: mediaResponse.data,
-            // insights: accountInsights
         };
 
     }
-
-// async getAccountInsights(instagramUserId: string, accessToken: string) {
-//
-//         // console.log(instagramUserId, accessToken);
-//
-//         try {
-//
-//             const metrics = [
-//                 "reach",
-//                 "follower_count",
-//                 "profile_views",
-//                 "accounts_engaged",
-//                 "total_interactions",
-//                 "likes",
-//                 "comments",
-//                 "shares",
-//                 "saves"
-//             ];
-//
-//             const response = await instagramGraphApi.get(
-//
-//                     `/${instagramUserId}/insights`,
-//
-//                     {
-//                         params: {
-//
-//                             metric: metrics.join(","),
-//
-//                             period: "day",
-//
-//                             access_token: accessToken
-//
-//                         }
-//
-//                     }
-//
-//                 );
-//
-//
-//             const result: Record<string, number> = {};
-//
-//             for (const metric of response.data.data) {
-//
-//                 result[metric.name] =
-//                     metric.values?.[0]?.value ?? 0;
-//
-//             }
-//
-//
-//             return result;
-//
-//         }
-//
-//         catch (error: any) {
-//             this.handleInstagramError(error);
-//         }
-//
-//     }
 
 }
 

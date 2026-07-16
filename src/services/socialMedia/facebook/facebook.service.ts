@@ -1,4 +1,4 @@
-import {instagramBusinessApi, instagramGraphApi} from "../../../api/instagram/instagram.api.js";
+import {instagramBusinessApi} from "../../../api/instagram/instagram.api.js";
 import { env } from "../../../config/env.js";
 import {MEDIA_METRICS} from "../../../utils/socialAccount/instagramMediaMetrics.js";
 
@@ -19,25 +19,34 @@ class facebookService {
 
     getFacebookLoginUrl() {
 
-        const scopes = [
-            "public_profile",
+        // const scopes = [
+        //     "public_profile",
+        //
+        //     "email",
+        //
+        //     "instagram_basic",
+        //
+        //     "instagram_manage_insights",
+        //
+        //     "pages_show_list",
+        //
+        //     "pages_read_engagement",
+        //
+        //     "pages_read_user_content",
+        //
+        //     "pages_manage_metadata",
+        //
+        //     "business_management"
+        // ];
 
-            "email",
+        if (!env.FACEBOOK_PERMISSION_SCOPES) {
+            throw new Error("FACEBOOK_SCOPES is not configured");
+        }
 
-            "instagram_basic",
-
-            "instagram_manage_insights",
-
-            "pages_show_list",
-
-            "pages_read_engagement",
-
-            "pages_read_user_content",
-
-            "pages_manage_metadata",
-
-            "business_management"
-        ];
+        const scopes = env.FACEBOOK_PERMISSION_SCOPES
+            .split(",")
+            .map(scope => scope.trim())
+            .filter(Boolean);
 
         // console.log(env.FACEBOOK_APP_ID);
         // console.log(typeof env.FACEBOOK_APP_ID);
