@@ -21,13 +21,22 @@ class InstagramService {
 
      // Generate Instagram Login URL
     getLoginUrl(){
-        const scopes = [
-            "instagram_business_basic",
-            "instagram_business_content_publish",
-            "instagram_business_manage_comments",
-            "instagram_business_manage_messages",
-            "instagram_business_manage_insights"
-        ];
+        // const scopes = [
+        //     "instagram_business_basic",
+        //     "instagram_business_content_publish",
+        //     "instagram_business_manage_comments",
+        //     "instagram_business_manage_messages",
+        //     "instagram_business_manage_insights"
+        // ];
+
+        if (!env.INSTAGRAM_PERMISSION_SCOPES) {
+            throw new Error("INSTAGRAM SCOPES is not configured");
+        }
+
+        const scopes = env.INSTAGRAM_PERMISSION_SCOPES
+            .split(",")
+            .map(scope => scope.trim())
+            .filter(Boolean);
 
 
         const url =

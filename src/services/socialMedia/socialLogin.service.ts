@@ -6,6 +6,8 @@ class socialLoginService {
 
     async create(data: any) {
 
+        console.log(data);
+
         const socialLoginCode = generateCode();
 
         return await socialLoginRepo.create({

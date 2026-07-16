@@ -1,6 +1,7 @@
 import {FastifyRequest, FastifyReply} from "fastify";
 
 import instagramService from "../../../services/socialMedia/instagram/instagram.service.js";
+import socialLoginService from "../../../services/socialMedia/socialLogin.service.js";
 
 
 
@@ -18,6 +19,17 @@ class InstagramController {
         const {code} = req.query as { code:string };
         // console.log("INSTAGRAM CODE:", code);
         const token = await instagramService.exchangeCode(code);
+
+        const data = {
+            provider: "instagram",
+            providerUserId: token.user_id,
+            accessToken: token.access_token,
+            userCode: "F2ACF446"
+        };
+
+        await socialLoginService.create(data)
+
+        // console.log(token);
         // const longToken = await instagramService.getLongLivedToken(token.access_token);
         return reply.send({
             message: "Instagram connected",
@@ -26,7 +38,6 @@ class InstagramController {
             user_id: token.user_id
 
         });
-
 
     }
 
@@ -249,9 +260,6 @@ class InstagramController {
 
 
     }
-
-    // async saveSocialLoginInfo(req:FastifyRequest, reply:FastifyReply)
-    // }
 
 
 
