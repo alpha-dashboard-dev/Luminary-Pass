@@ -1,7 +1,21 @@
 import {instagramBusinessApi, instagramGraphApi} from "../../../api/instagram/instagram.api.js";
 import { env } from "../../../config/env.js";
+import {MEDIA_METRICS} from "../../../utils/socialAccount/instagramMediaMetrics.js";
 
 class facebookService {
+
+    private filterMediaMetrics(mediaType:string, requestedMetrics:string[]){
+
+        const supported = MEDIA_METRICS[
+                mediaType as keyof typeof MEDIA_METRICS
+                ] || MEDIA_METRICS.FEED;
+
+
+        return requestedMetrics.filter(
+            metric => supported.includes(metric)
+        );
+
+    }
 
     getFacebookLoginUrl() {
 
@@ -79,8 +93,6 @@ class facebookService {
 
 
     async getInstagramBusinessAccount(accessToken:string){
-
-
         const pages = await this.getPages(accessToken);
 
         const page = pages.find(
@@ -92,8 +104,6 @@ class facebookService {
                 "No Instagram Business account connected"
             );
         }
-
-
         return {
             pageId: page.id,
             pageName: page.name,
@@ -103,141 +113,154 @@ class facebookService {
 
     }
 
-    async getMediaByContent(instagramId: string, accessToken: string){
-        try{
+    // Fetch Media
+    async getMedia(data:any) {
 
-            const respone = await instagramBusinessApi.get(
-                `/${instagramId}/media`,
+        const fields = data.fields ?? ["id", "media_type", "media_product_type", "timestamp", "permalink"];
+
+        const params: any = {
+            fields: fields.join(","),
+            access_token: data.pageAccessToken
+        };
+
+        if (data.limit) {
+            params.limit = data.limit;
+        }
+
+        // const {instagramId, pageAccessToken, fields, limit} = data;
+        const response = await instagramBusinessApi.get(
+                `/${data.instagramId}/media`,
                 {
-                    params:{
-                        fields:"id,name,access_token,instagram_business_account",
-                        access_token:accessToken
-                    }
+                    params
                 }
-            )
+            );
 
-            return respone.data.data
+        return response.data;
 
-        }catch(error){
-
-        }
     }
 
-    async getMedia(instagramId: string, accessToken: string) {
 
-        const response = await instagramBusinessApi.get(
-            `/${instagramId}/media`,
-            {
-                params: {
-                    fields: [
-                        "id",
-                        "caption",
-                        "media_type",
-                        "media_product_type",
-                        "timestamp",
-                        "permalink"
-                    ].join(","),
+    // Fetch One Media Insights
+    async getMediaInsights(mediaId:string, metrics:string[], accessToken:string){
 
-                    access_token: accessToken
-                }
-            }
-        );
-
-        return response.data.data;
-    }
-
-    async getMediaInsights(mediaId: string, mediaType: string, accessToken: string) {
-
-        let metrics: string[];
-
-        // console.log(mediaType)
-
-        switch (mediaType) {
-
-            case "REELS":
-                metrics = [
-                    "views",
-                    "reach",
-                    "likes",
-                    "comments",
-                    "shares",
-                    "saved",
-                    "total_interactions"
-                ];
-                break;
-
-            case "STORY":
-                metrics = [
-                    "views",
-                    "reach",
-                    "replies"
-                ];
-                break;
-
-            default: // FEED
-                metrics = [
-                    "reach",
-                    "likes",
-                    "comments",
-                    "shares",
-                    "saved",
-                    "total_interactions"
-                ];
+        if(!mediaId){
+            throw new Error("mediaId is required");
         }
 
-        const response = await instagramBusinessApi.get(
-            `/${mediaId}/insights`,
-            {
-                params: {
-                    metric: metrics.join(","),
-                    metric_type: "total_value",
-                    access_token: accessToken
+        if(!metrics || !metrics.length){
+            throw new Error("metrics are required");
+        }
+
+        const params:any = {
+
+            metric: metrics.join(","),
+
+            access_token: accessToken
+
+        };
+
+
+        if(metrics.includes("total_interactions")){
+            params.metric_type = "total_value";
+        }
+
+
+        const response =
+            await instagramBusinessApi.get(
+                `/${mediaId}/insights`,
+                {
+                    params
                 }
-            }
-        );
+            );
+
 
         return response.data.data;
+
     }
 
-    // Fetch Insights for All Media
-    async getAllMediaInsights(instagramId: string, accessToken: string) {
+    // Fetch All Media Insights
+    async getAllMediaInsights(data:any){
 
-        const media = await this.getMedia(instagramId, accessToken);
+        const {instagramId, pageAccessToken, metrics} = data;
+
+
+        const mediaResponse = await this.getMedia(data);
+
+
+        const media = mediaResponse.data;
+
 
         const result = await Promise.all(
-            media.map(async (item: any) => {
 
-                const insights = await this.getMediaInsights(
-                        item.id,
-                        item.media_product_type,
-                        accessToken
-                    );
+                media.map(async(item:any)=>{
 
-                return {
-                    ...item,
-                    insights
-                };
 
-            })
+                    const allowedMetrics = this.filterMediaMetrics(
+                            item.media_product_type,
+                            metrics
+                        );
 
-        );
 
-        return result;
+                    let insights:any[] = [];
+
+
+                    if(allowedMetrics.length){
+
+                        insights = await this.getMediaInsights(
+                                item.id,
+                                allowedMetrics,
+                                pageAccessToken
+                            );
+
+                    }
+
+
+                    return {
+                        ...item,
+                        insights
+                    };
+
+                })
+
+            );
+
+
+        return {
+            data: result,
+            paging: mediaResponse.paging
+
+        };
 
     }
 
-    async getReachInsights(instagramId:string, accessToken:string){
+
+    async getReachInsights(data: any){
+
+        const params: any = {
+            metric: data.metrics.join(","),
+            access_token: data.pageAccessToken
+        };
+
+        if (data.period) {
+            params.period = data.period;
+        }
+
+        if (data.metricType) {
+            params.metric_type = data.metricType;
+        }
+
+        if (data.since) {
+            params.since = data.since;
+        }
+
+        if (data.until) {
+            params.until = data.until;
+        }
 
         const response = await instagramBusinessApi.get(
-            `/${instagramId}/insights`,
+            `/${data.instagramId}/insights`,
             {
-                params:{
-                    metric: "reach",
-
-                    period:"day",
-
-                    access_token:accessToken
-                }
+                params
             }
         );
 
@@ -246,21 +269,35 @@ class facebookService {
     }
 
 
-    async getEngagementInsights(instagramId:string, accessToken:string){
+    async getEngagementInsights(data: any){
+
+        const params: any = {
+            metric: data.metrics.join(","),
+            access_token: data.pageAccessToken
+        };
+
+        if (data.period) {
+            params.period = data.period;
+        }
+
+        if (data.metricType) {
+            params.metric_type = data.metricType;
+        }
+
+        if (data.since) {
+            params.since = data.since;
+        }
+
+        if (data.until) {
+            params.until = data.until;
+        }
+
+
 
         const response = await instagramBusinessApi.get(
-            `/${instagramId}/insights`,
+            `/${data.instagramId}/insights`,
             {
-                params:{
-                    metric:
-                        "profile_views,accounts_engaged,total_interactions,likes,comments,shares,saves,replies",
-
-                    metric_type: "total_value",
-
-                    period:"day",
-
-                    access_token:accessToken
-                }
+                params
             }
         );
 
@@ -270,95 +307,102 @@ class facebookService {
 
     // Get Engagement By Content Type
 
-    async getEngagementByContentType(instagramId: string, accessToken: string) {
-
-        const media = await this.getAllMediaInsights(instagramId, accessToken);
-
-        const dashboard = {
-
-            FEED: {
-                posts: 0,
-                reach: 0,
-                views: 0,
-                likes: 0,
-                comments: 0,
-                shares: 0,
-                saved: 0,
-                interactions: 0
-            },
-
-            REELS: {
-                posts: 0,
-                reach: 0,
-                views: 0,
-                likes: 0,
-                comments: 0,
-                shares: 0,
-                saved: 0,
-                interactions: 0
-            },
-
-            STORY: {
-                posts: 0,
-                reach: 0,
-                views: 0,
-                replies: 0
-            },
-
-        };
+    async getEngagementByContentType(data:any) {
 
 
-        for (const item of media) {
+        const {instagramId, pageAccessToken, contentTypes, metrics} = data;
 
-            const group = dashboard[item.media_product_type as keyof typeof dashboard];
 
-            if (!group)
+        if(!instagramId){
+            throw new Error("instagramId is required");
+        }
+
+
+        if(!pageAccessToken){
+            throw new Error("pageAccessToken is required");
+        }
+
+
+        if(!Array.isArray(contentTypes) || !contentTypes.length){
+            throw new Error(
+                "contentTypes array is required"
+            );
+        }
+
+
+        if(!Array.isArray(metrics) || !metrics.length){
+            throw new Error(
+                "metrics array is required"
+            );
+        }
+
+
+        /**
+         * Get media with requested insights
+         */
+        const mediaResponse = await this.getAllMediaInsights(data);
+
+
+        const media = mediaResponse.data;
+
+
+        /**
+         * Create dynamic dashboard
+         */
+        const dashboard:any = {};
+
+
+        for(const type of contentTypes){
+
+
+            dashboard[type] = {};
+
+
+            if(metrics.includes("posts")){
+                dashboard[type].posts = 0;
+            }
+
+
+            const allowedMetrics =
+                this.filterMediaMetrics(
+                    type,
+                    metrics
+                );
+
+
+            for(const metric of allowedMetrics){
+
+                dashboard[type][metric] = 0;
+
+            }
+
+        }
+
+        // Aggregate
+        for(const item of media){
+
+
+            const type = item.media_product_type;
+
+            if(!dashboard[type]){
                 continue;
+            }
 
-            group.posts++;
+            // count posts
+            if(metrics.includes("posts")){
+                dashboard[type].posts++;
+            }
 
-            for (const metric of item.insights) {
+            for(const insight of item.insights){
 
-                const value =
-                    metric.total_value?.value ??
-                    metric.values?.[0]?.value ??
-                    0;
-
-                switch (metric.name) {
-
-                    case "reach":
-                        group.reach += value;
-                        break;
-
-                    case "views":
-                        group.views += value;
-                        break;
-
-                    case "likes":
-                        (group as any).likes += value;
-                        break;
-
-                    case "comments":
-                        (group as any).comments += value;
-                        break;
-
-                    case "shares":
-                        (group as any).shares += value;
-                        break;
-
-                    case "saved":
-                        (group as any).saved += value;
-                        break;
-
-                    case "replies":
-                        (group as any).replies += value;
-                        break;
-
-                    case "total_interactions":
-                        (group as any).interactions += value;
-                        break;
-
+                if(!metrics.includes(insight.name)){
+                    continue;
                 }
+                const value = insight.total_value?.value ??
+                    insight.values?.reduce(
+                        (sum:number, v:any) => sum + v.value, 0) ?? 0;
+
+                dashboard[type][insight.name] += value;
 
             }
 
@@ -369,58 +413,38 @@ class facebookService {
     }
 
 
+    async getAccountInsights(data: any) {
 
-    // async getAccountInsights(
-    //     instagramId:string,
-    //     accessToken:string
-    // ){
-    //
-    //     try {
-    //
-    //         const response = await instagramBusinessApi.get(
-    //             `/${instagramId}/insights`,
-    //             {
-    //                 params:{
-    //                     metric:[
-    //                         "reach",
-    //                         "follower_count",
-    //                         "profile_views",
-    //                         "accounts_engaged",
-    //                         "total_interactions"
-    //                     ].join(","),
-    //
-    //                     period:"day",
-    //
-    //                     access_token:accessToken
-    //                 }
-    //             }
-    //         );
-    //
-    //
-    //         return response.data.data;
-    //
-    //
-    //     } catch(error:any){
-    //
-    //         console.log(
-    //             "INSTAGRAM INSIGHTS ERROR:",
-    //             JSON.stringify(
-    //                 error.response?.data,
-    //                 null,
-    //                 2
-    //             )
-    //         );
-    //
-    //
-    //         throw error;
-    //
-    //     }
-    //
-    // }
+        const params: any = {
+            metric: data.metrics.join(","),
+            access_token: data.pageAccessToken
+        };
 
+        if (data.period) {
+            params.period = data.period;
+        }
 
+        if (data.metricType) {
+            params.metric_type = data.metricType;
+        }
 
+        if (data.since) {
+            params.since = data.since;
+        }
 
+        if (data.until) {
+            params.until = data.until;
+        }
+
+        const response = await instagramBusinessApi.get(
+            `/${data.instagramId}/insights`,
+            {
+                params
+            }
+        );
+
+        return response.data.data;
+    }
 }
 
 

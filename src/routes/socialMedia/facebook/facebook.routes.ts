@@ -27,41 +27,41 @@ export default async function facebookRoutes(fastify:FastifyInstance){
         controller.getInstagramAccount
     )
 
-    fastify.get(
+    fastify.post(
         "/get-instagram-media",
         controller.getMedia
     )
 
 
-    fastify.get(
+    fastify.post(
         "/get-media-insights",
         controller.mediaInsights
     )
 
-    fastify.get(
+    fastify.post(
         "/get-all-media-insights",
         controller.getAllMediaInsights
     )
 
 
-    fastify.get(
-        "/get-account-insights",
-        controller.accountInsights
-    )
-
-    fastify.get(
+    fastify.post(
         "/get-reach-insights",
         controller.getReachInsights
     )
 
-    fastify.get(
+    fastify.post(
         "/get-engagement-insights",
         controller.getEngagementInsights
     )
 
-    fastify.get(
+    fastify.post(
         "/get-engagement-insights-by-content",
         controller.getEngagementInsightsByContentType
+    )
+
+    fastify.post(
+        "/get-account-insights",
+        controller.accountInsights
     )
 
 }

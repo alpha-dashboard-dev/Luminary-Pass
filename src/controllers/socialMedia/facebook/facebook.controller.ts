@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import facebookService from "../../../services/socialMedia/facebook/facebook.service.js";
-import {validateBadge} from "../../../utils/validator.js";
-import badgeService from "../../../services/badge/badge.service.js";
+
+import {validateAccountInsights} from "../../../utils/socialAccount/instagramValidator.js";
 
 class facebookController{
 
@@ -60,16 +60,19 @@ class facebookController{
 
     async getMedia(req:FastifyRequest, reply:FastifyReply){
 
+
         try{
-                const { pageAccessToken, instagramId } = req.query as any;
+            const data = req.body as any;
 
-                const media = await facebookService.getMedia(instagramId, pageAccessToken);
+            // console.log(data);
 
-                return reply.status(200).send({
-                    success: true,
-                    // message: "Get Media from Instagram",
-                    media
-                });
+            const media = await facebookService.getMedia(data);
+
+            return reply.status(200).send({
+                success: true,
+                // message: "Get Media from Instagram",
+                media
+            });
         }
         catch (err: any) {
             return reply.status(400).send({
@@ -79,119 +82,239 @@ class facebookController{
         }
     }
 
-    async mediaInsights(request:FastifyRequest, reply:FastifyReply){
+    async mediaInsights(req:FastifyRequest, reply:FastifyReply){
 
         try{
-            const {mediaId, mediaType, pageAccessToken} :any = request.query;
 
+            const {mediaId, metrics, pageAccessToken} = req.body as any;
 
+            const result = await facebookService.getMediaInsights(mediaId, metrics, pageAccessToken);
 
-            const data = await facebookService.getMediaInsights(
-                mediaId,
-                mediaType,
-                pageAccessToken
-            );
-
-            return reply.send(data);
-
-        }catch(err: any){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
+            return reply.send({
+                success:true,
+                result
             });
+
+        }catch(error:any){
+
+            return reply.code(400).send({
+                success:false,
+                message:error.message
+            });
+
         }
 
     }
 
     async getAllMediaInsights(req:FastifyRequest, reply:FastifyReply){
+
         try{
 
-            const { pageAccessToken, instagramId } = req.query as any;
+            const data = req.body as any;
 
-            const mediaInsights = await facebookService.getAllMediaInsights(instagramId, pageAccessToken);
-
-            return reply.status(200).send({
-                success: true,
-                // message: "Get Media from Instagram",
-                mediaInsights
+            const result = await facebookService.getAllMediaInsights(data);
+            return reply.send({
+                success:true,
+                result
             });
 
-        }catch(err: any){
-            return reply.status(400).send({
-                success: false,
-                message: err.message
+
+        }catch(error:any){
+
+            return reply.code(400).send({
+                success:false,
+                message:error.message
+
             });
+
         }
-    }
-
-
-    async accountInsights(request:FastifyRequest, reply:FastifyReply){
-
-        const {instagramId, accessToken} :any = request.query;
-
-        // console.log(instagramId, accessToken);
-
-        const data = await facebookService.getAccountInsights(
-                instagramId,
-                accessToken
-            );
-
-
-        return reply.send(data);
 
     }
 
-    async getReachInsights(request:FastifyRequest, reply:FastifyReply){
+    // async getMedia(req:FastifyRequest, reply:FastifyReply){
+    //
+    //
+    //     try{
+    //             const { pageAccessToken, instagramId } = req.query as any;
+    //
+    //             const media = await facebookService.getMedia(instagramId, pageAccessToken);
+    //
+    //             return reply.status(200).send({
+    //                 success: true,
+    //                 // message: "Get Media from Instagram",
+    //                 media
+    //             });
+    //     }
+    //     catch (err: any) {
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    // }
 
-        const {instagramId, pageAccessToken} :any = request.query;
+    // async mediaInsights(request:FastifyRequest, reply:FastifyReply){
+    //
+    //     try{
+    //         const {mediaId, mediaType, pageAccessToken} :any = request.query;
+    //
+    //
+    //
+    //         const data = await facebookService.getMediaInsights(
+    //             mediaId,
+    //             mediaType,
+    //             pageAccessToken
+    //         );
+    //
+    //         return reply.send(data);
+    //
+    //     }catch(err: any){
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    //
+    // }
+    //
+    // async getAllMediaInsights(req:FastifyRequest, reply:FastifyReply){
+    //     try{
+    //
+    //         const { pageAccessToken, instagramId } = req.query as any;
+    //
+    //         const mediaInsights = await facebookService.getAllMediaInsights(instagramId, pageAccessToken);
+    //
+    //         return reply.status(200).send({
+    //             success: true,
+    //             // message: "Get Media from Instagram",
+    //             mediaInsights
+    //         });
+    //
+    //     }catch(err: any){
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    // }
 
-        // console.log(instagramId, accessToken);
 
-        const data = await facebookService.getReachInsights(
-            instagramId,
-            pageAccessToken
-        );
+    async accountInsights(req: FastifyRequest, reply: FastifyReply) {
 
+        try {
 
-        return reply.send(data);
+            const data = req.body as any
+            // console.log(data);
 
-    }
+            validateAccountInsights(data);
 
-    async getEngagementInsights(request:FastifyRequest, reply:FastifyReply){
+            const result = await facebookService.getAccountInsights(data);
 
-        const {instagramId, pageAccessToken} :any = request.query;
-
-        // console.log(instagramId, accessToken);
-
-        const data = await facebookService.getEngagementInsights(
-            instagramId,
-            pageAccessToken
-        );
-
-
-        return reply.send(data);
-
-    }
-
-    async getEngagementInsightsByContentType(req:FastifyRequest, reply:FastifyReply){
-
-        try{
-
-            const { pageAccessToken, instagramId } : any = req.query;
-
-            const engagement = await facebookService.getEngagementByContentType(instagramId, pageAccessToken);
-
-            return reply.status(200).send({
+            return reply.send({
                 success: true,
-                engagement
+                result
             });
 
-        }catch(err: any){
+        } catch (error: any) {
+
             return reply.code(400).send({
                 success: false,
-                message: err.message
-            })
+                message: error.message
+            });
+
         }
+
+    }
+    async getReachInsights(req:FastifyRequest, reply:FastifyReply){
+
+        try {
+
+            const data = req.body as any
+            // console.log(data);
+
+            const result = await facebookService.getReachInsights(data);
+
+            return reply.send({
+                success: true,
+                result
+            });
+
+        } catch (error: any) {
+
+            return reply.code(400).send({
+                success: false,
+                message: error.message
+            });
+
+        }
+    }
+
+    async getEngagementInsights(req:FastifyRequest, reply:FastifyReply){
+
+        try {
+
+            const data = req.body as any
+            // console.log(data);
+
+            const result = await facebookService.getEngagementInsights(data);
+
+            return reply.send({
+                success: true,
+                result
+            });
+
+        } catch (error: any) {
+
+            return reply.code(400).send({
+                success: false,
+                message: error.message
+            });
+
+        }
+    }
+
+    async getEngagementInsightsByContentType(
+        req:FastifyRequest,
+        reply:FastifyReply
+    ){
+
+        try{
+
+
+            const data =
+                req.body as any;
+
+
+            const result =
+                await facebookService.getEngagementByContentType(
+                    data
+                );
+
+
+            return reply.send({
+
+                success:true,
+
+                result
+
+            });
+
+
+        }
+        catch(error:any){
+
+
+            return reply.code(400).send({
+
+                success:false,
+
+                message:error.message
+
+            });
+
+
+        }
+
     }
 
 
