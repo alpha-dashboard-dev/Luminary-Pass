@@ -307,7 +307,7 @@ class facebookService {
 
     // Get Engagement By Content Type
 
-    async getEngagementByContentType(data:any) {
+    async getEngagementInsightsByContentType(data:any) {
 
 
         const {instagramId, pageAccessToken, contentTypes, metrics} = data;

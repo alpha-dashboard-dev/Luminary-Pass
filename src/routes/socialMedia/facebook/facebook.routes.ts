@@ -35,7 +35,7 @@ export default async function facebookRoutes(fastify:FastifyInstance){
 
     fastify.post(
         "/get-media-insights",
-        controller.mediaInsights
+        controller.getMediaInsights
     )
 
     fastify.post(
@@ -61,7 +61,7 @@ export default async function facebookRoutes(fastify:FastifyInstance){
 
     fastify.post(
         "/get-account-insights",
-        controller.accountInsights
+        controller.getAccountInsights
     )
 
 }
