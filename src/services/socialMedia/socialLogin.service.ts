@@ -6,7 +6,7 @@ class socialLoginService {
 
     async create(data: any) {
 
-        console.log(data);
+        // console.log(data);
 
         const socialLoginCode = generateCode();
 

@@ -43,9 +43,10 @@ class InstagramController {
 
     async profile(req:FastifyRequest, reply:FastifyReply){
 
-        const {token} = req.query as any;
-        // console.log(token)
-        const profile = await instagramService.getProfile(token);
+        const {userCode, fields} = req.query as any;
+
+        // console.log(fieldArray);
+        const profile = await instagramService.getProfile(userCode, fields);
 
         return reply.send(profile);
 

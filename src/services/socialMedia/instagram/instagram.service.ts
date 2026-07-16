@@ -3,6 +3,7 @@ import { env } from "../../../config/env.js";
 import SocialLoginRepo from "../../../repositories/socialLogin/socialLogin.repository.js";
 import {generateCode} from "../../../utils/generateCode.js";
 import {InstagramMedia} from "../../../types/instagram/media.types.js";
+import socialLoginRepo from "../../../repositories/socialLogin/socialLogin.repository.js";
 
 class InstagramService {
 
@@ -81,6 +82,7 @@ class InstagramService {
 
                 );
 
+            // console.log(response.data);
 
             return response.data;
 
@@ -111,17 +113,36 @@ class InstagramService {
 
 
 
-    /**
-     * Get Instagram Account
-     */
-    async getProfile(token: string) {
+    // Get Influencer Instagram Profile
+    async getProfile(userCode: string, fields: string) {
         try {
+
+            const user = await socialLoginRepo.findOne(
+                {
+                    user_code: userCode
+                }
+            )
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+            const fieldArray = fields ? fields.split(",").map(f => f.trim()) : undefined;
+
+            // console.log(fields)
+            const profileFields = fieldArray ?? ["id", "username", "account_type", "media_count", "followers_count"];
+
+            // const params: any = {
+            //     fields: profileFields.join(","),
+            //     access_token: user.access_token
+            // };
+
+
             const response = await instagramGraphApi.get(
                 "/me",
                 {
                     params: {
-                        fields: "id,username,account_type,media_count,followers_count",
-                        access_token: token
+                        fields: profileFields.join(","),
+                        access_token: user.access_token
                     }
                 }
             );
