@@ -117,6 +117,7 @@ class InstagramService {
     async getProfile(userCode: string, fields: string) {
         try {
 
+            // console.log(fields)
             const user = await socialLoginRepo.findOne(
                 {
                     user_code: userCode
