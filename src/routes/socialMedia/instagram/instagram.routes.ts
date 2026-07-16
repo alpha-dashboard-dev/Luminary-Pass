@@ -47,9 +47,9 @@ export default async function instagramRoutes(fastify:FastifyInstance){
         controller.getComments
     )
 
-    fastify.get(
-        "/get-account-insights",
-        controller.getAccountInsights
-    )
+    // fastify.get(
+    //     "/get-account-insights",
+    //     controller.getAccountInsights
+    // )
 
 }

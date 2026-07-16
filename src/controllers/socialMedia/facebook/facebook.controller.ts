@@ -61,9 +61,9 @@ class facebookController{
     async getMedia(req:FastifyRequest, reply:FastifyReply){
 
         try{
-                const { accessToken, instagramId } = req.query as any;
+                const { pageAccessToken, instagramId } = req.query as any;
 
-                const media = await facebookService.getMedia(instagramId, accessToken);
+                const media = await facebookService.getMedia(instagramId, pageAccessToken);
 
                 return reply.status(200).send({
                     success: true,
@@ -82,9 +82,15 @@ class facebookController{
     async mediaInsights(request:FastifyRequest, reply:FastifyReply){
 
         try{
-            const {mediaId, mediaType, metrics, accessToken, metricType} = request.query as any;
+            const {mediaId, mediaType, pageAccessToken} :any = request.query;
 
-            const data = await facebookService.getMediaInsights(mediaId, mediaType, metrics, accessToken, metricType);
+
+
+            const data = await facebookService.getMediaInsights(
+                mediaId,
+                mediaType,
+                pageAccessToken
+            );
 
             return reply.send(data);
 
@@ -97,37 +103,12 @@ class facebookController{
 
     }
 
-
-    // async mediaInsights(request:FastifyRequest, reply:FastifyReply){
-    //
-    //     try{
-    //         const {mediaId, mediaType, accessToken} :any = request.query;
-    //
-    //
-    //
-    //         const data = await facebookService.getMediaInsights(
-    //             mediaId,
-    //             mediaType,
-    //             accessToken
-    //         );
-    //
-    //         return reply.send(data);
-    //
-    //     }catch(err: any){
-    //         return reply.status(400).send({
-    //             success: false,
-    //             message: err.message
-    //         });
-    //     }
-    //
-    // }
-
     async getAllMediaInsights(req:FastifyRequest, reply:FastifyReply){
         try{
 
-            const { accessToken, instagramId } = req.query as any;
+            const { pageAccessToken, instagramId } = req.query as any;
 
-            const mediaInsights = await facebookService.getAllMediaInsights(instagramId, accessToken);
+            const mediaInsights = await facebookService.getAllMediaInsights(instagramId, pageAccessToken);
 
             return reply.status(200).send({
                 success: true,
@@ -162,13 +143,13 @@ class facebookController{
 
     async getReachInsights(request:FastifyRequest, reply:FastifyReply){
 
-        const {instagramId, accessToken} :any = request.query;
+        const {instagramId, pageAccessToken} :any = request.query;
 
         // console.log(instagramId, accessToken);
 
         const data = await facebookService.getReachInsights(
             instagramId,
-            accessToken
+            pageAccessToken
         );
 
 
@@ -178,13 +159,13 @@ class facebookController{
 
     async getEngagementInsights(request:FastifyRequest, reply:FastifyReply){
 
-        const {instagramId, accessToken} :any = request.query;
+        const {instagramId, pageAccessToken} :any = request.query;
 
         // console.log(instagramId, accessToken);
 
         const data = await facebookService.getEngagementInsights(
             instagramId,
-            accessToken
+            pageAccessToken
         );
 
 
@@ -196,9 +177,9 @@ class facebookController{
 
         try{
 
-            const { accessToken, instagramId } : any = req.query;
+            const { pageAccessToken, instagramId } : any = req.query;
 
-            const engagement = await facebookService.getEngagementByType(instagramId, accessToken);
+            const engagement = await facebookService.getEngagementByContentType(instagramId, pageAccessToken);
 
             return reply.status(200).send({
                 success: true,

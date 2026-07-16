@@ -346,7 +346,7 @@ class InstagramService {
 
         const mediaResponse = await this.getMedia(accessToken);
 
-        const accountInsights = await this.getAccountInsights(profile.id, accessToken);
+        // const accountInsights = await this.getAccountInsights(profile.id, accessToken);
 
         const engagement = this.calculateEngagement(mediaResponse.data);
 
@@ -355,205 +355,68 @@ class InstagramService {
             profile,
             statistics: engagement,
             recentPosts: mediaResponse.data,
-            insights: accountInsights
+            // insights: accountInsights
         };
 
     }
 
-async getAccountInsights(instagramUserId: string, accessToken: string) {
-
-        // console.log(instagramUserId, accessToken);
-
-        try {
-
-            const metrics = [
-                "reach",
-                "follower_count",
-                "profile_views",
-                "accounts_engaged",
-                "total_interactions",
-                "likes",
-                "comments",
-                "shares",
-                "saves"
-            ];
-
-            const response = await instagramGraphApi.get(
-
-                    `/${instagramUserId}/insights`,
-
-                    {
-                        params: {
-
-                            metric: metrics.join(","),
-
-                            period: "day",
-
-                            access_token: accessToken
-
-                        }
-
-                    }
-
-                );
-
-
-            const result: Record<string, number> = {};
-
-            for (const metric of response.data.data) {
-
-                result[metric.name] =
-                    metric.values?.[0]?.value ?? 0;
-
-            }
-
-
-            return result;
-
-        }
-
-        catch (error: any) {
-            this.handleInstagramError(error);
-        }
-
-    }
-
-    // async getAccountInsights(
-    //     instagramUserId: string,
-    //     accessToken: string
-    // ) {
-    //
-    //     const requestedMetrics = [
-    //
-    //         "reach",
-    //
-    //         "profile_views",
-    //
-    //         "follower_count",
-    //
-    //         "accounts_engaged",
-    //
-    //         "total_interactions",
-    //
-    //         "likes",
-    //
-    //         "comments",
-    //
-    //         "shares",
-    //
-    //         "saves"
-    //
-    //     ];
-    //
-    //
-    //     try {
-    //
-    //         const response =
-    //             await instagramGraphApi.get(
-    //
-    //                 `/${instagramUserId}/insights`,
-    //
-    //                 {
-    //                     params: {
-    //
-    //                         metric:
-    //                             requestedMetrics.join(","),
-    //
-    //                         period: "day",
-    //
-    //                         access_token:
-    //                         accessToken
-    //
-    //                     }
-    //
-    //                 }
-    //
-    //             );
-    //
-    //
-    //         const returnedMetrics =
-    //             response.data?.data ?? [];
-    //
-    //
-    //         const result:any = {};
-    //
-    //         const supportedMetrics:string[] = [];
-    //
-    //         const unsupportedMetrics:string[] = [];
-    //
-    //
-    //         /*
-    //             Format returned metrics
-    //         */
-    //
-    //         returnedMetrics.forEach(
-    //             (metric:any)=>{
-    //
-    //                 supportedMetrics.push(
-    //                     metric.name
-    //                 );
-    //
-    //
-    //                 result[metric.name] =
-    //                     metric.values?.[0]?.value ?? 0;
-    //
-    //             }
-    //         );
-    //
-    //
-    //         /*
-    //             Detect missing metrics
-    //         */
-    //
-    //         requestedMetrics.forEach(
-    //             (metric)=>{
-    //
-    //                 if(
-    //                     !supportedMetrics.includes(metric)
-    //                 ){
-    //
-    //                     unsupportedMetrics.push(
-    //                         metric
-    //                     );
-    //
-    //
-    //                     result[metric] = null;
-    //
-    //                 }
-    //
-    //             }
-    //         );
-    //
-    //
-    //         return {
-    //
-    //             metrics: result,
-    //
-    //             supportedMetrics,
-    //
-    //             unsupportedMetrics
-    //
-    //         };
-    //
-    //
-    //     }
-    //     catch(error:any){
-    //
-    //         console.log(
-    //             JSON.stringify(
-    //                 error.response?.data,
-    //                 null,
-    //                 2
-    //             )
-    //         );
-    //
-    //
-    //         throw error;
-    //
-    //     }
-    //
-    // }
-
+// async getAccountInsights(instagramUserId: string, accessToken: string) {
+//
+//         // console.log(instagramUserId, accessToken);
+//
+//         try {
+//
+//             const metrics = [
+//                 "reach",
+//                 "follower_count",
+//                 "profile_views",
+//                 "accounts_engaged",
+//                 "total_interactions",
+//                 "likes",
+//                 "comments",
+//                 "shares",
+//                 "saves"
+//             ];
+//
+//             const response = await instagramGraphApi.get(
+//
+//                     `/${instagramUserId}/insights`,
+//
+//                     {
+//                         params: {
+//
+//                             metric: metrics.join(","),
+//
+//                             period: "day",
+//
+//                             access_token: accessToken
+//
+//                         }
+//
+//                     }
+//
+//                 );
+//
+//
+//             const result: Record<string, number> = {};
+//
+//             for (const metric of response.data.data) {
+//
+//                 result[metric.name] =
+//                     metric.values?.[0]?.value ?? 0;
+//
+//             }
+//
+//
+//             return result;
+//
+//         }
+//
+//         catch (error: any) {
+//             this.handleInstagramError(error);
+//         }
+//
+//     }
 
 }
 
