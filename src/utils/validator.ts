@@ -135,7 +135,6 @@ export const validateUser = (data: any) => {
     }
 }
 
-// Validation for Influencer
 
 export const validateInfluencer = (data: any) => {
     const { userCode, gender, dateOfBirth } = data
