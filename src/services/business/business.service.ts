@@ -133,7 +133,6 @@ class BusinessService {
         }
     }
 
-
     // Email Verification
     async verifyEmail(token: string) {
 
