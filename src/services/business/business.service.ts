@@ -135,6 +135,23 @@ class BusinessService {
         }
     }
 
+    async  emailVerification(token: string){
+        const business = await businessRepo.findOne({
+            email_verification_token: token
+        });
+
+        if(!business){
+            throw new Error("invalid verification link")
+        }
+
+        const isExpired = business.email_verification_token_expires_at && new Date(business.email_Verification_token_expires_at).getTime() <= new Date();
+
+        if(isExpired){
+            throw new Error("Verification link is expires. Request for a new link")
+        }
+        await businessRepo.update()
+    }
+
     // Email Verification
     async verifyEmail(token: string) {
 
