@@ -81,17 +81,33 @@ class Venue extends Model {
   }
 
   static associate(models) {
-    // Venue.belongsTo(models.Business, {
-    //     foreignKey: "business_code",
-    //     targetKey: "business_code",
-    //     as: "business",
-    // });
+    Venue.belongsTo(models.Business, {
+        foreignKey: "business_code",
+        targetKey: "business_code",
+        as: "business",
+    });
 
-    // Venue.hasMany(models.Location, {
-    //     foreignKey: "venue_code",
-    //     sourceKey: "venue_code",
-    //     as: "locations",
-    // });
+
+
+      Venue.hasMany(models.VenueTimeTable, {
+          foreignKey: "venue_code",
+          sourceKey: "venue_code",
+          as: "schedule",
+      });
+
+      Venue.hasMany(models.VenueLocation, {
+          foreignKey: "venue_code",
+          sourceKey: "venue_code",
+          as: "venue",
+          constraints: false
+      })
+
+      Venue.hasMany(models.VenueAttachment, {
+          foreignKey: "venue_code",
+          sourceKey: "venue_code",
+          as: "venueAttachment",
+          constraints: false
+      })
   }
 }
 

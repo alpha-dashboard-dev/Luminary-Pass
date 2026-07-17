@@ -1,25 +1,16 @@
 import Fastify from "fastify";
-import cors from "@fastify/cors";
-import routes from "./routes/index";
+
+import routes from "./routes/index.js";
+
 
 const app = Fastify({
-    logger: true,
+    logger: false,
 });
 
-await app.register(cors, {
-    // origin: process.env.FRONTEND_URL || "http://localhost:5173",
-    credentials: true,
-});
-
-// Health check route
-app.get("/", async () => {
-    return {
-        success: true,
-        message: "Server is running",
-    };
-});
-
-// Register all routes under /api
 app.register(routes, { prefix: "/api" });
+
+// app.ready(() => {
+//     console.log(app.printRoutes());
+// });
 
 export default app;

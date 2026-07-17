@@ -1,4 +1,4 @@
-import { INCLUDE_CONFIG } from "includeConfig";
+import { INCLUDE_CONFIG } from "./includeConfig";
 
 function buildNestedIncludes(config: any): any[] {
 
@@ -18,9 +18,6 @@ function buildNestedIncludes(config: any): any[] {
 }
 
 export function buildIncludes(model: any, includes: any[] = []) {
-
-    // console.log(model, includes);
-
 
     const associations = model.associations || {};
 

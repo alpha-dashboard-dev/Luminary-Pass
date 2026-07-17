@@ -75,7 +75,7 @@ class User extends Model {
 
           user_type: {
             type: DataTypes.ENUM("manager", "staff"),
-            allowNull: false,
+            allowNull: true,
           },
 
           avatar: {
@@ -116,6 +116,77 @@ class User extends Model {
   }
 
   static associate(models) {
+      User.belongsTo(models.Role, {
+          foreignKey: "role_code",
+          targetKey: "role_code",
+          as: "role",
+          constraints: false,
+      });
+
+      User.belongsTo(models.Business, {
+          foreignKey: "business_code",
+          targetKey: "business_code",
+          as: "business",
+          constraints: false,
+      });
+      User.belongsTo(models.Organization, {
+          foreignKey: "organization_code",
+          targetKey: "organization_code",
+          as: "organization",
+          constraints: false,
+      });
+      User.hasMany(models.Influencer, {
+          foreignKey: "user_code",
+          sourceKey: "user_code",
+          as: "influencer",
+          constraints: false,
+      })
+      User.hasMany(models.Event, {
+          foreignKey: "created_by",
+          sourceKey: "user_code",
+          as: "creator",
+          constraints: false,
+      })
+      User.hasMany(models.InfluencerRating, {
+          foreignKey: "rated_by",
+          sourceKey: "user_code",
+          as: "rater",
+          constraints: false,
+      })
+
+      User.hasMany(models.EventInvitation, {
+          foreignKey: "invited_by",
+          sourceKey: "user_code",
+          as: "inviter",
+          constraints: false,
+      })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "user_code",
+          sourceKey: "user_code",
+          as: "ability",
+          constraints: false,
+      })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "added_by",
+          sourceKey: "user_code",
+          as: "addedBy",
+          constraints: false,
+      })
+
+      User.hasMany(models.UserAbility, {
+          foreignKey: "updated_by",
+          sourceKey: "user_code",
+          as: "updatedBy",
+          constraints: false,
+      })
+      User.hasMany(models.Location, {
+          foreignKey: "entity_code",
+          sourceKey: "user_code",
+          as: "location",
+          constraints: false,
+      })
   }
 }
 

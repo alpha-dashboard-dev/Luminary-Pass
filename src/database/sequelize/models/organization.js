@@ -71,12 +71,19 @@ class Organization extends Model {
   }
 
   static associate(models) {
-    // Organization.hasMany(models.Business, {
-    //   foreignKey: "organization_code",
-    //   sourceKey: "organization_code",
-    //   as: "businesses",
-    //   constraints: false,
-    // })
+    Organization.hasMany(models.User, {
+      foreignKey: "organization_code",
+      sourceKey: "organization_code",
+      as: "users",
+      constraints: false,
+    })
+
+    Organization.hasMany(models.Business, {
+      foreignKey: "organization_code",
+      sourceKey: "organization_code",
+      as: "businesses",
+      constraints: false,
+    })
   }
 }
 

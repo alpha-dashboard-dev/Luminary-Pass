@@ -16,6 +16,10 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
+      organization_code: {
+        type: Sequelize.STRING(8),
+        allowNull: true,
+      },
 
       owner_user_code: {
         type: Sequelize.STRING(8),

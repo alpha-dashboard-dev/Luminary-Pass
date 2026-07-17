@@ -1,0 +1,28 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+export const env = {
+
+    PORT: Number(process.env.PORT ?? 5000),
+
+    INSTAGRAM_APP_ID: process.env.INSTAGRAM_APP_ID!,
+
+    INSTAGRAM_APP_SECRET: process.env.INSTAGRAM_APP_SECRET!,
+
+    INSTAGRAM_REDIRECT_URI: process.env.INSTAGRAM_REDIRECT_URI!,
+
+    INSTAGRAM_VERIFY_TOKEN: process.env.INSTAGRAM_VERIFY_TOKEN!,
+
+    INSTAGRAM_API_VERSION: process.env.INSTAGRAM_API_VERSION ?? "v23.0",
+
+    INSTAGRAM_PERMISSION_SCOPES: process.env.INSTAGRAM_PERMISSION_SCOPES ?? "",
+
+    FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID!,
+
+    FACEBOOK_REDIRECT_URI: process.env.FACEBOOK_REDIRECT_URI,
+
+    FACEBOOK_APP_SECRET: process.env.FACEBOOK_APP_SECRET!,
+
+    FACEBOOK_PERMISSION_SCOPES: process.env.FACEBOOK_PERMISSION_SCOPES ?? ""
+};

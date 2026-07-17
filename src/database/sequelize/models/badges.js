@@ -129,4 +129,4 @@ class Badge extends Model {
   }
 }
 
-module.exports = Badge;s
+module.exports = Badge;

@@ -1,6 +1,6 @@
-import initModels from "../../database/sequelize/models/index.js";
-import { buildIncludes } from "../../utils/buildInclude";
-import dbHelper from "../../dbHelper/dbHelper";
+import initModels from "../../database/sequelize/models/index.cjs"
+import dbHelper from "../../database/dbHelper/dbHelper"
+import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
 
@@ -13,17 +13,29 @@ class UserRepository {
     }
 
     async create(data: any, options?: any) {
-        return dbHelper.create(this.tables, data, options);
+        return await dbHelper.create(this.tables, data, options);
+    }
+
+    async findOne(where: any = {}, options: any = {}) {
+        return await dbHelper.findOne(
+            this.tables,
+            {
+                where,
+                include: buildIncludes(
+                    this.tables,
+                    options.include || [],
+                )
+            }
+        );
     }
 
     async findAll(options: any = {}) {
 
         const include = buildIncludes(
             this.tables,
-            options.include || []
-        );
-
-        return dbHelper.findAll(
+            options.include || [],
+        )
+        return await dbHelper.findAll(
             this.tables,
             {
                 ...options,
@@ -32,21 +44,7 @@ class UserRepository {
         );
     }
 
-    async findOne(where: any = {}, options: any = {}) {
-        return dbHelper.findOne(
-            this.tables,
-            {
-                where,
-                include: buildIncludes(
-                    this.tables,
-                    options.include || []
-                ),
-            }
-        );
-    }
-
     async update(where: any, data: any, options: any = {}) {
-
         return dbHelper.update(
             this.tables,
             where,
@@ -63,10 +61,11 @@ class UserRepository {
         )
     }
 
-    async delete(where: any) {
-        return dbHelper.delete(
+    async delete(where: any, options: any = {}) {
+        return await dbHelper.delete(
             this.tables,
-            where
+            where,
+            options
         );
     }
 }

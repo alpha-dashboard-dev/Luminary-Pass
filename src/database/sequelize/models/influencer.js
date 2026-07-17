@@ -67,11 +67,32 @@ class Influencer extends Model {
   }
 
   static associate(models) {
-    // Influencer.belongsTo(models.User, {
-    //     foreignKey: "user_code",
-    //     targetKey: "user_code",
-    //     as: "user",
-    // });
+    Influencer.belongsTo(models.User, {
+        foreignKey: "user_code",
+        targetKey: "user_code",
+        as: "user",
+    });
+
+    Influencer.hasMany(models.InfluencerRating, {
+        foreignKey: "influencer_code",
+        sourceKey: "influencer_code",
+        as: "influencer",
+        constraints: false,
+    })
+
+    Influencer.hasMany(models.EventInvitation, {
+        foreignKey: "influencer_code",
+        sourceKey: "influencer_code",
+        as: "influencerInvitation",
+        constraints: false,
+    })
+
+    Influencer.hasMany(models.EventParticipant, {
+        foreignKey: "influencer_code",
+        sourceKey: "influencer_code",
+        as: "influencerParticipant",
+        constraints: false,
+    })
   }
 }
 

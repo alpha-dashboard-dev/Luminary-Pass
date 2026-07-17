@@ -74,7 +74,32 @@ class UserAbility extends Model {
   }
 
   static associate(models) {
-    // define association here
+      UserAbility.belongsTo(models.Business, {
+          foreignKey: 'business_code',
+          targetKey: 'business_code',
+          as: 'business',
+          constraints: false
+      })
+
+      UserAbility.belongsTo(models.User, {
+          foreignKey: 'user_code',
+          targetKey: 'user_code',
+          as: 'user',
+          constraints: false
+      })
+
+      UserAbility.belongsTo(models.User, {
+          foreignKey: 'added_by',
+          targetKey: 'user_code',
+          as: 'addedBy',
+          constraints: false
+      })
+      UserAbility.belongsTo(models.User, {
+          foreignKey: 'updated_by',
+          targetKey: 'user_code',
+          as: 'updatedBy',
+          constraints: false
+      })
   }
 }
 module.exports = UserAbility;

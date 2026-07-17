@@ -19,6 +19,15 @@ class VenueAttachment extends Model {
             },
           },
 
+          venue_code: {
+              type: DataTypes.STRING(8),
+              allowNull: false,
+              validate: {
+                  is: /^[A-Za-z0-9]{8}$/,
+              }
+
+          },
+
           attachment_type: {
             type: DataTypes.ENUM("image", "video", "link"),
             allowNull: false,
@@ -108,11 +117,12 @@ class VenueAttachment extends Model {
   }
 
   static associate(models) {
-    // VenueAttachment.belongsTo(models.Venue, {
-    //     foreignKey: "venue_code",
-    //     targetKey: "venue_code",
-    //     as: "venue",
-    // });
+    VenueAttachment.belongsTo(models.Venue, {
+        foreignKey: "venue_code",
+        targetKey: "venue_code",
+        as: "venueAttachment",
+        constraints: false
+    });
   }
 }
 

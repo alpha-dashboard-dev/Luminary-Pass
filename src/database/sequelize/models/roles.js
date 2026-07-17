@@ -19,22 +19,22 @@ class Role extends Model {
             },
           },
 
+            business_code: {
+                type: DataTypes.STRING(8),
+                allowNull: true,
+                validate: {
+                    is: /^[A-Za-z0-9]{8}$/,
+                },
+            },
+
           role: {
             type: DataTypes.STRING(100),
             allowNull: false,
           },
 
-          business_code: {
-            type: DataTypes.STRING(8),
-            allowNull: true,
-            validate: {
-              is: /^[A-Za-z0-9]{8}$/,
-            },
-          },
-
           rank: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: true,
             defaultValue: 1,
           },
 
@@ -67,19 +67,44 @@ class Role extends Model {
     return Role;
   }
 
-  static associate(models) {
-    // Role.belongsTo(models.Business, {
-    //     foreignKey: "business_code",
-    //     targetKey: "business_code",
-    //     as: "business",
-    // });
+    static associate(models) {
 
-    // Role.hasMany(models.User, {
-    //     foreignKey: "role_code",
-    //     sourceKey: "role_code",
-    //     as: "users",
-    // });
-  }
+        // Business -> Roles
+        Role.belongsTo(models.Business, {
+            foreignKey: "business_code",
+            targetKey: "business_code",
+            as: "business",
+            constraints: false,
+        });
+
+        // Role -> Users
+        Role.hasMany(models.User, {
+            foreignKey: "role_code",
+            sourceKey: "role_code",
+            as: "users",
+            constraints: false,
+        });
+
+        // Role -> RolePermission
+        Role.hasMany(models.RolePermissions, {
+            foreignKey: "role_code",
+            sourceKey: "role_code",
+            as: "rolePermissions",
+            constraints: false,
+        });
+
+        // Role <-> Permission
+        Role.belongsToMany(models.Permission, {
+            through: models.RolePermissions,
+            foreignKey: "role_code",
+            otherKey: "permission_code",
+            sourceKey: "role_code",
+            targetKey: "permission_code",
+            as: "permissions",
+            constraints: false,
+        });
+
+    }
 }
 
 module.exports = Role;

@@ -18,6 +18,14 @@ class Business extends Model {
               is: /^[A-Za-z0-9]{8}$/,
             },
           },
+            organization_code: {
+                type: DataTypes.STRING(8),
+                allowNull: true,
+                validate: {
+                    is: /^[A-Za-z0-9]{8}$/,
+                },
+            },
+
 
           owner_user_code: {
             type: DataTypes.STRING(8),
@@ -93,17 +101,55 @@ class Business extends Model {
   }
 
   static associate(models) {
-    // Business.belongsTo(models.User, {
-    //     foreignKey: "owner_user_code",
-    //     targetKey: "user_code",
-    //     as: "owner",
-    // });
+      Business.belongsTo(models.Organization, {
+          foreignKey: "organization_code",
+          targetKey: "organization_code",
+          as: "organization",
+      });
+    Business.belongsTo(models.User, {
+        foreignKey: "owner_user_code",
+        targetKey: "user_code",
+        as: "owner",
+    });
 
-    // Business.hasMany(models.User, {
-    //     foreignKey: "business_code",
-    //     sourceKey: "business_code",
-    //     as: "users",
-    // });
+      Business.hasMany(models.Role, {
+          foreignKey: "business_code",
+          sourceKey: "business_code",
+          as: "roles",
+          constraints: false,
+      });
+
+        Business.hasMany(models.User, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "users",
+            constraints: false
+        });
+        Business.hasMany(models.Venue, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "venue",
+            constraints: false
+        })
+        Business.hasMany(models.Event, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "event",
+            constraints: false
+        })
+
+        Business.hasMany(models.UserAbility, {
+            foreignKey: "business_code",
+            sourceKey: "business_code",
+            as: "userAbility",
+            constraints: false
+        })
+        Business.hasMany(models.Location, {
+            foreignKey: "entity_code",
+            sourceKey: "business_code",
+            as: "location",
+            constraints: false
+        })
   }
 }
 

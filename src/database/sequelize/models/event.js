@@ -125,26 +125,53 @@ class Event extends Model {
   }
 
   static associate(models) {
-    // Event.belongsTo(models.Business, {
-    //     foreignKey: "business_code",
-    //     targetKey: "business_code",
-    //     as: "business",
-    //     constraints: false
-    // });
-    //
-    // Event.belongsTo(models.Venue, {
-    //     foreignKey: "venue_code",
-    //     targetKey: "venue_code",
-    //     as: "venue",
-    //     constraints: false
-    // });
-    //
-    // Event.belongsTo(models.User, {
-    //     foreignKey: "created_by",
-    //     targetKey: "user_code",
-    //     as: "creator",
-    //     constraints: false
-    // });
+    Event.belongsTo(models.Business, {
+        foreignKey: "business_code",
+        targetKey: "business_code",
+        as: "business",
+        constraints: false
+    });
+
+    Event.belongsTo(models.Venue, {
+        foreignKey: "venue_code",
+        targetKey: "venue_code",
+        as: "venue",
+        constraints: false
+    });
+
+    Event.belongsTo(models.User, {
+        foreignKey: "created_by",
+        targetKey: "user_code",
+        as: "creator",
+        constraints: false
+    });
+
+    Event.hasMany(models.InfluencerRating, {
+        foreignKey: "event_code",
+        sourceKey: "event_code",
+        as: "event",
+        constraints: false
+    })
+      Event.hasMany(models.EventInvitation, {
+          foreignKey: "event_code",
+          sourceKey: "event_code",
+          as: "eventInvitation",
+          constraints: false
+      })
+
+      Event.hasMany(models.EventParticipant, {
+          foreignKey: "event_code",
+          sourceKey: "event_code",
+          as: "eventParticipant",
+          constraints: false
+      })
+
+      Event.hasMany(models.Location, {
+          foreignKey: "entity_code",
+          sourceKey: "event_code",
+          as: "location",
+          constraints: false
+      })
   }
 }
 

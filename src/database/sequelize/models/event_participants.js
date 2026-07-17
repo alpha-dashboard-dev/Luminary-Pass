@@ -80,17 +80,19 @@ class EventParticipant extends Model {
   }
 
   static associate(models) {
-    // EventParticipant.belongsTo(models.Event, {
-    //     foreignKey: "event_code",
-    //     targetKey: "event_code",
-    //     as: "event",
-    // });
-    //
-    // EventParticipant.belongsTo(models.Influencer, {
-    //     foreignKey: "influencer_code",
-    //     targetKey: "influencer_code",
-    //     as: "influencer",
-    // });
+    EventParticipant.belongsTo(models.Event, {
+        foreignKey: "event_code",
+        targetKey: "event_code",
+        as: "eventParticipant",
+        constraints: false,
+    });
+
+    EventParticipant.belongsTo(models.Influencer, {
+        foreignKey: "influencer_code",
+        targetKey: "influencer_code",
+        as: "influencerParticipant",
+        constraints: false,
+    });
   }
 }
 

@@ -93,6 +93,25 @@ class Location extends Model {
 
   static associate(models) {
     // Polymorphic relation (handled in service layer)
+    Location.belongsTo(models.Business, {
+        foreignKey: "entity_code",
+        targetKey: "business_code",
+        as: "business",
+        constraints: false
+    })
+      Location.belongsTo(models.User, {
+          foreignKey: "entity_code",
+          targetKey: "user_code",
+          as: "user",
+          constraints: false
+      })
+
+    Location.belongsTo(models.Event, {
+        foreignKey: "entity_code",
+        targetKey: "event_code",
+        as: "event",
+        constraints: false
+    })
   }
 }
 

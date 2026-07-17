@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
 
-class RolePermission extends Model {
+class RolePermissions extends Model {
   static initModel(sequelize) {
-    RolePermission.init(
+    RolePermissions.init(
         {
           id: {
             type: DataTypes.BIGINT,
@@ -42,29 +42,31 @@ class RolePermission extends Model {
         },
         {
           sequelize,
-          modelName: "RolePermission",
+          modelName: "RolePermissions",
           tableName: "role_permissions",
           timestamps: false,
           underscored: true,
         }
     );
 
-    return RolePermission;
+    return RolePermissions;
   }
 
   static associate(models) {
-    // RolePermission.belongsTo(models.Role, {
-    //     foreignKey: "role_code",
-    //     targetKey: "role_code",
-    //     as: "role",
-    // });
+    RolePermissions.belongsTo(models.Role, {
+        foreignKey: "role_code",
+        targetKey: "role_code",
+        as: "role",
+        constraints: false
+    });
 
-    // RolePermission.belongsTo(models.Permission, {
-    //     foreignKey: "permission_code",
-    //     targetKey: "permission_code",
-    //     as: "permission",
-    // });
+    RolePermissions.belongsTo(models.Permission, {
+        foreignKey: "permission_code",
+        targetKey: "permission_code",
+        as: "permission",
+        constraints: false
+    });
   }
 }
 
-module.exports = RolePermission;
+module.exports = RolePermissions;
