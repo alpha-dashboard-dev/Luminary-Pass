@@ -59,6 +59,20 @@ class businessController {
     `);
     }
 
+
+    async resendVerificationEmail(request, reply) {
+        const { email } = request.body as {
+            email: string;
+        };
+
+        await businessService.resendVerificationEmail(email);
+
+        return reply.send({
+            success: true,
+            message: "Verification email sent successfully",
+        });
+    }
+
     // async create(req: FastifyRequest, reply: FastifyReply) {
     //
     //     try{
