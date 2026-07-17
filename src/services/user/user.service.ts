@@ -76,9 +76,10 @@ class UserService {
                     user_name: userName,
                     follower_count: followerCount,
                     description: description,
-
-                }
+                },
+                {  transaction }
             )
+
 
             const category = await categoryRepo.create(
                 {
@@ -91,7 +92,7 @@ class UserService {
                 { transaction }
             )
 
-            const businessLocation = await locationRepo.create(
+            const userLocation = await locationRepo.create(
                 {
                     location_code: locationCode,
                     entity_type: "user",
@@ -110,7 +111,7 @@ class UserService {
             return {
                 user,
                 category,
-                businessLocation,
+                userLocation,
             };
 
         } catch (err) {
@@ -120,8 +121,6 @@ class UserService {
             throw err;
         }
     }
-
-
 
     // Create Users
 
