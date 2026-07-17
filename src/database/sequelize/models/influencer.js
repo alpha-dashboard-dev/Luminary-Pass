@@ -41,6 +41,10 @@ class Influencer extends Model {
             type: DataTypes.DATEONLY,
             allowNull: true,
           },
+          description: {
+              type: DataTypes.TEXT,
+              allowNull: true,
+          },
 
           created_at: {
             type: DataTypes.DATE,
@@ -51,6 +55,8 @@ class Influencer extends Model {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
           },
+
+
         },
         {
           sequelize,

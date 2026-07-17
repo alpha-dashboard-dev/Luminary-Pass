@@ -15,7 +15,7 @@ const db = initModels();
 
 class BusinessService {
 
-    // Business Registration
+    // Business Registration through Web
     async registerBusiness(data: any) {
 
         const { firstName, businessName, email, phone, venueCategory, country, planInterest, description } = data
