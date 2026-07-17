@@ -67,49 +67,49 @@ class BusinessService {
                 { transaction }
             );
 
-            const owner = await userRepo.create(
-                {
-                    user_code: ownerCode,
-                    business_code: businessCode,
-                    role_code: "ROL00002",
-                    first_name: firstName || null,
-                    email:  email || null,
-                    phone: phone || null,
-                    status: "inactive",
-                },
-                { transaction }
-            );
-
-            const venue = await venueRepo.create(
-                {
-                    venue_code: venueCode,
-                    business_code: businessCode,
-                    description: description || null,
-                    status: "inactive"
-                },
-                { transaction }
-            )
-
-            const category = await categoryRepo.create(
-                {
-                    category_code: categoryCode,
-                    entity_type: "venue",
-                    entity_code: venueCode,
-                    name: venueCategory,
-                    status: "inactive",
-                },
-                { transaction }
-            )
-
-            const businessLocation = await locationRepo.create(
-                {
-                    location_code: locationCode,
-                    entity_type: "business",
-                    entity_code: businessCode,
-                    country: country,
-                },
-                { transaction }
-            )
+            // const owner = await userRepo.create(
+            //     {
+            //         user_code: ownerCode,
+            //         business_code: businessCode,
+            //         role_code: "ROL00002",
+            //         first_name: firstName || null,
+            //         email:  email || null,
+            //         phone: phone || null,
+            //         status: "inactive",
+            //     },
+            //     { transaction }
+            // );
+            //
+            // const venue = await venueRepo.create(
+            //     {
+            //         venue_code: venueCode,
+            //         business_code: businessCode,
+            //         description: description || null,
+            //         status: "inactive"
+            //     },
+            //     { transaction }
+            // )
+            //
+            // const category = await categoryRepo.create(
+            //     {
+            //         category_code: categoryCode,
+            //         entity_type: "venue",
+            //         entity_code: venueCode,
+            //         name: venueCategory,
+            //         status: "inactive",
+            //     },
+            //     { transaction }
+            // )
+            //
+            // const businessLocation = await locationRepo.create(
+            //     {
+            //         location_code: locationCode,
+            //         entity_type: "business",
+            //         entity_code: businessCode,
+            //         country: country,
+            //     },
+            //     { transaction }
+            // )
 
             await transaction.commit();
 
@@ -119,10 +119,10 @@ class BusinessService {
 
             return {
                 business,
-                owner,
-                venue,
-                category,
-                businessLocation,
+                // owner,
+                // venue,
+                // category,
+                // businessLocation,
             };
 
         } catch (err) {
@@ -146,13 +146,11 @@ class BusinessService {
             throw new Error("Invalid verification link");
         }
 
-        const isExpired =
-            business.email_verification_token_expires_at &&
-            new Date(business.email_verification_token_expires_at) <= new Date();
+        const isExpired = business.email_verification_token_expires_at && new Date(business.email_verification_token_expires_at) <= new Date();
 
 
         if (isExpired) {
-            throw new Error("Verification link expired");
+            throw new Error("Verification link expired. Request for a new link");
         }
 
         await businessRepo.update(
@@ -164,6 +162,33 @@ class BusinessService {
                 email_verification_token: null,
                 email_verification_token_expires_at: null,
             }
+        );
+
+
+        return true;
+    }
+
+    async resendVerificationEmail(email: string) {
+
+        const business = await businessRepo.findOne({
+            email: email,
+        });
+
+
+        if (!business) {
+            throw new Error("Business not found");
+        }
+
+
+        if (business.email_verified) {
+            throw new Error("Email already verified");
+        }
+
+
+        await emailService.sendBusinessEmailVerification(
+            business.email,
+            business.business_code,
+            business.name
         );
 
 
