@@ -20,9 +20,9 @@ class EmailService {
 
         const token = crypto.randomBytes(32).toString("hex");
 
-        // const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 mintues
+        // const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
 
         await businessRepo.update(
@@ -62,7 +62,7 @@ class EmailService {
             </a>
 
             <p>
-                This link expires in 5 mintues.
+                This link expires in 5 minutes.
             </p>
         `,
         });

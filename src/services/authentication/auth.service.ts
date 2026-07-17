@@ -75,125 +75,6 @@ class AuthService {
         }
     }
 
-
-    // async registerBusiness(data: any) {
-    //
-    //     const { firstName, businessName, email, phone, venueCategory, country, planInterest, description } = data
-    //
-    //
-    //     const transaction = await db.sequelize.transaction();
-    //
-    //     try {
-    //
-    //         if (email) {
-    //             const emailExists = await userRepo.findOne(
-    //                 {
-    //                     email: email
-    //                 }
-    //             );
-    //
-    //             if (emailExists) {
-    //                 throw new Error("Email already exists");
-    //             }
-    //         }
-    //
-    //
-    //         if (phone) {
-    //             const phoneExists = await userRepo.findOne({
-    //                 phone: phone
-    //             })
-    //
-    //             if (phoneExists) {
-    //                 throw new Error("Phone already exists");
-    //             }
-    //
-    //         }
-    //
-    //         const businessCode = generateCode();
-    //         const ownerCode = generateCode();
-    //         const venueCode = generateCode();
-    //         const categoryCode = generateCode();
-    //         const locationCode = generateCode();
-    //
-    //         const business = await businessRepo.create(
-    //             {
-    //                 business_code: businessCode,
-    //                 owner_user_code: ownerCode,
-    //                 name: businessName.trim(),
-    //                 email: email || null,
-    //                 phone: phone,
-    //                 billing_plan: planInterest
-    //             },
-    //             { transaction }
-    //         );
-    //
-    //         const owner = await userRepo.create(
-    //             {
-    //                 user_code: ownerCode,
-    //                 business_code: businessCode,
-    //                 role_code: "ROL00002",
-    //                 first_name: firstName || null,
-    //                 email:  email || null,
-    //                 phone: phone || null,
-    //                 status: "inactive",
-    //             },
-    //             { transaction }
-    //         );
-    //
-    //         const venue = await venueRepo.create(
-    //             {
-    //                 venue_code: venueCode,
-    //                 business_code: businessCode,
-    //                 description: description || null,
-    //                 status: "inactive"
-    //             },
-    //             { transaction }
-    //         )
-    //
-    //         const category = await categoryRepo.create(
-    //             {
-    //                 category_code: categoryCode,
-    //                 entity_type: "venue",
-    //                 entity_code: venueCode,
-    //                 name: venueCategory,
-    //                 status: "inactive",
-    //             },
-    //             { transaction }
-    //         )
-    //
-    //         const businessLocation = await locationRepo.create(
-    //             {
-    //                 location_code: locationCode,
-    //                 entity_type: "business",
-    //                 entity_code: businessCode,
-    //                 country: country,
-    //             },
-    //             { transaction }
-    //         )
-    //
-    //         await transaction.commit();
-    //
-    //         if (email) {
-    //             await emailService.sendBusinessActivationEmail(email, businessCode, businessName);
-    //         }
-    //
-    //
-    //         return {
-    //             business,
-    //             owner,
-    //             venue,
-    //             category,
-    //             businessLocation,
-    //         };
-    //
-    //     } catch (err) {
-    //
-    //         await transaction.rollback();
-    //
-    //         throw err;
-    //     }
-    // }
-
     async login(data: any, request: any) {
 
         // console.log(data);
@@ -244,9 +125,7 @@ class AuthService {
             type: "refresh",
         });
 
-        const refreshExpiry = new Date(
-            Date.now() + 15 * 24 * 60 * 60 * 1000
-        );
+        const refreshExpiry = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
 
         await userSessionRepo.create({
 

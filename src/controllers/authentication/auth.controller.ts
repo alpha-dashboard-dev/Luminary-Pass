@@ -7,7 +7,6 @@ class AuthController {
     async register(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-
             const  data = req.body as any;
 
             // console.log(data)
@@ -30,8 +29,6 @@ class AuthController {
 
         }
     }
-
-
 
     async login(req: FastifyRequest, reply: FastifyReply) {
 
