@@ -58,6 +58,7 @@ class BusinessService {
             const business = await businessRepo.create(
                 {
                     business_code: businessCode,
+                    organization_code: "ORG00001",
                     owner_user_code: ownerCode,
                     name: businessName.trim(),
                     email: email || null,
@@ -70,6 +71,7 @@ class BusinessService {
             const owner = await userRepo.create(
                 {
                     user_code: ownerCode,
+                    organization_code: "ORG00001",
                     business_code: businessCode,
                     role_code: "ROL00002",
                     first_name: firstName || null,
