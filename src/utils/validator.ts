@@ -536,7 +536,6 @@ export const accountValidation = (data: any) => {
 
 }
 
-
 export const validateBusinessAccountRegistration = (data: any) => {
 
     const { firstName, businessName, email, phone } = data
@@ -547,6 +546,27 @@ export const validateBusinessAccountRegistration = (data: any) => {
 
     if (!businessName || businessName.trim().length < 2) {
         throw new Error("Business name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address!");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+}
+
+export const validateInfluencerAccountRegistration = (data: any) => {
+
+    const { fullName, userName, email, phone } = data
+
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error("Name must be at least 2 characters long");
+    }
+
+    if (!userName || userName.trim().length < 2) {
+        throw new Error("User Name must be at least 2 characters long");
     }
 
     if (!email || !isValidEmail(email)) {

@@ -2,130 +2,16 @@ import userRepo from "../../repositories/user/user.repository";
 
 import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
-import {buildWhere} from "../../utils/buildWhere.js";
-import categoryRepo from "../../repositories/category/category.repository.js";
-import locationRepo from "../../repositories/location/location.repository.js";
-import emailService from "../sendEmail/email.service.js";
-// import roleRepo from "../../repositories/user/userRole.repository.js";
-
+import {buildWhere} from "../../utils/buildWhere.js"
 import initModels from "../../database/sequelize/models/index.cjs";
-import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 
 const db = initModels();
 
 class UserService {
 
-
-    // Influencer Registration through Web
-
-    async registerInfluencer(data: any) {
-
-        const { fullName, userName, email, phone, followerCount, country, contentCategory, description } = data
-
-
-        const transaction = await db.sequelize.transaction();
-
-        try {
-
-            if (email) {
-                const emailExists = await userRepo.findOne(
-                    {
-                        email: email
-                    }
-                );
-
-                if (emailExists) {
-                    throw new Error("Email already exists");
-                }
-            }
-
-
-            if (phone) {
-                const phoneExists = await userRepo.findOne({
-                    phone: phone
-                })
-
-                if (phoneExists) {
-                    throw new Error("Phone already exists");
-                }
-
-            }
-            const userCode = generateCode();
-            const influencerCode = generateCode();
-            const categoryCode = generateCode();
-            const locationCode = generateCode();
-
-
-            const user = await userRepo.create(
-                {
-                    user_code: userCode,
-                    organization_code: "ORG00001",
-                    role_code: "ROL00003",
-                    first_name: fullName || null,
-                    email:  email || null,
-                    phone: phone || null,
-                    status: "inactive",
-                },
-                { transaction }
-            );
-
-            const influencer = await influencerRepo.create(
-                {
-                    influencer_code: influencerCode,
-                    user_code: userCode,
-                    user_name: userName,
-                    follower_count: followerCount,
-                    description: description,
-                },
-                {  transaction }
-            )
-
-
-            const category = await categoryRepo.create(
-                {
-                    category_code: categoryCode,
-                    entity_type: "influencer",
-                    entity_code: userCode,
-                    name: contentCategory,
-                    status: "inactive",
-                },
-                { transaction }
-            )
-
-            const userLocation = await locationRepo.create(
-                {
-                    location_code: locationCode,
-                    entity_type: "user",
-                    entity_code: userCode,
-                    country: country,
-                },
-                { transaction }
-            )
-
-            await transaction.commit();
-
-            if (email) {
-                await emailService.sendBusinessEmailVerification(email, userCode, fullName);
-            }
-
-            return {
-                user,
-                category,
-                userLocation,
-            };
-
-        } catch (err) {
-
-            await transaction.rollback();
-
-            throw err;
-        }
-    }
-
     // Create Users
 
     async create(data: any) {
-
 
         const emailExists = await userRepo.findOne(
             {
