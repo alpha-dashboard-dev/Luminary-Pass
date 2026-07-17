@@ -16,8 +16,8 @@ class CategoryService {
                     venue_code: data.entityCode,
                 });
 
-                if(!venue){
-                    throw new Error("Venue doesn't exist");
+                if(venue){
+                    throw new Error("Venue already exist");
                 }
                 break;
 
@@ -27,7 +27,7 @@ class CategoryService {
                     influencer_code: data.entityCode,
                 })
                 if (!influencer){
-                    throw new Error("Influencer doesn't exist");
+                    throw new Error("Influencer already exist");
                 }
                 break;
         }

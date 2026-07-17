@@ -535,3 +535,25 @@ export const accountValidation = (data: any) => {
     }
 
 }
+
+
+export const validateBusinessAccountRegistration = (data: any) => {
+
+    const { firstName, businessName, email, phone } = data
+
+    if (!firstName || firstName.trim().length < 2) {
+        throw new Error("First name must be at least 2 characters long");
+    }
+
+    if (!businessName || businessName.trim().length < 2) {
+        throw new Error("Business name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address!");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+}

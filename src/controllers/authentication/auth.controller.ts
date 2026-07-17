@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import authService from "../../services/authentication/auth.service.ts";
-import {accountValidation} from "../../utils/validator.js";
+import {accountValidation, validateBusinessAccountRegistration} from "../../utils/validator.js";
 
 class AuthController {
 
@@ -18,6 +18,34 @@ class AuthController {
             return reply.status(200).send({
                 success: true,
                 message: "Registration successful",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async registerBusiness(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const  data = req.body as any;
+
+            validateBusinessAccountRegistration(data)
+
+            // console.log(data)
+
+            const result = await authService.registerBusiness(data);
+
+            return reply.status(200).send({
+                success: true,
+                message: "Business Registration successful!!",
                 data: result
             });
 
