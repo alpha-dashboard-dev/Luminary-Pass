@@ -1,31 +1,81 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import businessService from "../../services/business/business.service";
-import {validateBusiness} from "../../utils/validator.js";
+import {validateBusiness, validateBusinessAccountRegistration} from "../../utils/validator.js";
 
 class businessController {
 
-    async create(req: FastifyRequest, reply: FastifyReply) {
 
-        try{
-            const data = req.body;
-            validateBusiness(data);
-            const result =  await businessService.create(
-                data,
-                req.user
-            )
+    // Business Registration
+    async registerBusiness(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const  data = req.body as any;
+
+            validateBusinessAccountRegistration(data)
+
+            const result = await businessService.registerBusiness(data);
+
             return reply.status(200).send({
                 success: true,
-                message: "Business created successfully",
+                message: "Business Registration successful!!",
                 data: result
             });
-        }
-        catch (err: any) {
-            return reply.status(400).send({
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
                 success: false,
                 message: err.message
             });
+
         }
     }
+
+    async activateBusiness(request, reply) {
+        const { token } = request.query as { token: string };
+
+        // console.log("Activation token:", token);
+
+        await businessService.activateBusiness(token);
+
+        return reply.type("text/html").send(`
+        <!DOCTYPE html>
+        <html>
+            <head>
+                <title>Account Activated</title>
+            </head>
+            <body style="font-family:Arial;text-align:center;padding-top:100px;">
+                <h1>✅ Account Activated</h1>
+                <p>Your business account has been activated successfully.</p>
+                <p>You can now log in.</p>
+            </body>
+        </html>
+    `);
+    }
+
+    // async create(req: FastifyRequest, reply: FastifyReply) {
+    //
+    //     try{
+    //         const data = req.body;
+    //         validateBusiness(data);
+    //         const result =  await businessService.create(
+    //             data,
+    //             req.user
+    //         )
+    //         return reply.status(200).send({
+    //             success: true,
+    //             message: "Business created successfully",
+    //             data: result
+    //         });
+    //     }
+    //     catch (err: any) {
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    // }
 
     async getAll(req: FastifyRequest, reply: FastifyReply) {
 
@@ -215,6 +265,7 @@ class businessController {
             });
         }
     }
+
 }
 
 export default  new businessController();

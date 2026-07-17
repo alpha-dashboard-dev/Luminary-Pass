@@ -6,19 +6,31 @@ import {hasPermission} from "../../middleware/hasPermission.js";
 
 export default async function businessRoutes(fastify: FastifyInstance) {
 
+
+    // Business Registration
     fastify.post(
-        "/create-business",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00013", "8A496AEC", "E70C0852", "E23A69A8"],
-                    false
-                )
-            ]
-        },
-        businessController.create
+        "/register-business",
+        businessController.registerBusiness,
     )
+
+    fastify.get(
+        "/activate",
+        businessController.activateBusiness
+    );
+    //
+    // fastify.post(
+    //     "/create-business",
+    //     {
+    //         preHandler: [
+    //             authenticate,
+    //             hasPermission(
+    //                 ["PER00013", "8A496AEC", "E70C0852", "E23A69A8"],
+    //                 false
+    //             )
+    //         ]
+    //     },
+    //     businessController.create
+    // )
 
     fastify.get(
         '/get-all-businesses',

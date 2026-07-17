@@ -29,7 +29,7 @@ class Venue extends Model {
 
           name: {
             type: DataTypes.STRING(255),
-            allowNull: false,
+            allowNull: true,
           },
 
           email: {

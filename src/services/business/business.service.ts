@@ -6,66 +6,63 @@ import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import initModels from "../../database/sequelize/models/index.cjs";
+import venueRepo from "../../repositories/venue/venue.repository.js";
+import categoryRepo from "../../repositories/category/category.repository.js";
+import locationRepo from "../../repositories/location/location.repository.js";
+import emailService from "../sendEmail/email.service.js";
 
 const db = initModels();
 
 class BusinessService {
 
-    // Create Business + Owner
-    async create(data: any) {
+    // Business Registration
+    async registerBusiness(data: any) {
+
+        const { firstName, businessName, email, phone, venueCategory, country, planInterest, description } = data
+
 
         const transaction = await db.sequelize.transaction();
 
         try {
 
-            const organization = await orgRepo.findOne({
-                organization_code: data.organizationCode,
-            })
-            // console.log(organization)
+            if (email) {
+                const emailExists = await userRepo.findOne(
+                    {
+                        email: email
+                    }
+                );
 
-            if(!organization) {
-                throw new Error("Organization Not Found!");
-            }
-
-            const emailExists = await businessRepo.findOne(
-                {
-                    email: data.email
+                if (emailExists) {
+                    throw new Error("Email already exists");
                 }
-            );
-
-            if (emailExists) {
-                throw new Error("Email already exists");
             }
 
-            const phoneExists = await businessRepo.findOne({
-                phone: data.phone
-            })
 
-            if (phoneExists) {
-                throw new Error("Phone already exists");
+            if (phone) {
+                const phoneExists = await userRepo.findOne({
+                    phone: phone
+                })
+
+                if (phoneExists) {
+                    throw new Error("Phone already exists");
+                }
+
             }
 
             const businessCode = generateCode();
-
             const ownerCode = generateCode();
+            const venueCode = generateCode();
+            const categoryCode = generateCode();
+            const locationCode = generateCode();
 
             const business = await businessRepo.create(
                 {
                     business_code: businessCode,
-                    organization_code: data.organizationCode,
                     owner_user_code: ownerCode,
-
-                    name: data.name.trim(),
-
-                    email: data.email || null,
-
-                    phone: data.phone,
-
-                    timezone: data.timezone || null,
-
-                    description: data.description || null,
-
-                    status: data.status,
+                    name: businessName.trim(),
+                    email: email || null,
+                    phone: phone,
+                    billing_plan: planInterest
                 },
                 { transaction }
             );
@@ -73,37 +70,60 @@ class BusinessService {
             const owner = await userRepo.create(
                 {
                     user_code: ownerCode,
-
-                    organization_code: data.organizationCode,
-
                     business_code: businessCode,
-                    role_code: data.roleCode,
-                    // first_name: data.first_name || null,
-                    // last_name: data.last_name || null,
-                    // email:  null,
-                    // phone: null,
-                    // password: null,
-                    // user_type: null,
+                    role_code: "ROL00002",
+                    first_name: firstName || null,
+                    email:  email || null,
+                    phone: phone || null,
                     status: "inactive",
                 },
                 { transaction }
             );
 
-            // await businessRepo.update(
-            //     {
-            //         business_code: businessCode
-            //     },
-            //     {
-            //         owner_user_code: ownerCode,
-            //     },
-            //     { transaction }
-            // );
+            const venue = await venueRepo.create(
+                {
+                    venue_code: venueCode,
+                    business_code: businessCode,
+                    description: description || null,
+                    status: "inactive"
+                },
+                { transaction }
+            )
+
+            const category = await categoryRepo.create(
+                {
+                    category_code: categoryCode,
+                    entity_type: "venue",
+                    entity_code: venueCode,
+                    name: venueCategory,
+                    status: "inactive",
+                },
+                { transaction }
+            )
+
+            const businessLocation = await locationRepo.create(
+                {
+                    location_code: locationCode,
+                    entity_type: "business",
+                    entity_code: businessCode,
+                    country: country,
+                },
+                { transaction }
+            )
 
             await transaction.commit();
+
+            if (email) {
+                await emailService.sendBusinessActivationEmail(email, businessCode, businessName);
+            }
+
 
             return {
                 business,
                 owner,
+                venue,
+                category,
+                businessLocation,
             };
 
         } catch (err) {
@@ -113,6 +133,109 @@ class BusinessService {
             throw err;
         }
     }
+
+    // Create Business + Owner
+    // async create(data: any) {
+    //
+    //     const transaction = await db.sequelize.transaction();
+    //
+    //     try {
+    //
+    //         const organization = await orgRepo.findOne({
+    //             organization_code: data.organizationCode,
+    //         })
+    //         // console.log(organization)
+    //
+    //         if(!organization) {
+    //             throw new Error("Organization Not Found!");
+    //         }
+    //
+    //         const emailExists = await businessRepo.findOne(
+    //             {
+    //                 email: data.email
+    //             }
+    //         );
+    //
+    //         if (emailExists) {
+    //             throw new Error("Email already exists");
+    //         }
+    //
+    //         const phoneExists = await businessRepo.findOne({
+    //             phone: data.phone
+    //         })
+    //
+    //         if (phoneExists) {
+    //             throw new Error("Phone already exists");
+    //         }
+    //
+    //         const businessCode = generateCode();
+    //
+    //         const ownerCode = generateCode();
+    //
+    //         const business = await businessRepo.create(
+    //             {
+    //                 business_code: businessCode,
+    //                 organization_code: data.organizationCode,
+    //                 owner_user_code: ownerCode,
+    //
+    //                 name: data.name.trim(),
+    //
+    //                 email: data.email || null,
+    //
+    //                 phone: data.phone,
+    //
+    //                 timezone: data.timezone || null,
+    //
+    //                 description: data.description || null,
+    //
+    //                 status: data.status,
+    //             },
+    //             { transaction }
+    //         );
+    //
+    //         const owner = await userRepo.create(
+    //             {
+    //                 user_code: ownerCode,
+    //
+    //                 organization_code: data.organizationCode,
+    //
+    //                 business_code: businessCode,
+    //                 role_code: data.roleCode,
+    //                 // first_name: data.first_name || null,
+    //                 // last_name: data.last_name || null,
+    //                 // email:  null,
+    //                 // phone: null,
+    //                 // password: null,
+    //                 // user_type: null,
+    //                 status: "inactive",
+    //             },
+    //             { transaction }
+    //         );
+    //
+    //         // await businessRepo.update(
+    //         //     {
+    //         //         business_code: businessCode
+    //         //     },
+    //         //     {
+    //         //         owner_user_code: ownerCode,
+    //         //     },
+    //         //     { transaction }
+    //         // );
+    //
+    //         await transaction.commit();
+    //
+    //         return {
+    //             business,
+    //             owner,
+    //         };
+    //
+    //     } catch (err) {
+    //
+    //         await transaction.rollback();
+    //
+    //         throw err;
+    //     }
+    // }
 
     // Get all Businesses
 
@@ -275,6 +398,43 @@ class BusinessService {
             throw err;
         }
 
+    }
+
+
+    async activateBusiness(token: string) {
+
+        const business = await businessRepo.findOne({
+            activation_token: token
+        });
+
+        if (!business) {
+            throw new Error("Invalid activation link");
+        }
+
+        await businessRepo.update(
+            {
+                business_code: business.business_code
+            },
+            {
+                status: "active",
+                activation_token: null,
+                activation_token_expires_at: null,
+                email_verified: true,
+            }
+        );
+
+        await userRepo.update(
+            {
+                business_code: business.business_code
+            },
+            {
+                status: "active"
+            }
+        );
+
+        return {
+            message: "Business account activated successfully."
+        };
     }
 }
 

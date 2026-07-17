@@ -24,5 +24,12 @@ export const env = {
 
     FACEBOOK_APP_SECRET: process.env.FACEBOOK_APP_SECRET!,
 
-    FACEBOOK_PERMISSION_SCOPES: process.env.FACEBOOK_PERMISSION_SCOPES ?? ""
+    FACEBOOK_PERMISSION_SCOPES: process.env.FACEBOOK_PERMISSION_SCOPES ?? "",
+
+    SMTP_HOST: process.env.SMTP_HOST!,
+    SMTP_PORT: Number(process.env.SMTP_PORT!),
+    SMTP_SECURE: process.env.SMTP_SECURE!,
+    SMTP_USER: process.env.SMTP_USER!,
+    SMTP_PASS: process.env.SMTP_PASS!,
+    APP_URL: process.env.APP_URL!,
 };

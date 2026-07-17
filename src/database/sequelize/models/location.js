@@ -21,12 +21,12 @@ class Location extends Model {
 
           entity_type: {
             type: DataTypes.ENUM("business", "event", "user"),
-            allowNull: false,
+            allowNull: true,
           },
 
           entity_code: {
             type: DataTypes.STRING(8),
-            allowNull: false,
+            allowNull: true,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
