@@ -16,93 +16,56 @@ class EmailService {
         },
     });
 
-    async sendBusinessActivationEmail(email: string, businessCode: string, businessName: string) {
+    async sendBusinessEmailVerification(email: string, businessCode: string, businessName: string) {
 
-        // console.log("Activation email:", email, businessCode, businessName);
-        // Generate activation token
         const token = crypto.randomBytes(32).toString("hex");
 
-        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+        // const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-        // Save token and expiry in database
-        //
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 mintues
+
+
         await businessRepo.update(
             {
                 business_code: businessCode,
             },
             {
-                activation_token: token,
-                activation_token_expires_at: expiresAt,
+                email_verification_token: token,
+                email_verification_token_expires_at: expiresAt,
                 email_verified: false,
             }
         );
 
-        // console.log("Activation update result:", result);
 
-        const activationLink = `${env.APP_URL}/api/businesses/activate?token=${token}`;
+        const verificationLink = `${env.APP_URL}/api/businesses/verify-email?token=${token}`;
+
 
         await this.transporter.sendMail({
             from: `"Luminary Pass" <${env.SMTP_USER}>`,
             to: email,
-            subject: "Activate Your Business Account",
+            subject: "Verify Your Business Email",
             html: `
-            <div style="max-width:600px;margin:auto;font-family:Arial,sans-serif;line-height:1.6">
-                <h2>Welcome to Luminary Pass</h2>
+            <h2>Verify your email</h2>
 
-                <p>Hello,</p>
-
-                <p>
+            <p>Welcome to Luminary Pass.</p>
+            
+              <p>
                     Your business <strong>${businessName}</strong> has been registered successfully.
                 </p>
 
-                <p>
-                    Click the button below to activate your account.
-                </p>
+            <p>
+                Please verify your email address by clicking below:
+            </p>
 
-                <p style="text-align:center;margin:35px 0;">
-                    <a
-                        href="${activationLink}"
-                        style="
-                            background:#2563eb;
-                            color:#ffffff;
-                            padding:14px 30px;
-                            text-decoration:none;
-                            border-radius:6px;
-                            font-weight:bold;
-                            display:inline-block;
-                        "
-                    >
-                        Activate Account
-                    </a>
-                </p>
+            <a href="${verificationLink}">
+                Verify Email
+            </a>
 
-                <p>
-                    If the button doesn't work, copy this URL into your browser:
-                </p>
-
-                <p>
-                    <a href="${activationLink}">
-                        ${activationLink}
-                    </a>
-                </p>
-
-                <hr>
-
-                <p><strong>Business Code:</strong> ${businessCode}</p>
-
-                <p>
-                    This activation link will expire in <strong>24 hours</strong>.
-                </p>
-
-                <p>
-                    Regards,<br>
-                    <strong>Luminary Pass Team</strong>
-                </p>
-            </div>
-            `,
+            <p>
+                This link expires in 5 mintues.
+            </p>
+        `,
         });
-
-        return token;
     }
 }
 

@@ -32,23 +32,28 @@ class businessController {
         }
     }
 
-    async activateBusiness(request, reply) {
+    async verifyEmail(request, reply) {
+
         const { token } = request.query as { token: string };
 
-        // console.log("Activation token:", token);
 
-        await businessService.activateBusiness(token);
+        await businessService.verifyEmail(token);
+
 
         return reply.type("text/html").send(`
-        <!DOCTYPE html>
         <html>
-            <head>
-                <title>Account Activated</title>
-            </head>
-            <body style="font-family:Arial;text-align:center;padding-top:100px;">
-                <h1>✅ Account Activated</h1>
-                <p>Your business account has been activated successfully.</p>
-                <p>You can now log in.</p>
+            <body style="font-family:Arial;text-align:center;padding-top:80px">
+
+                <h1>✅ Email Verified</h1>
+
+                <p>
+                    Your email has been verified successfully.
+                </p>
+
+                <p>
+                    You can continue completing your business setup.
+                </p>
+
             </body>
         </html>
     `);

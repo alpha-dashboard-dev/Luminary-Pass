@@ -14,9 +14,11 @@ export default async function businessRoutes(fastify: FastifyInstance) {
     )
 
     fastify.get(
-        "/activate",
-        businessController.activateBusiness
+        "/verify-email",
+        businessController.verifyEmail,
     );
+
+
     //
     // fastify.post(
     //     "/create-business",
