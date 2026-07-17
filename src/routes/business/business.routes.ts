@@ -13,9 +13,16 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         businessController.registerBusiness,
     )
 
+    // Email verification
     fastify.get(
         "/verify-email",
         businessController.verifyEmail,
+    );
+
+    // Resend Email verification Link
+    fastify.post(
+        "/resend-email-verification-link",
+        businessController.resendVerificationEmail
     );
 
 
