@@ -16,8 +16,6 @@ export default async function signupRoutes(fastify: FastifyInstance){
         controller.connectInstagram
     );
 
-
-
     fastify.post(
         "/verification",
         {
@@ -27,8 +25,6 @@ export default async function signupRoutes(fastify: FastifyInstance){
         },
         controller.uploadVerification
     );
-
-
 
     fastify.put(
         "/profile",
@@ -40,8 +36,6 @@ export default async function signupRoutes(fastify: FastifyInstance){
         controller.profile
     );
 
-
-
     fastify.post(
         "/portfolio",
         {
@@ -52,8 +46,6 @@ export default async function signupRoutes(fastify: FastifyInstance){
         controller.portfolio
     );
 
-
-
     fastify.get(
         "/status",
         {
@@ -63,6 +55,5 @@ export default async function signupRoutes(fastify: FastifyInstance){
         },
         controller.status
     );
-
 
 }

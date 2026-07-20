@@ -78,20 +78,20 @@ class InfluencerSignupService {
                 {   transaction }
             );
             //
-            // const onboarding = await onboardingService.create(
-            //     {
-            //         userCode: userCode,
-            //     },
-            //     {   transaction }
-            // );
+            const onboarding = await onboardingService.create(
+                {
+                    userCode: userCode,
+                },
+                {   transaction }
+            );
 
             await transaction.commit();
 
             // await onboardingService.completeStep(user.user_code, 1);
 
             return {
-                // userCode: user.user_code,
-                // influencerCode: influencer.influencer_code,
+                userCode: userCode,
+                influencerCode: influencerCode,
             };
 
         } catch (err) {
