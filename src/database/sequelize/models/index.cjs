@@ -29,7 +29,7 @@ const Attachment = require('./attachment');
 const Badge = require('./badges');
 const SocialLogin = require('./social_logins');
 const Settings = require("./settings");
-const SignupSession = require('./signup_sessions');
+const OnboardingSession = require('./onboarding_sessions.js');
 
 
 

@@ -8,6 +8,233 @@ import {sequelize} from "../../database/sequelize/sequelize.js";
 
 class RegistrationService {
 
+    /*
+        my signup process have multi steps,
+        first user (influencer) put their basic info, then signin with instagram OAuth, then they upload their instagram dashboard pic for verification,
+        then they put their influencer details like bio, category, , then again they upload their 4-5 picture of their work
+     */
+
+
+    // Influencer Registration through Mobile App, ok write complete code for each step, with service & controller method + routes
+
+    async register(data: any) {
+
+        const {
+            firstName,
+            lastName,
+            email,
+            phone,
+            password,
+            confirmPassword,
+            bio,
+            gender,
+            dateOfBirth,
+            instagram,
+
+            verificationScreenshot,
+
+            portfolioImages
+        } = data;
+
+
+        // 1. Validate password
+
+        if(password !== confirmPassword){
+            throw new Error("Password does not match");
+        }
+
+
+        // 2. Create User
+
+        const user = await userService.create({
+
+            firstName,
+            lastName,
+
+            email,
+            phone,
+
+            password,
+
+            roleCode: "INF00001", // influencer role
+
+            userType: "INFLUENCER",
+
+            status: "ACTIVE"
+
+        });
+
+
+
+        // 3. Create Influencer Profile
+
+        const influencer =
+            await influencerService.create({
+
+                userCode: user.user_code,
+
+                bio,
+
+                gender,
+
+                dateOfBirth
+
+            });
+
+
+
+        // 4. Save Instagram Login Data
+
+        if(instagram){
+
+            await socialLoginService.create({
+
+                userCode: user.user_code,
+
+                influencerCode:
+                influencer.influencer_code,
+
+                provider: "INSTAGRAM",
+
+                socialId: instagram.id,
+
+                username: instagram.username,
+
+                accessToken: instagram.accessToken,
+
+                refreshToken:
+                    instagram.refreshToken || null
+
+            });
+
+        }
+
+
+
+        // 5. Save Instagram verification screenshot
+
+        if(verificationScreenshot){
+
+            await attachmentService.create({
+
+                entityType: "influencers",
+
+                entityCode: influencer.influencer_code,
+
+                title: "Instagram Insights Screenshot",
+
+                mediaType: verificationScreenshot.mediaType,
+
+                fileName: verificationScreenshot.fileName,
+
+                fileExtension: verificationScreenshot.fileExtension,
+
+                fileSize:
+                verificationScreenshot.fileSize,
+
+                url:
+                verificationScreenshot.url,
+
+                isPrimary:true,
+
+                visibility:"PRIVATE",
+
+                uploadedBy:
+                user.user_code,
+
+                displayOrder:1,
+
+                status:"ACTIVE"
+
+            });
+
+        }
+
+
+
+        // 6. Save Portfolio Images
+
+        if(!portfolioImages || portfolioImages.length < 4){
+
+            throw new Error(
+                "Minimum 4 portfolio images are required"
+            );
+
+        }
+
+
+        let order = 1;
+
+        for(const image of portfolioImages){
+
+
+            await attachmentService.create({
+
+                entityType:"influencers",
+
+                entityCode:
+                influencer.influencer_code,
+
+
+                title:
+                    "Influencer Portfolio",
+
+
+                mediaType:
+                image.mediaType,
+
+
+                fileName:
+                image.fileName,
+
+
+                fileExtension:
+                image.fileExtension,
+
+
+                fileSize:
+                image.fileSize,
+
+
+                url:
+                image.url,
+
+
+                isPrimary:
+                    order === 1,
+
+
+                visibility:"PUBLIC",
+
+
+                uploadedBy:
+                user.user_code,
+
+
+                displayOrder:
+                order,
+
+
+                status:"ACTIVE"
+
+            });
+
+
+            order++;
+
+        }
+
+
+
+        return {
+            userCode: user.user_code,
+            influencerCode: influencer.influencer_code,
+            message: "Your application has been submitted. Our team will review within 24 hours."
+        };
+
+    }
+
+
 
     // Influencer Registration through website
     async registerInfluencer(data: any) {

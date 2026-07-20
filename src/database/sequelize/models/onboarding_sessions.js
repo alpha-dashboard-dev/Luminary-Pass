@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require("sequelize");
 
-class SignupSession extends Model {
+class OnboardingSession extends Model {
     static initModel(sequelize) {
-        SignupSession.init(
+        OnboardingSession.init(
             {
                 id: {
                     type: DataTypes.BIGINT,
@@ -10,7 +10,7 @@ class SignupSession extends Model {
                     primaryKey: true,
                 },
 
-                signup_code: {
+                onboarding_code: {
                     type: DataTypes.STRING(8),
                     allowNull: false,
                     unique: true,
@@ -28,20 +28,20 @@ class SignupSession extends Model {
                     },
                 },
 
-                account_type: {
-                    type: DataTypes.STRING(150),
-                    allowNull: false,
-                },
-
                 current_step: {
                     type: DataTypes.INTEGER,
-                    allowNull: false,
+                    allowNull: true,
+                },
+
+                completed_step: {
+                    type: DataTypes.INTEGER,
+                    allowNull: true,
                 },
 
                 status: {
-                    type: DataTypes.ENUM("draft", "pending", "approved", "completed", "in_progress"),
+                    type: DataTypes.ENUM("pending", "approved", "completed", "in_progress"),
                     allowNull: false,
-                    defaultValue: "draft",
+                    defaultValue: "pending",
                 },
 
                 created_at: {
@@ -56,8 +56,8 @@ class SignupSession extends Model {
             },
             {
                 sequelize,
-                modelName: "SignupSession",
-                tableName: "signup_sessions",
+                modelName: "OnboardingSession",
+                tableName: "onboarding_sessions",
                 timestamps: true,
                 createdAt: "created_at",
                 updatedAt: "updated_at",
@@ -65,11 +65,11 @@ class SignupSession extends Model {
             }
         );
 
-        return SignupSession;
+        return OnboardingSession;
     }
 
     static associate(models) {
-        SignupSession.belongsTo(models.User, {
+        OnboardingSession.belongsTo(models.User, {
             foreignKey: "user_code",
             targetKey: "user_code",
             as: "user",
@@ -78,4 +78,4 @@ class SignupSession extends Model {
     }
 }
 
-module.exports = SignupSession;
+module.exports = OnboardingSession;

@@ -4,7 +4,7 @@ const {DataTypes} = require("sequelize");
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("signup_sessions", {
+        await queryInterface.createTable("onboarding_sessions", {
             id: {
                 type: Sequelize.BIGINT,
                 autoIncrement: true,
@@ -12,7 +12,7 @@ module.exports = {
                 allowNull: false,
             },
 
-            session_code: {
+            onboarding_code: {
                 type: Sequelize.STRING(8),
                 allowNull: false,
                 unique: true,
@@ -23,21 +23,20 @@ module.exports = {
                 allowNull: false,
             },
 
-            account_type: {
-                type: Sequelize.STRING(150),
-                allowNull: false,
-
-            },
-
             current_step: {
                 type: Sequelize.INTEGER,
-                allowNull: false,
+                allowNull: true,
+            },
+
+            completed_step: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
             },
 
             status: {
-                type: Sequelize.ENUM("draft", "pending", "approved", "completed", "in_progress"),
+                type: Sequelize.ENUM("pending", "approved", "completed", "in_progress"),
                 allowNull: false,
-                defaultValue: "draft",
+                defaultValue: "pending",
             },
 
             created_at: {
@@ -56,6 +55,6 @@ module.exports = {
     },
 
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("signup_sessions");
+        await queryInterface.dropTable("onboarding_sessions");
     },
 };
