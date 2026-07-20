@@ -1,4 +1,4 @@
-import businessRepo from "../../repositories/busines/business.repository";
+import businessRepo from "../../repositories/business/business.repository";
 import userRepo from "../../repositories/user/user.repository"
 import orgRepo from "../../repositories/organization/organization.repository"
 

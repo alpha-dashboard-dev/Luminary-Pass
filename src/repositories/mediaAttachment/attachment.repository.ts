@@ -68,6 +68,39 @@ class AttachmentRepository {
             options
         );
     }
+
+
+    async getByEntity(entityType, entityCode){
+
+        return this.findAll({
+            where:{
+                entity_type:entityType,
+                entity_code:entityCode,
+                status:"active"
+            }
+        });
+
+    }
+
+    async getByCategory(entityType, entityCode, category){
+
+        return this.findAll({
+
+            where:{
+
+                entity_type:entityType,
+
+                entity_code:entityCode,
+
+                attachment_category:category,
+
+                status:"active"
+
+            }
+
+        });
+
+    }
 }
 
 export default new AttachmentRepository();

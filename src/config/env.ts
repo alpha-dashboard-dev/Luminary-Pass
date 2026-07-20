@@ -32,4 +32,17 @@ export const env = {
     SMTP_USER: process.env.SMTP_USER!,
     SMTP_PASS: process.env.SMTP_PASS!,
     APP_URL: process.env.APP_URL!,
+
+
+//     Media Attachment
+    ATTACHMENT_DISK: process.env.ATTACHMENT_DISK!,
+    LOCAL_STORAGE_PATH: process.env.LOCAL_STORAGE_PATH!,
+    PUBLIC_STORAGE_PATH: process.env.PUBLIC_STORAGE_PATH!,
+    PUBLIC_URL: process.env.PUBLIC_URL!,
+
+//     Cloudinary ENV Values
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+    CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER!,
 };

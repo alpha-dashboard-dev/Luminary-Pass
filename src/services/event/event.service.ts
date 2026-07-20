@@ -2,7 +2,7 @@ import eventRepo from "../../repositories/event/event.repository";
 
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import businessRepo from "../../repositories/busines/business.repository.js";
+import businessRepo from "../../repositories/business/business.repository.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 

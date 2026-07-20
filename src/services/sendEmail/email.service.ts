@@ -2,7 +2,7 @@ import nodemailer from "nodemailer";
 import crypto from "crypto";
 import { env } from "../../config/env";
 
-import businessRepo from "../../repositories/busines/business.repository.js";
+import businessRepo from "../../repositories/business/business.repository.js";
 
 
 class EmailService {

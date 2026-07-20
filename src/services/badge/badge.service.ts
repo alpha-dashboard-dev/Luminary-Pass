@@ -3,7 +3,7 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
-import businessRepo from "../../repositories/busines/business.repository.js";
+import businessRepo from "../../repositories/business/business.repository.js";
 import eventRepo from "../../repositories/event/event.repository.js";
 
 class badgeService {

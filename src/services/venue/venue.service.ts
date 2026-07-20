@@ -1,7 +1,7 @@
 import venueRepo from "../../repositories/venue/venue.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import businessRepo from "../../repositories/busines/business.repository";
+import businessRepo from "../../repositories/business/business.repository";
 
 class VenueService {
 
