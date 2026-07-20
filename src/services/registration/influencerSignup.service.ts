@@ -28,58 +28,49 @@ class InfluencerSignupService {
 
         try {
 
-            // const emailExists = await userRepo.findOne(
-            //     {
-            //         email: data.email
-            //     }
-            // );
-            //
-            // if (emailExists) {
-            //     throw new Error("Email already exists");
-            // }
-            //
-            // const phoneExists = await userRepo.findOne({
-            //     phone: data.phone
-            // })
-            //
-            // if (phoneExists) {
-            //     throw new Error("Phone already exists");
-            // }
-            //
-            // const userCode = generateCode();
-            // const influencerCode = generateCode();
-            // let password
-            //
-            // if(data.password){
-            //     password = await hashPassword(data.password);
-            // }
+            const emailExists = await userRepo.findOne(
+                {
+                    email: data.email
+                }
+            );
+
+            if (emailExists) {
+                throw new Error("Email already exists");
+            }
+
+            const phoneExists = await userRepo.findOne({
+                phone: data.phone
+            })
+
+            if (phoneExists) {
+                throw new Error("Phone already exists");
+            }
+
+            const userCode = generateCode();
+            const influencerCode = generateCode();
+            let password
+
+            if(data.password){
+                password = await hashPassword(data.password);
+            }
 
 
             // console.log(userCode, influencerCode);
 
-            // const user = await userRepo.create(
-            //     {
-            //         user_code: userCode,
-            //         first_name: fullName,
-            //         email: email,
-            //         phone: phone,
-            //         password: password,
-            //         role_code:"ROL00003",
-            //         status: "inactive"
-            //     },
-            //     {   transaction }
-            // );
+            const user = await userRepo.create(
+                {
+                    user_code: userCode,
+                    first_name: fullName,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    role_code: "ROL00003",
+                    status: "inactive"
+                },
+                {   transaction }
+            );
 
-            const user = await userService.create({
-                firstName: fullName,
-                email: email,
-                phone: phone,
-                password: password,
-                roleCode: "ROL00003",
-                status: "inactive",
-            })
-
-            const influencer = await influencerService.create(
+            const influencer = await influencerRepo.create(
                 {
                     influencer_code: influencerCode,
                     user_code: userCode,
@@ -99,7 +90,7 @@ class InfluencerSignupService {
             // await onboardingService.completeStep(user.user_code, 1);
 
             return {
-                userCode: user.user_code,
+                // userCode: user.user_code,
                 // influencerCode: influencer.influencer_code,
             };
 
@@ -114,7 +105,7 @@ class InfluencerSignupService {
     async connectInstagram(data:any){
 
 
-        const {userCode, instagram } = data;
+        const { userCode, instagram } = data;
 
 
 
