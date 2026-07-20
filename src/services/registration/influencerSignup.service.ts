@@ -100,25 +100,14 @@ class InfluencerSignupService {
             throw err;
         }
     }
-
     // Step 2
     async connectInstagram(data:any){
 
-
         const { userCode, instagram } = data;
-
-
-
         await onboardingService.canAccessStep(userCode, 2);
-
-
-
         const influencer = await influencerService.findByUserCode(
                 userCode
             );
-
-
-
         await socialLoginService.create({
 
             userCode,
@@ -135,15 +124,11 @@ class InfluencerSignupService {
 
         });
 
-
-
         await onboardingService.completeStep(userCode, 2);
 
         return {
             message: "Instagram connected"
         };
-
-
     }
 
 
