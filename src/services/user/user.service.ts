@@ -13,6 +13,8 @@ class UserService {
 
     async create(data: any) {
 
+        // console.log(data);
+
         const emailExists = await userRepo.findOne(
             {
                 email: data.email
@@ -40,11 +42,11 @@ class UserService {
 
         return await userRepo.create({
             user_code: userCode,
-            organization_code: data.organizationCode,
-            business_code: data.businessCode,
+            organization_code: data.organizationCode || null,
+            business_code: data.businessCode || null,
             role_code: data.roleCode,
-            first_name: data.firstName,
-            last_name: data.lastName,
+            first_name: data.firstName || null,
+            last_name: data.lastName || null,
             email: data.email.trim().toLowerCase(),
             phone: data.phone || null,
             password: password || null,

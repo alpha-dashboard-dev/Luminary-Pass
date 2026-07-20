@@ -556,16 +556,12 @@ export const validateBusinessAccountRegistration = (data: any) => {
     }
 }
 
-export const validateInfluencerAccountRegistration = (data: any) => {
+export const validateInfluencerBasicInfoRegistration = (data: any) => {
 
-    const { fullName, userName, email, phone } = data
+    const { fullName, email, phone, password, confirmPassword } = data
 
     if (!fullName || fullName.trim().length < 2) {
         throw new Error("Name must be at least 2 characters long");
-    }
-
-    if (!userName || userName.trim().length < 2) {
-        throw new Error("User Name must be at least 2 characters long");
     }
 
     if (!email || !isValidEmail(email)) {
@@ -574,5 +570,13 @@ export const validateInfluencerAccountRegistration = (data: any) => {
 
     if(phone){
         validatePhone(phone)
+    }
+
+    if (!password || password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
+
+    if(password !== confirmPassword){
+        throw new Error("Password mismatch");
     }
 }

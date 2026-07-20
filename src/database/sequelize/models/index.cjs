@@ -67,7 +67,7 @@ const initModels = () => {
         SocialLogin: SocialLogin.initModel(sequelize),
         Settings: Settings.initModel(sequelize),
 
-        SignupSession: SignupSession.initModel(sequelize),
+        OnboardingSession: OnboardingSession.initModel(sequelize),
     };
 
     Object.values(models).forEach((model) => {
