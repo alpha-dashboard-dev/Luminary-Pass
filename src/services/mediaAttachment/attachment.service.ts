@@ -320,39 +320,21 @@ class AttachmentService {
     /**
      * Move Attachment
      */
-    async move(
-        attachmentCode:string,
-        newFolder:string
-    ){
+    async move(attachmentCode:string, newFolder:string){
 
 
-        const attachment =
-            await attachmentRepo.findOne({
-
-                attachment_code:
-                attachmentCode
-
+        const attachment = await attachmentRepo.findOne({
+                attachment_code: attachmentCode
             });
 
 
 
         if(!attachment){
-
-            throw new Error(
-                "Attachment not found"
-            );
-
+            throw new Error("Attachment not found");
         }
 
-
-
-        const newPublicId =
-            `${newFolder}/${attachment.file_name}`;
-
-
-
-        const moved =
-            await this.storage.move(
+        const newPublicId = `${newFolder}/${attachment.file_name}`;
+        const moved = await this.storage.move(
 
                 attachment.public_id,
 
@@ -367,23 +349,14 @@ class AttachmentService {
         return await attachmentRepo.update(
 
             {
-                attachment_code:
-                attachmentCode
+                attachment_code: attachmentCode
             },
 
 
             {
-
-                folder:
-                newFolder,
-
-
-                public_id:
-                moved.public_id,
-
-
-                secure_url:
-                moved.secure_url
+                folder: newFolder,
+                public_id: moved.public_id,
+                secure_url: moved.secure_url
 
             }
 
