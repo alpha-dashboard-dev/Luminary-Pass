@@ -5,9 +5,7 @@ class CloudinaryStorage extends StorageInterface {
 
     async upload(file, options = {}) {
 
-        const folder = options.folder
-            ? `${CLOUDINARY_FOLDER}/${options.folder}`
-            : CLOUDINARY_FOLDER;
+        const folder = options.folder ? `${CLOUDINARY_FOLDER}/${options.folder}` : CLOUDINARY_FOLDER;
 
         const result = await new Promise((resolve, reject) => {
 
@@ -38,21 +36,13 @@ class CloudinaryStorage extends StorageInterface {
         return {
 
             disk: "cloudinary",
-
             publicId: result.public_id,
-
             secureUrl: result.secure_url,
-
             bytes: result.bytes,
-
             format: result.format,
-
             width: result.width,
-
             height: result.height,
-
             folder: result.folder,
-
         };
     }
 
