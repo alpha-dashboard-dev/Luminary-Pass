@@ -21,20 +21,39 @@ class Attachment extends Model {
 
           entity_type: {
             type: DataTypes.ENUM(
-                "users",
-                "influencers",
+                "user",
+                "influencer",
                 "organization",
                 "business",
-                "events"
+                "event"
             ),
-            allowNull: false,
-            defaultValue: "users",
+            allowNull: true,
           },
 
           entity_code: {
             type: DataTypes.STRING(8),
-            allowNull: false,
+            allowNull: true,
           },
+            attachment_category: {
+                type: DataTypes.ENUM(
+                    "profile_picture",
+                    "cover_image",
+                    "gallery",
+                    "logo",
+                    "banner",
+                    "portfolio",
+                    "proof",
+                    "menu",
+                    "contract",
+                    "invoice",
+                    "document",
+                    "reference",
+                    "social_link",
+                    "other"
+                ),
+                allowNull: true,
+                defaultValue: "other",
+            },
 
           title: {
             type: DataTypes.STRING(100),
@@ -42,35 +61,59 @@ class Attachment extends Model {
           },
 
           media_type: {
-            type: DataTypes.ENUM("image", "video", "document", "website"),
+            type: DataTypes.ENUM("image", "video", "document", "link"),
             allowNull: false,
             defaultValue: "image",
           },
+            disk: {
+                type: DataTypes.ENUM(
+                    "local",
+                    "public",
+                    "cloudinary"
+                ),
+                allowNull: false,
+                defaultValue: "cloudinary",
+            },
 
-          file_name: {
+            folder: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+
+            file_name: {
             type: DataTypes.STRING(255),
             allowNull: true,
           },
+            original_file_name: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
 
           file_extension: {
             type: DataTypes.STRING(20),
             allowNull: true,
           },
 
+
           file_size: {
             type: DataTypes.BIGINT,
             allowNull: true,
           },
 
-          url: {
-            type: DataTypes.STRING(500),
-            allowNull: true,
-          },
+            public_id: {
+                type: DataTypes.STRING(255),
+                allowNull: true,
+            },
+
+            secure_url: {
+                type: DataTypes.STRING(500),
+                allowNull: true,
+            },
 
           is_primary: {
-            type: DataTypes.ENUM("yes", "no"),
+            type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: "no",
+            defaultValue: false,
           },
 
           visibility: {
@@ -94,7 +137,7 @@ class Attachment extends Model {
           },
 
           status: {
-            type: DataTypes.ENUM("active", "deleted"),
+            type: DataTypes.ENUM("active", "archived", "deleted"),
             allowNull: false,
             defaultValue: "active",
           },
