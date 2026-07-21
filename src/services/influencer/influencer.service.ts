@@ -109,6 +109,8 @@ class InfluencerService {
     // Update influencer
     async update(influencerCode: string, data: any, actor: any) {
 
+        console.log(influencerCode)
+
         const influencer = await influencerRepo.findOne({
             influencer_code: influencerCode
         });

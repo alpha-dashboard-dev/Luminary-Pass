@@ -10,6 +10,8 @@ import initModels from "../../database/sequelize/models/index.cjs";
 import influencerOnboardingRepo from "../../repositories/influencer/influencerOnboarding.repositories.js";
 import {InfluencerSignupStep} from "../../utils/constants/influencerSignupSteps.js";
 import {hashPassword} from "../../utils/hashPassword.js";
+import {generateSignupToken} from "../../utils/signupToken.js";
+import CloudinaryStorage from "../mediaAttachment/drivers/cloudinaryStorage.js";
 
 
 const db = initModels()
@@ -48,13 +50,11 @@ class InfluencerSignupService {
 
             const userCode = generateCode();
             const influencerCode = generateCode();
-            let password
+            let hashedPassword
 
             if(data.password){
-                password = await hashPassword(data.password);
+                hashedPassword = await hashPassword(password);
             }
-
-
             // console.log(userCode, influencerCode);
 
             const user = await userRepo.create(
@@ -63,7 +63,7 @@ class InfluencerSignupService {
                     first_name: fullName,
                     email: email,
                     phone: phone,
-                    password: password,
+                    password: hashedPassword,
                     role_code: "ROL00003",
                     status: "inactive"
                 },
@@ -85,266 +85,238 @@ class InfluencerSignupService {
                 {   transaction }
             );
 
+            // console.log(onboarding.toJSON());
+
+            await onboardingService.completeStep(
+                userCode,
+                InfluencerSignupStep.BASIC_INFO,
+                {   transaction }
+            );
+
             await transaction.commit();
 
-            // await onboardingService.completeStep(user.user_code, 1);
+            const signupToken = generateSignupToken(user.user_code);
 
             return {
-                userCode: userCode,
-                influencerCode: influencerCode,
+                user: user,
+                influencer: influencer,
+                signupToken: signupToken,
+                currentStep: 2
             };
 
         } catch (err) {
 
-            await transaction.rollback();
+            if(!transaction.finished)
+                await transaction.rollback();
+
             throw err;
         }
     }
     // Step 2
+
     async connectInstagram(data:any){
 
-        const { userCode, instagram } = data;
+        const { userCode, providerUserId, accessToken } = data;
+
+        // console.log(userCode, providerUserId, accessToken)
         await onboardingService.canAccessStep(userCode, 2);
-        const influencer = await influencerService.findByUserCode(
-                userCode
-            );
+        const influencer = await influencerService.getByField({
+            user_code: userCode,
+        });
+
+        const socialLoginCode = generateCode()
         await socialLoginService.create({
+
+            // social_login_code: socialLoginCode,
 
             userCode,
 
-            influencerCode: influencer.influencer_code,
-
+            // influencerCode: influencer.influencer_code,
             provider:"instagram",
 
-            socialId: instagram.id,
-
-            username: instagram.username,
-
-            accessToken: instagram.accessToken
+            providerUserId,
+            accessToken
 
         });
 
         await onboardingService.completeStep(userCode, 2);
+        const signupToken = generateSignupToken(userCode);
+
+        console.log(signupToken)
 
         return {
+            signupToken,
+            currentStep: 3,
             message: "Instagram connected"
         };
     }
 
-
-
     // Step 3
-    // async uploadVerification(userCode:string, file:any){
+    async uploadVerification(userCode:string, file:any){
+
+        await onboardingService.canAccessStep(
+            userCode,
+            3
+        );
+
+
+        const influencer = await influencerService.getByField({
+                user_code:userCode
+            });
+
+
+        const attachment = await attachmentService.upload(
+                file,
+                {
+                    entityType: "influencer",
+                    entityCode: influencer.influencer_code,
+                    attachmentCategory: "other",
+                    mediaType: "image",
+                    uploadedBy:userCode,
+                    visibility:"private"
+                }
+            );
+
+
+        await onboardingService.completeStep(
+            userCode,
+            3
+        );
+
+        const signupToken = generateSignupToken(userCode);
+
+        return {
+            attachment,
+            signupToken: signupToken,
+            currentStep: 4
+        };
+
+    }
+
+    // Step 4
+    async profile(userCode:string, data:any){
+
+
+        await onboardingService.canAccessStep(userCode, 4);
+
+        const influencer = await influencerService.getByField({
+                user_code: userCode
+            });
+
+        // console.log(influencer.influencer_code);
+
+        await influencerService.update(
+            influencer.influencer_code,
+            data
+        );
+        await onboardingService.completeStep(
+            userCode,
+            4
+        );
+        return {
+            message: "Profile completed"
+        };
+
+
+    }
+    //
+    // async portfolio(
+    //     userCode:string,
+    //     files:any[]
+    // ){
+    //
+    //
+    //     if(files.length < 4){
+    //
+    //         throw new Error(
+    //             "Minimum 4 images required"
+    //         );
+    //
+    //     }
+    //
     //
     //
     //     await onboardingService.canAccessStep(
     //         userCode,
-    //         3
+    //         5
     //     );
     //
     //
     //
-    //     // const influencer = await influencerService.findByUserCode(userCode);
+    //     const influencer =
+    //         await influencerService.findByUserCode(
+    //             userCode
+    //         );
     //
     //
     //
-    //     // const uploaded = await cloudinaryService.upload(
-    //     //
-    //     //         file,
-    //     //
-    //     //         {
-    //     //
-    //     //             folder:
-    //     //                 `luminary-pass/influencers/${influencer.influencer_code}/verification`
-    //     //
-    //     //         }
-    //     //
-    //     //     );
+    //     let order=1;
+    //
+    //
+    //     for(const file of files){
+    //
+    //
+    //
+    //         const uploaded =
+    //             await cloudinaryService.upload(
+    //
+    //                 file,
+    //
+    //                 {
+    //
+    //                     folder:
+    //                         `luminary-pass/influencers/${influencer.influencer_code}/portfolio`
+    //
+    //                 }
+    //
+    //             );
     //
     //
     //
     //
-    //     await attachmentService.create({
+    //         await attachmentService.create({
     //
-    //         entityType:"influencers",
+    //             entityType:"influencer",
     //
-    //         entityCode:
-    //         influencer.influencer_code,
+    //             entityCode: influencer.influencer_code,
     //
-    //         category:
-    //             "instagram_verification",
+    //             category:"portfolio",
     //
-    //         url:
-    //         uploaded.secureUrl,
+    //             url: uploaded.secureUrl,
     //
-    //         publicId:
-    //         uploaded.publicId,
+    //             publicId: uploaded.publicId,
     //
-    //         visibility:"PRIVATE",
+    //             displayOrder: order,
+    //             visibility:"public",
     //
-    //         uploadedBy:userCode
+    //             uploadedBy:userCode
     //
-    //     });
+    //         });
+    //
+    //
+    //         order++;
+    //
+    //     }
     //
     //
     //
     //
     //     await onboardingService.completeStep(
     //         userCode,
-    //         3
+    //         5
     //     );
     //
     //
     //
-    //     return uploaded;
+    //     return {
+    //
+    //         message:
+    //             "Application submitted"
+    //
+    //     };
     //
     //
     // }
-
-//     Step 4
-//     async profile(
-//         userCode:string,
-//         data:any
-//     ){
-//
-//
-//         await onboardingService.canAccessStep(
-//             userCode,
-//             4
-//         );
-//
-//
-//
-//         const influencer =
-//             await influencerService.findByUserCode(
-//                 userCode
-//             );
-//
-//
-//
-//         await influencerService.update(
-//
-//             influencer.influencer_code,
-//
-//             data
-//
-//         );
-//
-//
-//
-//         await onboardingService.completeStep(
-//             userCode,
-//             4
-//         );
-//
-//
-//         return {
-//
-//             message:
-//                 "Profile completed"
-//
-//         };
-//
-//
-//     }
-//
-//     async portfolio(
-//         userCode:string,
-//         files:any[]
-//     ){
-//
-//
-//         if(files.length < 4){
-//
-//             throw new Error(
-//                 "Minimum 4 images required"
-//             );
-//
-//         }
-//
-//
-//
-//         await onboardingService.canAccessStep(
-//             userCode,
-//             5
-//         );
-//
-//
-//
-//         const influencer =
-//             await influencerService.findByUserCode(
-//                 userCode
-//             );
-//
-//
-//
-//         let order=1;
-//
-//
-//         for(const file of files){
-//
-//
-//
-//             const uploaded =
-//                 await cloudinaryService.upload(
-//
-//                     file,
-//
-//                     {
-//
-//                         folder:
-//                             `luminary-pass/influencers/${influencer.influencer_code}/portfolio`
-//
-//                     }
-//
-//                 );
-//
-//
-//
-//
-//             await attachmentService.create({
-//
-//                 entityType:"influencer",
-//
-//                 entityCode: influencer.influencer_code,
-//
-//                 category:"portfolio",
-//
-//                 url: uploaded.secureUrl,
-//
-//                 publicId: uploaded.publicId,
-//
-//                 displayOrder: order,
-//                 visibility:"public",
-//
-//                 uploadedBy:userCode
-//
-//             });
-//
-//
-//             order++;
-//
-//         }
-//
-//
-//
-//
-//         await onboardingService.completeStep(
-//             userCode,
-//             5
-//         );
-//
-//
-//
-//         return {
-//
-//             message:
-//                 "Application submitted"
-//
-//         };
-//
-//
-//     }
 }
 
 

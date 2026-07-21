@@ -21,6 +21,7 @@ class InfluencerOnboardingRepository {
             this.tables,
             {
                 where,
+                ...options,
                 include: buildIncludes(
                     this.tables,
                     options.include || [],

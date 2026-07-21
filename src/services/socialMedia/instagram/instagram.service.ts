@@ -21,14 +21,7 @@ class InstagramService {
     }
 
      // Generate Instagram Login URL
-    getLoginUrl(){
-        // const scopes = [
-        //     "instagram_business_basic",
-        //     "instagram_business_content_publish",
-        //     "instagram_business_manage_comments",
-        //     "instagram_business_manage_messages",
-        //     "instagram_business_manage_insights"
-        // ];
+    getLoginUrl(signupToken: string){
 
         if (!env.INSTAGRAM_PERMISSION_SCOPES) {
             throw new Error("INSTAGRAM SCOPES is not configured");
@@ -51,7 +44,9 @@ class InstagramService {
             +
             `&scope=${scopes.join(",")}`
             +
-            "&response_type=code";
+            "&response_type=code"
+            +
+            `&state=${encodeURIComponent(signupToken)}`;
 
         // console.log(env.INSTAGRAM_REDIRECT_URI);
         // console.log(url);
@@ -59,6 +54,46 @@ class InstagramService {
         return url;
 
     }
+
+
+    // getLoginUrl(){
+    //     // const scopes = [
+    //     //     "instagram_business_basic",
+    //     //     "instagram_business_content_publish",
+    //     //     "instagram_business_manage_comments",
+    //     //     "instagram_business_manage_messages",
+    //     //     "instagram_business_manage_insights"
+    //     // ];
+    //
+    //     if (!env.INSTAGRAM_PERMISSION_SCOPES) {
+    //         throw new Error("INSTAGRAM SCOPES is not configured");
+    //     }
+    //
+    //     const scopes = env.INSTAGRAM_PERMISSION_SCOPES
+    //         .split(",")
+    //         .map(scope => scope.trim())
+    //         .filter(Boolean);
+    //
+    //
+    //     const url =
+    //         "https://www.instagram.com/oauth/authorize"
+    //         +
+    //         `?client_id=${env.INSTAGRAM_APP_ID}`
+    //         +
+    //         `&redirect_uri=${encodeURIComponent(
+    //             env.INSTAGRAM_REDIRECT_URI
+    //         )}`
+    //         +
+    //         `&scope=${scopes.join(",")}`
+    //         +
+    //         "&response_type=code";
+    //
+    //     // console.log(env.INSTAGRAM_REDIRECT_URI);
+    //     // console.log(url);
+    //
+    //     return url;
+    //
+    // }
     /**
      * Exchange code for token
      */

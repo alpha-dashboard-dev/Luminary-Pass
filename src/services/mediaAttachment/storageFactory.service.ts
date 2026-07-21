@@ -10,7 +10,7 @@ class StorageFactory {
         switch (env.ATTACHMENT_DISK) {
 
             case "cloudinary":
-                return new CloudinaryStorage();
+                return CloudinaryStorage;
 
             case "local":
                 return new LocalStorage();

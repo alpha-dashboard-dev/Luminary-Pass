@@ -15,18 +15,21 @@ class InfluencerOnboardingService {
                 user_code: userCode,
                 current_step: InfluencerSignupStep.BASIC_INFO,
                 completed_step: 0,
+                status: "pending"
             },
             options
         );
     }
 
 
-    async getByUserCode(userCode:string){
+    async getByUserCode(userCode:string, options?: any) {
 
         const onboarding = await influencerOnboardingRepo.findOne(
             {
                 user_code: userCode
-            });
+            },
+            options
+            );
 
         if(!onboarding){
             throw new Error("Onboarding not found");
@@ -36,79 +39,42 @@ class InfluencerOnboardingService {
 
     }
 
-    async completeStep(userCode: string, step: number) {
-        const onboarding = await this.getByUserCode(userCode);
+    async completeStep(userCode:string, step:number, options?: any) {
 
-        console.log(onboarding);
+        const onboarding = await this.getByUserCode(userCode, options);
 
-        await influencerOnboardingRepo.update(
-            onboarding.id,
-            {
-                completed_step: step,
-                current_step: step + 1,
-            }
-        );
-
-        return {
-            currentStep: step + 1,
-            completedStep: step,
-        };
-    }
-
-    // async completeStep(userCode:string, step:number){
-    //     console.log(userCode, step);
-    //
-    //
-    //     const onboarding = await this.getByUserCode(userCode);
-    //
-    //
-    //
-    //     let completed = onboarding.completed_step|| [];
-    //
-    //     if(!completed.includes(step)){
-    //         completed.push(step);
-    //     }
-    //
-    //     await influencerOnboardingRepo.update(
-    //
-    //         onboarding.id,
-    //         {
-    //             completed_step: completed,
-    //             current_step:   step + 1
-    //         }
-    //
-    //     );
-    //
-    //     return {
-    //         currentStep: step + 1,
-    //         completedSteps: completed
-    //
-    //     };
-    //
-    // }
-
-    async canAccessStep(
-        userCode:string,
-        step:number
-    ){
-
-
-        const onboarding =
-            await this.getByUserCode(userCode);
-
-
-
-        if(onboarding.currentStep < step){
-
-            throw new Error(
-                "Complete previous steps first"
-            );
-
+        if (onboarding.current_step !== step) {
+            throw new Error(`Expected step ${onboarding.current_step}, received step ${step}`);
         }
 
 
-        return true;
+        const isLastStep = step === InfluencerSignupStep.PORTFOLIO;
 
+        await influencerOnboardingRepo.update(
+            {
+                user_code: userCode
+            },
+            {
+                completed_step: step,
+                current_step: isLastStep ? step : step + 1,
+                status: isLastStep ? "completed" : "pending"
+            },
+            options
+        );
+
+        return {
+            currentStep: isLastStep ? step : step + 1,
+            completedStep: step
+        };
+    }
+
+    async canAccessStep(userCode:string, step:number){
+        const onboarding = await this.getByUserCode(userCode);
+
+        if(step > onboarding.current_step){
+            throw new Error("Complete previous steps first");
+        }
+        return true;
     }
 
 

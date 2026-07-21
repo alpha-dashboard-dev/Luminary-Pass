@@ -115,4 +115,4 @@ class CloudinaryStorage extends StorageInterface {
 
 }
 
-export default CloudinaryStorage;
+export default new CloudinaryStorage();

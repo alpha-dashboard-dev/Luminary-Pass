@@ -17,9 +17,7 @@ class AttachmentService {
 
 
     constructor(){
-
         this.storage = StorageFactory.make();
-
     }
 
 
@@ -92,8 +90,6 @@ class AttachmentService {
                 status: "active"
 
             });
-
-
 
         return attachment;
 

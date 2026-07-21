@@ -2,32 +2,61 @@ import {FastifyRequest, FastifyReply} from "fastify";
 
 import instagramService from "../../../services/socialMedia/instagram/instagram.service.js";
 import socialLoginService from "../../../services/socialMedia/socialLogin.service.js";
+import {verifySignupToken} from "../../../utils/signupToken.js";
+import influencerSignupService from "../../../services/registration/influencerSignup.service.js";
 
 
 
 class InstagramController {
 
-    async login(req:FastifyRequest, reply:FastifyReply){
+    // async login(req:FastifyRequest, reply:FastifyReply){
+    //
+    //     const url = instagramService.getLoginUrl();
+    //     // console.log(url);
+    //     return reply.redirect(url);
+    // }
 
-        const url = instagramService.getLoginUrl();
-        // console.log(url);
+    // Instagram Login from Frontend
+    async login(req: FastifyRequest, reply: FastifyReply) {
+
+        // const auth = req.headers.authorization;
+        //
+        // if (!auth) {
+        //     throw new Error("Unauthorized");
+        // }
+        //
+        // const token = auth.replace("Bearer ", "");
+        const { signupToken } = req.query as {
+            signupToken: string
+        };
+
+        if (!signupToken) {
+            throw new Error("Signup token required");
+        }
+
+
+        const payload = verifySignupToken(signupToken);
+
+        const url = instagramService.getLoginUrl(signupToken);
+
         return reply.redirect(url);
+
     }
 
     async callback(req:FastifyRequest, reply:FastifyReply){
 
-        const {code} = req.query as { code:string };
+        const {code, state} = req.query as any;
         // console.log("INSTAGRAM CODE:", code);
+
+        const signup = verifySignupToken(state);
+        const userCode = signup.userCode;
         const token = await instagramService.exchangeCode(code);
 
-        const data = {
-            provider: "instagram",
+        await influencerSignupService.connectInstagram({
+            userCode,
             providerUserId: token.user_id,
             accessToken: token.access_token,
-            userCode: "F2ACF446"
-        };
-
-        await socialLoginService.create(data)
+        })
 
         // console.log(token);
         // const longToken = await instagramService.getLongLivedToken(token.access_token);
@@ -40,6 +69,34 @@ class InstagramController {
         });
 
     }
+
+
+    // async callback(req:FastifyRequest, reply:FastifyReply){
+    //
+    //     const {code} = req.query as { code:string };
+    //     // console.log("INSTAGRAM CODE:", code);
+    //     const token = await instagramService.exchangeCode(code);
+    //
+    //     const data = {
+    //         provider: "instagram",
+    //         providerUserId: token.user_id,
+    //         accessToken: token.access_token,
+    //         userCode: "F2ACF446"
+    //     };
+    //
+    //     await socialLoginService.create(data)
+    //
+    //     // console.log(token);
+    //     // const longToken = await instagramService.getLongLivedToken(token.access_token);
+    //     return reply.send({
+    //         message: "Instagram connected",
+    //         // token: longToken
+    //         access_token: token.access_token,
+    //         user_id: token.user_id
+    //
+    //     });
+    //
+    // }
 
     async profile(req:FastifyRequest, reply:FastifyReply){
 

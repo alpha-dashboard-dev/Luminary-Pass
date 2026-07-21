@@ -1,6 +1,7 @@
 import influencerSignupService from "../../services/registration/influencerSignup.service";
 import onboardingService from "../../services/registration/onboarding.service.js";
 import {validateInfluencerBasicInfoRegistration} from "../../utils/validator.js";
+import {verifySignupToken} from "../../utils/signupToken.js";
 
 
 class InfluencerSignupController {
@@ -29,10 +30,7 @@ class InfluencerSignupController {
     async connectInstagram(req:any,reply:any){
 
 
-        const result = await influencerSignupService.connectInstagram(
-                req.body
-
-            );
+        const result = await influencerSignupService.connectInstagram(req.body);
 
 
         return reply.send({
@@ -49,26 +47,22 @@ class InfluencerSignupController {
     // Step 3
     async uploadVerification(req:any,reply:any){
 
+        const auth = req.headers.authorization;
 
-        const file =
-            await req.file();
+        if (!auth) {
+            throw new Error("Unauthorized");
+        }
 
+        const token = auth.replace("Bearer ", "");
 
-        const userCode =
-            req.user.userCode;
-
-
-
-        const result =
-            await influencerSignupService.uploadVerification(
-
-                userCode,
-
-                file
-
-            );
+        const data = verifySignupToken(token)
+        // console.log(data.userCode)
 
 
+        const file = await req.file();
+        // const userCode = req.user.userCode;
+
+        const result = await influencerSignupService.uploadVerification(data.userCode, file);
 
         return reply.send({
 
@@ -83,17 +77,18 @@ class InfluencerSignupController {
 
 //     Step 4
     async profile(req:any,reply:any){
+        const auth = req.headers.authorization;
 
+        if (!auth) {
+            throw new Error("Unauthorized");
+        }
 
-        const result =
-            await influencerSignupService.profile(
+        const token = auth.replace("Bearer ", "");
 
-                req.user.userCode,
+        const user = verifySignupToken(token);
+        const data = req.body;
 
-                req.body
-
-            );
-
+        const result = await influencerSignupService.profile(user.userCode, data);
 
         return reply.send({
 

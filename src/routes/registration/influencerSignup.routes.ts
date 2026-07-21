@@ -17,22 +17,12 @@ export default async function signupRoutes(fastify: FastifyInstance){
     );
 
     fastify.post(
-        "/verification",
-        {
-            preHandler:[
-                authenticate
-            ]
-        },
+        "/upload-verification",
         controller.uploadVerification
     );
 
     fastify.put(
         "/profile",
-        {
-            preHandler:[
-                authenticate
-            ]
-        },
         controller.profile
     );
 
