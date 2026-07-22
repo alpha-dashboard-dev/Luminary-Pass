@@ -24,7 +24,7 @@ module.exports = {
 
       venue_code: {
         type: Sequelize.STRING(8),
-        allowNull: false,
+        allowNull: true,
       },
 
       title: {
@@ -37,45 +37,84 @@ module.exports = {
         allowNull: true,
       },
 
-      start_datetime: {
+
+      start_date: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
       },
 
-      end_datetime: {
+      end_date: {
         type: Sequelize.DATE,
-        allowNull: false,
+        allowNull: true,
       },
+
+      start_time: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+
+      end_time: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+
 
       application_deadline: {
         type: Sequelize.DATE,
         allowNull: true,
       },
 
+
       influencer_capacity: {
         type: Sequelize.INTEGER,
         defaultValue: 0,
       },
+
+
+      description_influencer_received: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
+
+
+      offer_value: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+
 
       dress_code: {
         type: Sequelize.STRING(255),
         allowNull: true,
       },
 
+
+      additional_guests: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+
+
       special_instructions: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
 
+
       visibility: {
-        type: Sequelize.ENUM("public", "private"),
-        defaultValue: "public",
+        type: Sequelize.ENUM(
+            "public",
+            "private"
+        ),
+        allowNull: true,
       },
+
 
       created_by: {
         type: Sequelize.STRING(8),
-        allowNull: false,
+        allowNull: true,
       },
+
 
       status: {
         type: Sequelize.ENUM(
@@ -88,6 +127,7 @@ module.exports = {
         ),
         defaultValue: "draft",
       },
+
 
       created_at: {
         type: Sequelize.DATE,
@@ -102,15 +142,51 @@ module.exports = {
       },
     });
 
-    // Indexes (important for event search)
-    await queryInterface.addIndex("events", ["business_code"]);
-    await queryInterface.addIndex("events", ["venue_code"]);
-    await queryInterface.addIndex("events", ["status"]);
-    await queryInterface.addIndex("events", ["visibility"]);
-    await queryInterface.addIndex("events", ["start_datetime"]);
+
+    // Indexes
+
+    await queryInterface.addIndex(
+        "events",
+        ["business_code"]
+    );
+
+    await queryInterface.addIndex(
+        "events",
+        ["venue_code"]
+    );
+
+    await queryInterface.addIndex(
+        "events",
+        ["status"]
+    );
+
+    await queryInterface.addIndex(
+        "events",
+        ["visibility"]
+    );
+
+    await queryInterface.addIndex(
+        "events",
+        ["start_date"]
+    );
+
+    await queryInterface.addIndex(
+        "events",
+        ["application_deadline"]
+    );
   },
+
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("events");
+
+    // Remove ENUM types for PostgreSQL
+    await queryInterface.sequelize.query(
+        'DROP TYPE IF EXISTS "enum_events_visibility";'
+    );
+
+    await queryInterface.sequelize.query(
+        'DROP TYPE IF EXISTS "enum_events_status";'
+    );
   },
 };

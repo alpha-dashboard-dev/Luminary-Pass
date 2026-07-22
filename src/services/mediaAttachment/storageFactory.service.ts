@@ -13,7 +13,7 @@ class StorageFactory {
                 return CloudinaryStorage;
 
             case "local":
-                return new LocalStorage();
+                return LocalStorage;
 
             case "public":
                 return new PublicStorage();

@@ -6,6 +6,9 @@ import {comparePassword, hashPassword,} from "../../utils/hashPassword.js";
 import {generateAccessToken, generateRefreshToken, verifyRefreshToken,} from "../../utils/jwt.js";
 
 import { generateCode } from "../../utils/generateCode.js";
+import {env} from "../../config/env.js";
+import businessRepo from "../../repositories/business/business.repository.js";
+import userRoleRepo from "../../repositories/user/userRole.repository.js";
 
 
 class AuthService {
@@ -81,9 +84,9 @@ class AuthService {
 
         const { email, password } = data;
 
-        if (!email || !password) {
-            throw new Error("Email and password are required");
-        }
+        // if (!email || !password) {
+        //     throw new Error("Email and password are required");
+        // }
 
         const user = await userRepo.findOne(
             { email },
@@ -97,7 +100,26 @@ class AuthService {
         );
 
         if (!user) {
-            throw new Error("Invalid email or password");
+            throw new Error("User doesn't exist with this email.");
+        }
+
+        // console.log(user)
+        const userRole = await userRoleRepo.findOne({
+            role_code: user.role_code,
+        })
+
+        // console.log(userRole)
+
+
+        // it only check for business_owner so it may be uerrole.role === "business_owner"
+        if(userRole.role !== "admin") {
+            const business = await businessRepo.findOne({
+                business_code: user.business_code,
+            })
+
+            if (business.status !== "active") {
+                throw new Error("Your Business account is inactive");
+            }
         }
 
 
@@ -108,7 +130,7 @@ class AuthService {
         const matched = await comparePassword(password, user.password);
 
         if (!matched) {
-            throw new Error("Invalid email or password");
+            throw new Error("Invalid password");
         }
 
         const sessionCode = generateCode();
@@ -160,18 +182,18 @@ class AuthService {
             user: {
 
                 userCode: user.user_code,
-
-                firstName: user.first_name,
-
-                lastName: user.last_name,
-
-                email: user.email,
-
-                phone: user.phone,
-
+                organizationCode: user.organization_code,
                 businessCode: user.business_code,
+                roleCode: user.role_code,
 
                 role: user.role,
+                // firstName: user.first_name,
+                //
+                // lastName: user.last_name,
+                //
+                // email: user.email,
+                //
+                // phone: user.phone,
 
             },
 
@@ -179,7 +201,7 @@ class AuthService {
 
             refreshToken,
 
-            expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
+            expiresIn: env.JWT_ACCESS_TOKEN_EXPIRES_IN,
 
         };
     }

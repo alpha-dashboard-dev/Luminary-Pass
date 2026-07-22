@@ -24,7 +24,7 @@ module.exports = {
 
       title: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
 
       description: {
@@ -42,12 +42,12 @@ module.exports = {
             "location_tag",
             "custom"
         ),
-        allowNull: false,
+        allowNull: true,
       },
 
       points: {
         type: Sequelize.INTEGER,
-        defaultValue: 0,
+        allowNull: true,
       },
 
       submission_deadline: {
@@ -57,7 +57,7 @@ module.exports = {
 
       is_required: {
         type: Sequelize.ENUM("yes", "no"),
-        defaultValue: "yes",
+        allowNull: true,
       },
 
       display_order: {

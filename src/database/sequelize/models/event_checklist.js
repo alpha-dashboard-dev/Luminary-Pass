@@ -29,7 +29,7 @@ class EventChecklist extends Model {
 
           title: {
             type: DataTypes.STRING(255),
-            allowNull: false,
+            allowNull: true,
           },
 
           description: {
@@ -47,12 +47,12 @@ class EventChecklist extends Model {
                 "location_tag",
                 "custom"
             ),
-            allowNull: false,
+            allowNull: true,
           },
 
           points: {
             type: DataTypes.INTEGER,
-            defaultValue: 0,
+            allowNull: true,
           },
 
           submission_deadline: {
@@ -62,7 +62,7 @@ class EventChecklist extends Model {
 
           is_required: {
             type: DataTypes.ENUM("yes", "no"),
-            defaultValue: "yes",
+              allowNull: true,
           },
 
           display_order: {

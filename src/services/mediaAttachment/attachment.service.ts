@@ -20,8 +20,6 @@ class AttachmentService {
         this.storage = StorageFactory.make();
     }
 
-
-
     /**
      * Upload Single File
      */
@@ -80,7 +78,7 @@ class AttachmentService {
                 original_file_name: file.filename,
                 file_extension: fileName.split(".").pop(),
                 mime_type: file.mimetype,
-                file_size: file.size,
+                file_size: file.size || null,
                 public_id: uploaded.publicId || null,
                 secure_url: uploaded.secureUrl,
                 uploaded_by: options.uploadedBy,
@@ -96,10 +94,6 @@ class AttachmentService {
 
     }
 
-
-
-
-
     /**
      * Upload Multiple Files
      */
@@ -112,11 +106,7 @@ class AttachmentService {
         for(const file of files){
 
 
-            const attachment =
-                await this.upload(
-                    file,
-                    options
-                );
+            const attachment = await this.upload(file, options);
 
 
             attachments.push(

@@ -5,58 +5,144 @@ import {buildWhere} from "../../utils/buildWhere.js";
 import businessRepo from "../../repositories/business/business.repository.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
+import checklistRepo from "../../repositories/event/checkList.repository.js";
 
 class EventService {
 
     // Create event
 
-    async create(data: any) {
+        /*
 
-        const business = await businessRepo.findOne({
-            business_code: data.businessCode,
-        })
 
-        if(!business) {
-            throw new Error("Business does not exist")
-        }
+         */
+
+    async create(data: any, actor: any){
+
+        // const eventData = {
+        //     "eventName": "Test Event",
+        //     "eventStartDate": "25-07-2026",
+        //     "eventEndDate": "25-07-2026",
+        //     "eventStartTime": "10:00",
+        //     "applicationDeadline": "26-07-2026",
+        //     "influencerCapacity": 3,
+        //     "description": "Description for event",
+        //     "influencerOfferDescription": "What influencer gets",
+        //     "offerValue": 500,
+        //     "dressCode": "Casual",
+        //     "additionalGuests": 5,
+        //     "specialRequirements": "Special Requirements for influencer",
+        //     "taskDescription": "Task description",
+        //     "tasKDeadline": "Task deadline",
+        //     "status": "draft"
+        // }
+
+        /*
+            eventName, venueName, location/area, eventStartDate, eventEndDate, eventStartTime,
+            applicationDeadline,influencerSpots, description, eventImages, influencerReceived, estimatedOfferValue,
+            dressCode, additional_guests, numberOfAdditionalGuests, specialRequirements, taskDescription, taskDeadline,
+            status(publish or draft)
+         */
+
+        console.log(data, actor)
+
+        const { eventName, venueName, location, eventStartDate, eventEndDate, eventStartTime,
+            applicationDeadline, influencerCapacity, description, eventImages, influencerOfferDescription, offerValue,
+            dressCode, additional_guests, numberOfAdditionalGuests, specialRequirements, taskDescription, taskDeadline,
+            status } = data
+
+        const eventCode = generateCode()
+        const checklistCode = generateCode()
 
         const venue = await venueRepo.findOne({
-            venue_code: data.venueCode
+            business_code: actor.businessCode,
         })
+
+        // console.log(venue.venue_code)
 
         if(!venue) {
             throw new Error("Venue does not exist")
         }
 
-        const creator = await userRepo.findOne({
-            user_code: data.createdBy
-        })
-
-        if(!creator) {
-            throw new Error("Creator does not exist")
-        }
-
-        const eventCode = generateCode();
-
-        // add separate column for start & end date and time
-
-        return await eventRepo.create({
+        const event = await eventRepo.create({
             event_code: eventCode,
-            business_code: data.businessCode,
-            venue_code: data.venueCode,
-            title: data.title,
-            description: data.description,
-            start_datetime: data.startDateTime,
-            end_datetime: data.endDateTime,
-            application_deadline: data.applicationDeadline,
-            influencer_capacity: data.influencerCapacity,
-            dress_code: data.dressCode,
-            special_instructions: data.specialInstructions,
-            visibility: data.visibility,
-            created_by: data.createdBy,
-            status: data.status,
+            business_code: actor.businessCode,
+            venue_code: venue.venue_code,
+            title: eventName,
+            description: description,
+            start_date: eventStartDate,
+            end_date: eventEndDate,
+            start_time: eventStartTime,
+            application_deadline: applicationDeadline,
+            influencer_capacity: influencerCapacity,
+            description_influencer_received: influencerOfferDescription,
+            offer_value: offerValue,
+            dress_code: dressCode,
+            additional_guests: numberOfAdditionalGuests,
+            special_instructions: specialRequirements,
+            status: status,
         });
+
+        const eventTask = await checklistRepo.create({
+            checklist_code: checklistCode,
+            event_code: eventCode,
+            description: taskDescription || null,
+            submission_deadline: taskDeadline || null,
+        });
+
+        return{
+            event,
+            eventTask,
+        }
     }
+
+    // async create(data: any, actor: any) {
+    //
+    //     // console.log(data.eventData.eventName, actor);
+    //     const business = await businessRepo.findOne({
+    //         business_code: data.businessCode,
+    //     })
+    //
+    //     if(!business) {
+    //         throw new Error("Business does not exist")
+    //     }
+    //
+    //     const venue = await venueRepo.findOne({
+    //         venue_code: data.venueCode
+    //     })
+    //
+    //     if(!venue) {
+    //         throw new Error("Venue does not exist")
+    //     }
+    //
+    //     const creator = await userRepo.findOne({
+    //         user_code: data.createdBy
+    //     })
+    //
+    //     if(!creator) {
+    //         throw new Error("Creator does not exist")
+    //     }
+    //
+    //     const eventCode = generateCode();
+    //
+    //     // add separate column for start & end date and time
+    //
+    //     return await eventRepo.create({
+    //         event_code: eventCode,
+    //         business_code: data.businessCode,
+    //         venue_code: data.venueCode,
+    //         title: data.title,
+    //         description: data.description,
+    //         start_datetime: data.startDateTime,
+    //         end_datetime: data.endDateTime,
+    //         application_deadline: data.applicationDeadline,
+    //         influencer_capacity: data.influencerCapacity,
+    //         dress_code: data.dressCode,
+    //         special_instructions: data.specialInstructions,
+    //         visibility: data.visibility,
+    //         created_by: data.createdBy,
+    //         status: data.status,
+    //     });
+    // }
 
     // Get all events
 

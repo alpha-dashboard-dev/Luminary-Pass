@@ -1,44 +1,48 @@
-import {env} from "../../../config/env.js";
+import { env } from "../../../config/env.js";
 import path from "path";
-import fs from "fs-extra";
+import fsExtra from "fs-extra";
+import fs from "fs";
+import { pipeline } from "stream/promises";
 
-import StorageInterface from "./storageInterface";
+import StorageInterface from "./storageInterface.js";
+
 
 class LocalStorage extends StorageInterface {
+
 
     async upload(file, options = {}) {
 
         const destination = path.join(
-
             env.LOCAL_STORAGE_PATH,
-
             options.folder
-
         );
 
-        await fs.ensureDir(destination);
 
-        const filePath = path.join(destination, options.fileName);
+        await fsExtra.ensureDir(destination);
 
-        await fs.copy(file.filepath, filePath);
+
+        const filePath = path.join(
+            destination,
+            options.fileName
+        );
+
+
+        await pipeline(file.stream, fs.createWriteStream(filePath));
+
 
         return {
-
             disk: "local",
-
             path: filePath,
-
             secureUrl: filePath,
-
         };
-
     }
+
 
     async delete(filePath) {
-
-        return fs.remove(filePath);
+        return fsExtra.remove(filePath);
 
     }
+
 
     async replace(filePath, file, options = {}) {
 
@@ -48,18 +52,17 @@ class LocalStorage extends StorageInterface {
 
     }
 
+
     async move(filePath, options = {}) {
 
-        return fs.move(
-
+        return fsExtra.move(
             filePath,
-
             options.newPath
-
         );
 
     }
 
 }
 
-export default LocalStorage;
+
+export default new LocalStorage();

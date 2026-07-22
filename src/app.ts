@@ -10,17 +10,12 @@ const app = Fastify({
 
 
 await app.register(multipart, {
-    attachFieldsToBody:false,
-    saveRequestFiles:true,
-
+    attachFieldsToBody: false,
+    // saveRequestFiles: false,
     limits: {
-
         fileSize: 50 * 1024 * 1024, // 50 MB
-
     }
-
 });
-
 
 app.register(routes, { prefix: "/api" });
 

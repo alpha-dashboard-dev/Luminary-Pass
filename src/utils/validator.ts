@@ -43,6 +43,27 @@ function isValidEmail(email: string): boolean {
     return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+
+export const loginValidator = (data: any ) => {
+
+    const {email, password} = data
+
+    if (!email) {
+        throw new Error("Email is required");
+    }
+
+    if(!isValidEmail(email)) {
+        throw new Error("Invalid email format");
+    }
+    if (!password) {
+        throw new Error("Password is required");
+    }
+
+    if (password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
+}
+
 export const validateOrganization = (data: any) => {
     const { name, email, phone, password, status } = data;
 
