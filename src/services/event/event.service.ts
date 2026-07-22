@@ -8,7 +8,7 @@ import userRepo from "../../repositories/user/user.repository.js";
 
 class EventService {
 
-    // CREATE event
+    // Create event
 
     async create(data: any) {
 
