@@ -42,8 +42,9 @@ class AttachmentService {
         }
         const folder = FolderGenerator.generate(options.entityType, options.attachmentCategory);
 
+        // console.log(file.filename)
+
         const fileName = FileNameGenerator.generate(options.entityCode, options.attachmentCategory, file.filename);
-        // console.log(fileName);
 
         const uploaded = await this.storage.upload(
                 file,
@@ -95,45 +96,22 @@ class AttachmentService {
     }
 
 
-
-
-
     /**
      * Delete Attachment
      */
-    async delete(
-        attachmentCode:string
-    ){
+    async delete(attachmentCode:string){
 
 
-        const attachment =
-            await attachmentRepo.findOne({
-
-                attachment_code:
-                attachmentCode
-
-            });
-
-
+        const attachment = await attachmentRepo.findOne({
+            attachment_code: attachmentCode
+        });
 
         if(!attachment){
-
-            throw new Error(
-                "Attachment not found"
-            );
-
+            throw new Error("Attachment not found");
         }
 
-
-
-        if(
-            attachment.public_id
-        ){
-
-            await this.storage.delete(
-                attachment.public_id
-            );
-
+        if(attachment.public_id){
+            await this.storage.delete(attachment.public_id);
         }
 
 
@@ -160,10 +138,6 @@ class AttachmentService {
 
 
     }
-
-
-
-
 
     /**
      * Replace Existing Attachment
