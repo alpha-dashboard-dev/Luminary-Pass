@@ -28,7 +28,6 @@ class EventService {
 
             const eventCode = generateCode()
             const checklistCode = generateCode()
-
             const venue = await venueRepo.findOne({
                 business_code: actor.businessCode,
             })
@@ -61,15 +60,15 @@ class EventService {
                 {   transaction }
             );
 
-            // const eventTask = await checklistRepo.create(
-            //     {
-            //         checklist_code: checklistCode,
-            //         event_code: eventCode,
-            //         description: taskDescription || null,
-            //         submission_deadline: parseDate(taskDeadline) || null,
-            //     },
-            //     {   transaction }
-            // );
+            const eventTask = await checklistRepo.create(
+                {
+                    checklist_code: checklistCode,
+                    event_code: eventCode,
+                    description: taskDescription || null,
+                    submission_deadline: parseDate(taskDeadline) || null,
+                },
+                {   transaction }
+            );
 
             await transaction.commit();
 
