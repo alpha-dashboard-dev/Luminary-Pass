@@ -238,6 +238,26 @@ class eventController {
             });
         }
     }
+
+    async findTotalEvents(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const businessCode = String(req.params.businessCode)
+
+            await eventService.totalEvents(businessCode);
+
+            return reply.status(200).send({
+                success: true,
+            });
+
+        } catch (err: any) {
+
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+
+    }
 }
 
 export default  new eventController();
