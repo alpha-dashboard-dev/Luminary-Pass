@@ -188,7 +188,7 @@ class EventService {
 
     // Get event By Any Field
     async getByField(where: any, query: any = {}) {
-        console.log(where);
+        // console.log(where);
         const event = await eventRepo.findOne(
             where,
             {
@@ -202,7 +202,6 @@ class EventService {
 
         return event;
     }
-
     // Update event
     async update(eventCode: string, data: any, actor: any) {
 
