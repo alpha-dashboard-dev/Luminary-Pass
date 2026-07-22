@@ -234,19 +234,15 @@ class EventService {
         });
     }
 
-    async totalEvents(businessCode: string){
+    async totalEventByBusiness(businessCode: string){
 
-        // const totalEvents = await eventRepo.findAll({
-        //     where: {
-        //         business_code: businessCode
-        //     }
-        // })
+        let totalEvents;
 
-        const totalEvents = await eventRepo.count({
-           business_code: businessCode
+        totalEvents = await eventRepo.count({
+            business_code: businessCode
         })
 
-        console.log(totalEvents);
+        return totalEvents;
     }
 }
 

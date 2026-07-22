@@ -243,10 +243,11 @@ class eventController {
         try {
             const businessCode = String(req.params.businessCode)
 
-            await eventService.totalEvents(businessCode);
+            const totalEvents = await eventService.totalEventByBusiness(businessCode);
 
             return reply.status(200).send({
                 success: true,
+                totalEvents: totalEvents,
             });
 
         } catch (err: any) {
