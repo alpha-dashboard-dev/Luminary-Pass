@@ -14,7 +14,7 @@ module.exports = {
             {
                 user_code: "USR00001",
 
-                organization_code: "0",
+                organization_code: "ORG00001",
 
                 business_code: "0",
 
