@@ -7,11 +7,14 @@ class FileNameGenerator {
 
         const extension = path.extname(originalName);
 
-        const timestamp = new Date()
-            .toISOString()
-            .replace(/[-:.TZ]/g, "");
+        // const timestamp = new Date()
+        //     .toISOString()
+        //     .replace(/[-:.TZ]/g, "");
 
-        return `${entityCode}_${category}_${timestamp}_${generateCode()}${extension}`;
+        return `${entityCode}_${category}_${originalName}${extension}`;
+
+
+        // return `${entityCode}_${category}_${timestamp}_${generateCode()}${extension}`;
 
     }
 
