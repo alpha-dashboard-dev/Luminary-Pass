@@ -1,72 +1,98 @@
 import eventRepo from "../../repositories/event/event.repository";
-
+import initModels from "../../database/sequelize/models/index.cjs";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import businessRepo from "../../repositories/business/business.repository.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
-import {parseDate} from "../../utils/dateTimeFormat.js";
+import {normalizeDateOnly, normalizeDeadline, normalizeTimeToHHMM, parseDate} from "../../utils/dateTimeFormat.js";
+import attachmentService from "../mediaAttachment/attachment.service.js";
+
+const db = initModels();
 
 class EventService {
 
     // Create event
-
-        /*
-
-
-         */
-
     async create(data: any, actor: any){
-        // console.log(data, actor)
+        // console.log(data)
 
         const { eventName, eventStartDate, eventEndDate, eventStartTime,
-            applicationDeadline, influencerCapacity, description, eventImages, influencerOfferDescription, offerValue,
+            applicationDeadline, influencerCapacity, description, influencerOfferDescription, offerValue,
             dressCode, additionalGuests, specialRequirements, taskDescription, taskDeadline,
-            eventStatus } = data
+            eventStatus, images } = data
 
-        const eventCode = generateCode()
-        const checklistCode = generateCode()
+        const transaction = await db.sequelize.transaction();
 
-        const venue = await venueRepo.findOne({
-            business_code: actor.businessCode,
-        })
+        try{
+            const eventCode = generateCode()
+            const checklistCode = generateCode()
 
-        // console.log(venue.venue_code)
+            const venue = await venueRepo.findOne({
+                business_code: actor.businessCode,
+            })
 
-        if(!venue) {
-            throw new Error("Venue does not exist")
-        }
+            // console.log(venue.venue_code)
 
-        const event = await eventRepo.create({
-            event_code: eventCode,
-            business_code: actor.businessCode,
-            venue_code: venue.venue_code,
-            title: eventName,
-            description: description,
-            start_date: parseDate(eventStartDate),
-            end_date: parseDate(eventEndDate),
-            start_time: eventStartTime,
-            application_deadline: parseDate(applicationDeadline),
-            influencer_capacity: influencerCapacity,
-            description_influencer_received: influencerOfferDescription,
-            offer_value: offerValue,
-            dress_code: dressCode,
-            additional_guests: additionalGuests,
-            special_instructions: specialRequirements,
-            status: eventStatus,
-        });
+            if(!venue) {
+                throw new Error("Venue does not exist")
+            }
 
-        const eventTask = await checklistRepo.create({
-            checklist_code: checklistCode,
-            event_code: eventCode,
-            description: taskDescription || null,
-            submission_deadline: parseDate(taskDeadline) || null,
-        });
+            const event = await eventRepo.create(
+                {
+                    event_code: eventCode,
+                    business_code: actor.businessCode,
+                    venue_code: venue.venue_code,
+                    title: eventName,
+                    description: description,
+                    start_date: normalizeDateOnly(eventStartDate),
+                    end_date: normalizeDateOnly(eventEndDate),
+                    start_time: normalizeTimeToHHMM(eventStartTime),
+                    application_deadline: parseDate(applicationDeadline),
+                    influencer_capacity: influencerCapacity,
+                    description_influencer_received: influencerOfferDescription,
+                    offer_value: offerValue,
+                    dress_code: dressCode,
+                    additional_guests: additionalGuests,
+                    special_instructions: specialRequirements,
+                    status: eventStatus,
+                },
+                {   transaction }
+            );
 
-        return{
-            event,
-            eventTask,
+            const eventTask = await checklistRepo.create(
+                {
+                    checklist_code: checklistCode,
+                    event_code: eventCode,
+                    description: taskDescription || null,
+                    submission_deadline: parseDate(taskDeadline) || null,
+                },
+                {   transaction }
+            );
+
+            await transaction.commit();
+
+            const options = {
+                entityType: "event",
+                entityCode: eventCode,
+                title: eventName,
+                mediaType: "image",
+                attachmentCategory: "gallery",
+                uploadedBy: actor.userCode,
+            }
+
+            const attachment = await attachmentService.uploadMultiple(images, options)
+
+            return{
+                event,
+                eventTask,
+                attachment,
+            }
+
+        }catch(err){
+            await transaction.rollback();
+
+            throw err;
         }
     }
 

@@ -43,18 +43,20 @@ class eventController {
 
                     if(part.fieldname === "eventImages") {
 
-
                         // only for testing purpose
-                        const chunks:any[] = [];
+                        // const chunks:any[] = [];
+                        //
+                        // for await (const chunk of part.file) {
+                        //     chunks.push(chunk);
+                        // }
 
-                        for await (const chunk of part.file) {
-                            chunks.push(chunk);
-                        }
+                        const buffer = await part.toBuffer();
 
                         images.push({
                             filename: part.filename,
                             mimetype: part.mimetype,
-                            stream: part.file
+                            size: buffer.length,
+                            buffer
                         });
                     }
                 } else {

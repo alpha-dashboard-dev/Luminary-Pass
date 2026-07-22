@@ -12,10 +12,14 @@ class LocalStorage extends StorageInterface {
 
     async upload(file, options = {}) {
 
+        console.log(file, options);
+
         const destination = path.join(
             env.LOCAL_STORAGE_PATH,
             options.folder
         );
+
+        console.log(destination);
 
 
         await fsExtra.ensureDir(destination);
@@ -26,8 +30,10 @@ class LocalStorage extends StorageInterface {
             options.fileName
         );
 
+        await fsExtra.writeFile(filePath, file.buffer);
 
-        await pipeline(file.stream, fs.createWriteStream(filePath));
+        // await pipeline(file.stream, fs.createWriteStream(filePath));
+        // await fs.copy(file.filepath, filePath);
 
 
         return {

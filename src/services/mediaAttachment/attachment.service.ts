@@ -27,7 +27,6 @@ class AttachmentService {
 
         // console.log(file, options);
 
-
         AttachmentValidator.validate(file);
 
 
@@ -39,16 +38,9 @@ class AttachmentService {
         // console.log(entity)
 
         if(!entity){
-
             throw new Error(`${options.entityType} not found`);
-
         }
-
         const folder = FolderGenerator.generate(options.entityType, options.attachmentCategory);
-
-        // console.log(folder);
-
-
 
         const fileName = FileNameGenerator.generate(options.entityCode, options.attachmentCategory, file.filename);
         // console.log(fileName);
@@ -62,10 +54,7 @@ class AttachmentService {
             );
         // console.log(uploaded);
 
-
-
         const attachment = await attachmentRepo.create({
-
                 attachment_code: generateCode(),
                 entity_type: options.entityType,
                 entity_code: options.entityCode,
@@ -86,12 +75,8 @@ class AttachmentService {
                 visibility: options.visibility ?? "private",
                 display_order: options.displayOrder ?? 1,
                 status: "active"
-
             });
-
         return attachment;
-
-
     }
 
     /**
@@ -99,26 +84,14 @@ class AttachmentService {
      */
     async uploadMultiple(files:any[], options:any){
 
+        // console.log(files, options);
 
         const attachments=[];
-
-
         for(const file of files){
-
-
             const attachment = await this.upload(file, options);
-
-
-            attachments.push(
-                attachment
-            );
-
+            attachments.push(attachment);
         }
-
-
         return attachments;
-
-
     }
 
 
