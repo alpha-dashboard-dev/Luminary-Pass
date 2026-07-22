@@ -49,12 +49,12 @@ module.exports = {
       },
 
       start_time: {
-        type: Sequelize.DATE,
+        type: Sequelize.TIME,
         allowNull: true,
       },
 
       end_time: {
-        type: Sequelize.DATE,
+        type: Sequelize.TIME,
         allowNull: true,
       },
 
@@ -119,7 +119,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM(
             "draft",
-            "published",
+            "publish",
             "closed",
             "live",
             "completed",

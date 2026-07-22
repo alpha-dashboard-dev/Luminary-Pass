@@ -28,11 +28,12 @@ class eventController {
     // }
 
 
+    //
     async create(req: FastifyRequest, reply: FastifyReply) {
         // console.log("Request received");
         try {
 
-            let eventData:  any = null;
+            let eventData:  any = {};
             const images:   any[] = [];
 
             for await (const part of req.parts()) {
@@ -57,15 +58,20 @@ class eventController {
                         });
                     }
                 } else {
-                    if(part.fieldname === "event") {
-                        eventData = JSON.parse(part.value);
-                    }
+
+                    eventData[part.fieldname] = part.value;
+                    // if(part.fieldname === "event") {
+                    //
+                    // }
                 }
             }
 
-            const data = {eventData, images};
+            const data = {
+                ...eventData,
+                images
+            };
 
-            // console.log(eventData);
+            console.log(data);
             // console.log(images);
             const result = await eventService.create(
                 data,

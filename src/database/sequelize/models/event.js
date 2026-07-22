@@ -55,11 +55,11 @@ class Event extends Model {
             allowNull: true,
           },
           start_time: {
-              type: DataTypes.DATE,
+              type: DataTypes.TIME,
               allowNull: true,
           },
           end_time: {
-              type: DataTypes.DATE,
+              type: DataTypes.TIME,
               allowNull: true,
           },
 
@@ -111,7 +111,7 @@ class Event extends Model {
           status: {
             type: DataTypes.ENUM(
                 "draft",
-                "published",
+                "publish",
                 "closed",
                 "live",
                 "completed",

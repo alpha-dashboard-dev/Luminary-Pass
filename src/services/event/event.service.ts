@@ -6,6 +6,7 @@ import businessRepo from "../../repositories/business/business.repository.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
+import {parseDate} from "../../utils/dateTimeFormat.js";
 
 class EventService {
 
@@ -17,38 +18,12 @@ class EventService {
          */
 
     async create(data: any, actor: any){
+        // console.log(data, actor)
 
-        // const eventData = {
-        //     "eventName": "Test Event",
-        //     "eventStartDate": "25-07-2026",
-        //     "eventEndDate": "25-07-2026",
-        //     "eventStartTime": "10:00",
-        //     "applicationDeadline": "26-07-2026",
-        //     "influencerCapacity": 3,
-        //     "description": "Description for event",
-        //     "influencerOfferDescription": "What influencer gets",
-        //     "offerValue": 500,
-        //     "dressCode": "Casual",
-        //     "additionalGuests": 5,
-        //     "specialRequirements": "Special Requirements for influencer",
-        //     "taskDescription": "Task description",
-        //     "tasKDeadline": "Task deadline",
-        //     "status": "draft"
-        // }
-
-        /*
-            eventName, venueName, location/area, eventStartDate, eventEndDate, eventStartTime,
-            applicationDeadline,influencerSpots, description, eventImages, influencerReceived, estimatedOfferValue,
-            dressCode, additional_guests, numberOfAdditionalGuests, specialRequirements, taskDescription, taskDeadline,
-            status(publish or draft)
-         */
-
-        console.log(data, actor)
-
-        const { eventName, venueName, location, eventStartDate, eventEndDate, eventStartTime,
+        const { eventName, eventStartDate, eventEndDate, eventStartTime,
             applicationDeadline, influencerCapacity, description, eventImages, influencerOfferDescription, offerValue,
-            dressCode, additional_guests, numberOfAdditionalGuests, specialRequirements, taskDescription, taskDeadline,
-            status } = data
+            dressCode, additionalGuests, specialRequirements, taskDescription, taskDeadline,
+            eventStatus } = data
 
         const eventCode = generateCode()
         const checklistCode = generateCode()
@@ -69,24 +44,24 @@ class EventService {
             venue_code: venue.venue_code,
             title: eventName,
             description: description,
-            start_date: eventStartDate,
-            end_date: eventEndDate,
+            start_date: parseDate(eventStartDate),
+            end_date: parseDate(eventEndDate),
             start_time: eventStartTime,
-            application_deadline: applicationDeadline,
+            application_deadline: parseDate(applicationDeadline),
             influencer_capacity: influencerCapacity,
             description_influencer_received: influencerOfferDescription,
             offer_value: offerValue,
             dress_code: dressCode,
-            additional_guests: numberOfAdditionalGuests,
+            additional_guests: additionalGuests,
             special_instructions: specialRequirements,
-            status: status,
+            status: eventStatus,
         });
 
         const eventTask = await checklistRepo.create({
             checklist_code: checklistCode,
             event_code: eventCode,
             description: taskDescription || null,
-            submission_deadline: taskDeadline || null,
+            submission_deadline: parseDate(taskDeadline) || null,
         });
 
         return{
