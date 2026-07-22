@@ -24,8 +24,8 @@ module.exports = {
 
     async down(queryInterface) {
         await Promise.all([
-            queryInterface.removeColumn('businesses', 'activation_token'),
-            queryInterface.removeColumn('businesses', 'activation_token_expires_at'),
+            queryInterface.removeColumn('businesses', 'email_verification_token'),
+            queryInterface.removeColumn('businesses', 'email_verification_token_expires_at'),
             queryInterface.removeColumn('businesses', 'email_verified'),
         ]);
     },
