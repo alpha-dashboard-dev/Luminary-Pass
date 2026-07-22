@@ -146,7 +146,6 @@ class EventService {
     // }
 
     // Get all events
-
     async getAll(query: any = {}) {
         // console.log(query.where)
         const where = buildWhere(query);
@@ -201,6 +200,12 @@ class EventService {
         }
 
         return event;
+    }
+
+    async getByFilter(filter: any = {}) {
+        const event = await eventRepo.findOne({
+            filter,
+        })
     }
     // Update event
     async update(eventCode: string, data: any, actor: any) {
