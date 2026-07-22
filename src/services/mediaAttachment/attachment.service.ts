@@ -19,7 +19,6 @@ class AttachmentService {
     constructor(){
         this.storage = StorageFactory.make();
     }
-
     /**
      * Upload Single File
      */
@@ -28,22 +27,16 @@ class AttachmentService {
         // console.log(file, options);
 
         AttachmentValidator.validate(file);
-
-
         const entity = await EntityResolver.exists(
             options.entityType,
             options.entityCode
         );
 
-        // console.log(entity)
-
         if(!entity){
             throw new Error(`${options.entityType} not found`);
         }
+
         const folder = FolderGenerator.generate(options.entityType, options.attachmentCategory);
-
-        // console.log(file.filename)
-
         const fileName = FileNameGenerator.generate(options.entityCode, options.attachmentCategory, file.filename);
 
         const uploaded = await this.storage.upload(
@@ -53,7 +46,6 @@ class AttachmentService {
                     fileName
                 }
             );
-        // console.log(uploaded);
 
         const attachment = await attachmentRepo.create({
                 attachment_code: generateCode(),

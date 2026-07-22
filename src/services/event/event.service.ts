@@ -233,6 +233,21 @@ class EventService {
             event_code: eventCode
         });
     }
+
+    async totalEvents(businessCode: string){
+
+        // const totalEvents = await eventRepo.findAll({
+        //     where: {
+        //         business_code: businessCode
+        //     }
+        // })
+
+        const totalEvents = await eventRepo.count({
+           business_code: businessCode
+        })
+
+        console.log(totalEvents);
+    }
 }
 
 export default new EventService();
