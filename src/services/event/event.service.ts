@@ -81,6 +81,7 @@ class EventService {
                 uploadedBy: actor.userCode,
             }
 
+
             const attachment = await attachmentService.uploadMultiple(images, options)
             return{
                 event,
