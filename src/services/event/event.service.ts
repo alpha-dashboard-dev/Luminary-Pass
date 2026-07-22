@@ -25,6 +25,7 @@ class EventService {
         const transaction = await db.sequelize.transaction();
 
         try{
+
             const eventCode = generateCode()
             const checklistCode = generateCode()
 
@@ -60,15 +61,15 @@ class EventService {
                 {   transaction }
             );
 
-            const eventTask = await checklistRepo.create(
-                {
-                    checklist_code: checklistCode,
-                    event_code: eventCode,
-                    description: taskDescription || null,
-                    submission_deadline: parseDate(taskDeadline) || null,
-                },
-                {   transaction }
-            );
+            // const eventTask = await checklistRepo.create(
+            //     {
+            //         checklist_code: checklistCode,
+            //         event_code: eventCode,
+            //         description: taskDescription || null,
+            //         submission_deadline: parseDate(taskDeadline) || null,
+            //     },
+            //     {   transaction }
+            // );
 
             await transaction.commit();
 
@@ -82,7 +83,6 @@ class EventService {
             }
 
             const attachment = await attachmentService.uploadMultiple(images, options)
-
             return{
                 event,
                 eventTask,

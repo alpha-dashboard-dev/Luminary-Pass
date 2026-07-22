@@ -43,13 +43,6 @@ class eventController {
 
                     if(part.fieldname === "eventImages") {
 
-                        // only for testing purpose
-                        // const chunks:any[] = [];
-                        //
-                        // for await (const chunk of part.file) {
-                        //     chunks.push(chunk);
-                        // }
-
                         const buffer = await part.toBuffer();
 
                         images.push({
@@ -62,9 +55,6 @@ class eventController {
                 } else {
 
                     eventData[part.fieldname] = part.value;
-                    // if(part.fieldname === "event") {
-                    //
-                    // }
                 }
             }
 
@@ -72,9 +62,6 @@ class eventController {
                 ...eventData,
                 images
             };
-
-            console.log(data);
-            // console.log(images);
             const result = await eventService.create(
                 data,
                 req.user
