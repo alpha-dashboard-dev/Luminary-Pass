@@ -201,12 +201,6 @@ class EventService {
 
         return event;
     }
-
-    async getByFilter(filter: any = {}) {
-        const event = await eventRepo.findOne({
-            filter,
-        })
-    }
     // Update event
     async update(eventCode: string, data: any, actor: any) {
 
