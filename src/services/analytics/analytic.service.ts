@@ -3,6 +3,7 @@ import eventParticipantRepo from "../../repositories/event/participant.repositor
 import influencerRatingRepo from "../../repositories/influencer/influencerRating.repository";
 import eventParticipantChecklistRepo from "../../repositories/event/participantChecklist.repository"
 import {fn, col, literal} from "sequelize";
+import analytics from "./analyticHelper.js";
 
 
 class analyticService {
@@ -159,75 +160,56 @@ class analyticService {
         return influencerAverages;
     }
 
-    async getSummary(actor:any){
+    // Analytics Summary
+    // async getSummary(actor:any) {
+    //
+    //     const [totalEvents, eventCompletionRate, influencers, averageRating] = await Promise.all([
+    //
+    //         this.getTotalEventCount(actor),
+    //         this.getEventCompletionRate(actor),
+    //         // this.getTotalInfluencers(actor),
+    //         // this.getAverageRating(actor)
+    //
+    //     ]);
+    //
+    //     return {
+    //         totalEvents,
+    //         eventCompletionRate,
+    //         influencers,
+    //         averageRating
+    //     };
+    // }
 
-        const [totalEvents, eventCompletionRate, influencers, averageRating] = await Promise.all([
-
-            this.getTotalEventCount(actor),
-            this.getEventCompletionRate(actor),
-            // this.getTotalInfluencers(actor),
-            // this.getAverageRating(actor)
-
-        ]);
-
-        return {
-            totalEvents,
-            eventCompletionRate,
-            influencers,
-            averageRating
-        };
-
-    }
-
-
-    async getEventsOverTime(query: any = {},    actor:any){
-
-        return await eventRepo.query({
-
+    async getEventsOverTime(query: any = {}, actor: any) {
+        // console.log(query.period)
+        return await eventRepo.findAll({
             where: {
                 business_code: actor.businessCode
             },
 
-            attributes:[
-
+            attributes: [
                 [
-                    fn(
-                        "DATE_TRUNC",
-                        "month",
-                        col("start_date")
-                    ),
-                    "month"
+                    analytics.dateTrunc(query.period, "start_date"),
+                    "period"
                 ],
-
                 [
-                    fn(
-                        "COUNT",
-                        col("id")
-                    ),
+                    analytics.count("id"),
                     "events"
                 ]
-
             ],
-
-            group:[
-                literal(
-                    "DATE_TRUNC('month', start_date)"
-                )
+            group: [
+                analytics.literal(`DATE_TRUNC('${query.period}', start_date)`)
             ],
-
-            order:[
+            order: [
                 [
-                    literal(
-                        "DATE_TRUNC('month', start_date)"
-                    ),
+                    analytics.literal(`DATE_TRUNC('${query.period}', start_date)`),
                     "ASC"
                 ]
             ],
-            raw:true
-
+            raw: true
         });
-    }
 
+    }
 
     // async getTopInfluencers(query: any = {}, actor:any){
     //
@@ -300,6 +282,10 @@ class analyticService {
     //
     //     });
     // }
+
+    async TaskCompletionRating(query: any = {}, actor: any) {
+
+    }
 
     async taskCompletionRating(query: any = {} ,actor:any){
 
