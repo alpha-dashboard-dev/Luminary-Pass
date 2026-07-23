@@ -82,7 +82,21 @@ class analyticController {
 
     async getTotalInfluencers(req: FastifyRequest, reply: FastifyReply) {
         try {
-            const result = await analyticService.getTotalInfluencers(req.user);
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "eventParticipant",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.getTotalInfluencers(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
             return reply.status(200).send({
                 success: true,
                 message: "Total Influencers",
@@ -130,6 +144,144 @@ class analyticController {
             });
 
         }
+    }
+
+
+    async averageRatingOfEachInfluencer(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "event",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.averageRatingOfEachInfluencer(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
+            return reply.status(200).send({
+                success: true,
+                message: "Average Rating Of Each Influencer",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+    async taskCompletionRating(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "participant",
+                    attributes: [],
+                },
+                {
+                    alias: "checklist",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.taskCompletionRating(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
+            return reply.status(200).send({
+                success: true,
+                message: "Average Rating",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getEventsOverTime(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "event",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.getEventsOverTime(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
+            return reply.status(200).send({
+                success: true,
+                message: "Events Over Time",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+
+    }
+
+    async getTopInfluencers(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "event",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.getTopInfluencers(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
+            return reply.status(200).send({
+                success: true,
+                message: "Events Over Time",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+
     }
 
 

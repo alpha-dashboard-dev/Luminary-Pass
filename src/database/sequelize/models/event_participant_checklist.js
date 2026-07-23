@@ -121,17 +121,17 @@ class EventParticipantChecklist extends Model {
   }
 
   static associate(models) {
-    // EventParticipantChecklist.belongsTo(models.EventParticipant, {
-    //     foreignKey: "participant_code",
-    //     targetKey: "participant_code",
-    //     as: "participant",
-    // });
+    EventParticipantChecklist.belongsTo(models.EventParticipant, {
+        foreignKey: "participant_code",
+        targetKey: "participant_code",
+        as: "participant",
+    });
 
-    // EventParticipantChecklist.belongsTo(models.EventChecklist, {
-    //     foreignKey: "checklist_code",
-    //     targetKey: "checklist_code",
-    //     as: "checklist",
-    // });
+    EventParticipantChecklist.belongsTo(models.EventCheckList, {
+        foreignKey: "checklist_code",
+        targetKey: "checklist_code",
+        as: "checklist",
+    });
 
     // EventParticipantChecklist.belongsTo(models.User, {
     //     foreignKey: "reviewed_by",

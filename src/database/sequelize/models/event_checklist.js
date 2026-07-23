@@ -104,8 +104,17 @@ class EventChecklist extends Model {
         foreignKey: "event_code",
         targetKey: "event_code",
         as: "event",
+        constraints: false,
     });
+
+    EventChecklist.hasMany(models.EventParticipantChecklist, {
+        foreignKey: "checklist_code",
+        sourceKey: "checklist_code",
+        as: "checklist",
+        constraints: false
+    })
   }
+
 }
 
 module.exports = EventChecklist;

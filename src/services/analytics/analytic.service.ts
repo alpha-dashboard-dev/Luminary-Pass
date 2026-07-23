@@ -1,11 +1,13 @@
-import eventRepo from "../../repositories/event/event.repository.js";
+import eventRepo from "../../repositories/event/event.repository";
 import eventParticipantRepo from "../../repositories/event/participant.repository"
-import influencerRatingRepo from "../../repositories/influencer/influencerRating.repository.js";
-import { fn, col, literal } from "sequelize";
+import influencerRatingRepo from "../../repositories/influencer/influencerRating.repository";
+import eventParticipantChecklistRepo from "../../repositories/event/participantChecklist.repository"
+import {fn, col, literal} from "sequelize";
 
 
 class analyticService {
 
+    // get total events of per business
     async getTotalEventCount(actor: any) {
         // console.log(actor)
         let totalEvents;
@@ -31,79 +33,131 @@ class analyticService {
             status: "completed"
         });
 
-        return Number((completed*100/total).toFixed(2)
+        return Number(
+            (completed*100/total).toFixed(2)
         );
     }
 
+    // get Total Influencers that participate in event
+    async getTotalInfluencers(query: any = {}, actor:any){
 
-    async getTotalInfluencers(actor:any){
-
-    const rows = await eventParticipantRepo.query({
-
-        include:[
+        const event = await eventRepo.findAll(
             {
-                association: "eventParticipant",
-                where:{
+                where: {
                     business_code: actor.businessCode
-                },
-                attributes:[]
+                }
             }
-        ],
+        )
+        const eventCodes = event.map(row => row.event_code);
+        // console.log("event", eventCodes)
 
-        attributes:[
-            [
-                fn(
-                    "COUNT",
-                    fn(
-                        "DISTINCT",
-                        col("influencer_code")
-                    )
-                ),
-                "total"
-            ]
-        ],
+        let eventParticipant = 0;
+        for(const event of eventCodes){
+            eventParticipant = await eventParticipantRepo.count(
+                {
+                    event_code: event
+                },
+                {
+                    distinct: true,
+                    col: "influencer_code"
+                }
+            )
+        }
+        // console.log("event", eventParticipant);
 
-        raw:true
-    });
+        return eventParticipant;
 
+    //     const rows = await eventParticipantRepo.query({
+    //
+    //     include:[
+    //         {
+    //             association: "eventParticipant",
+    //             where:{
+    //                 business_code: actor.businessCode
+    //             },
+    //             attributes:[]
+    //         }
+    //     ],
+    //
+    //     attributes:[
+    //         [
+    //             fn(
+    //                 "COUNT",
+    //                 fn(
+    //                     "DISTINCT",
+    //                     col("influencer_code")
+    //                 )
+    //             ),
+    //             "total"
+    //         ]
+    //     ],
+    //
+    //     raw:true
+    // });
+    //
     // console.log(rows);
-
-    return Number(rows[0].total);
+    //
+    // return Number(rows[0].total);
 }
-
-
-    async getAverageRating(query: any = {}, actor:any){
-        // console.log(query, actor);
-
-        const rows = await influencerRatingRepo.query({
-
-            include:[
+    // Average rating across all influencer rating records for events owned by the business.
+    async getAverageRating(query: any = {}, actor: any) {
+        const rows = await influencerRatingRepo.aggregate({
+            include: [
                 {
                     association: "event",
-                    where:  {business_code: actor.businessCode},
-                    attributes:[]
-                }
+                    where: {
+                        business_code: actor.businessCode,
+                    },
+                    attributes: [],
+                },
             ],
-
-            attributes:[
+            attributes: [
+                "influencer_code",
                 [
-                    fn(
-                        "AVG",
-                        col("rating")
-                    ),
-                    "average"
-                ]
+                    fn("AVG", col("rating")),
+                    "average_rating",
+                ],
             ],
-
-            raw:true
-
+            group: ["influencer_code"],
+            raw: true,
         });
+        if (!rows.length) return 0;
 
-        console.log(rows);
-
-        return Number(rows[0].average || 0);
+        const total = rows.reduce(
+            (sum: number, row: any) =>
+                sum + Number(row.average_rating),
+            0
+        );
+        return total / rows.length;
     }
 
+    // Get Average Rating per influencer
+    async averageRatingOfEachInfluencer(query: any = {}, actor:any){
+        const influencerAverages = await influencerRatingRepo.aggregate({
+                include: [
+                    {
+                        association: "event",
+                        where: {
+                            business_code: actor.businessCode,
+                        },
+                        attributes: [],
+                    },
+                ],
+
+                attributes: [
+                    "influencer_code",
+                    [
+                        fn("AVG", col("rating")),
+                        "average_rating",
+                    ],
+                ],
+                group: ["influencer_code"],
+
+                raw: true,
+            });
+
+        return influencerAverages;
+    }
 
     async getSummary(actor:any){
 
@@ -111,7 +165,7 @@ class analyticService {
 
             this.getTotalEventCount(actor),
             this.getEventCompletionRate(actor),
-            this.getTotalInfluencers(actor),
+            // this.getTotalInfluencers(actor),
             // this.getAverageRating(actor)
 
         ]);
@@ -125,104 +179,213 @@ class analyticService {
 
     }
 
-    async getDashboard(actor:any){
 
-        const [summary, eventsOverTime, taskCompletion, reachImpressions, badgeBreakdown, topInfluencers] = await Promise.all([
-            this.getSummary(actor),
-            // this.getEventsOverTime(actor),
-            //
-            // this.getTaskCompletion(actor),
-            //
-            // this.getReachImpressions(actor),
-            //
-            // this.getBadgeBreakdown(actor),
-            //
-            // this.getTopInfluencers(actor)
+    async getEventsOverTime(query: any = {},    actor:any){
 
-        ]);
+        return await eventRepo.query({
 
-        return {
+            where: {
+                business_code: actor.businessCode
+            },
 
-            summary,
-            // eventsOverTime,
-            // taskCompletion,
-            // reachImpressions,
-            // badgeBreakdown,
-            // topInfluencers
-        };
+            attributes:[
 
+                [
+                    fn(
+                        "DATE_TRUNC",
+                        "month",
+                        col("start_date")
+                    ),
+                    "month"
+                ],
+
+                [
+                    fn(
+                        "COUNT",
+                        col("id")
+                    ),
+                    "events"
+                ]
+
+            ],
+
+            group:[
+                literal(
+                    "DATE_TRUNC('month', start_date)"
+                )
+            ],
+
+            order:[
+                [
+                    literal(
+                        "DATE_TRUNC('month', start_date)"
+                    ),
+                    "ASC"
+                ]
+            ],
+            raw:true
+
+        });
     }
 
 
+    // async getTopInfluencers(query: any = {}, actor:any){
+    //
+    //     return await influencerRatingRepo.query({
+    //
+    //         include:[
+    //             {
+    //                 association:"event",
+    //                 where:{
+    //                     business_code: actor.businessCode
+    //                 },
+    //                 attributes:[]
+    //             },
+    //             {
+    //                 association:"influencer",
+    //                 attributes:[
+    //                     "influencer_code"
+    //                 ],
+    //                 include:[
+    //                     {
+    //                         association:"user",
+    //                         attributes:[
+    //                             "username"
+    //                         ]
+    //                     }
+    //                 ]
+    //             }
+    //         ],
+    //
+    //         attributes:[
+    //
+    //             "influencer_code",
+    //
+    //             [
+    //                 fn(
+    //                     "AVG",
+    //                     col("rating")
+    //                 ),
+    //                 "rating"
+    //             ],
+    //
+    //             [
+    //                 fn(
+    //                     "COUNT",
+    //                     col("id")),
+    //                 "ratings"
+    //             ]
+    //
+    //         ],
+    //
+    //         group:[
+    //             "influencer_code",
+    //             "influencer.influencer_code",
+    //             "influencer->user.id"
+    //         ],
+    //
+    //         order:[
+    //             [
+    //                 fn(
+    //                     "AVG",
+    //                     col("rating")
+    //                 ),
+    //                 "DESC"
+    //             ]
+    //         ],
+    //
+    //         limit:10,
+    //
+    //         raw:false
+    //
+    //     });
+    // }
+
+    async taskCompletionRating(query: any = {} ,actor:any){
+
+        // // console.log(query)
+        //
+        // const event = await eventRepo.findAll(
+        //     {
+        //         where: {
+        //             business_code: actor.businessCode
+        //         },
+        //         include: Array.isArray(query.include) ? query.include : [],
+        //     }
+        // )
+        //
+        // if(!event){
+        //     throw new Error("Event does not belong to your business")
+        // }
+        //
+        // // console.log(event)
+        //
+        // const eventCodes = event.map(row => row.event_code);
+        //
+        // // console.log(eventCodes)
+        //
+        // let total = 0;
+        //
+        // for(const event of eventCodes){
+        //     total = await eventParticipantRepo.count({
+        //         event_code: event
+        //     })
+        // }
+        //
+        // // console.log(total);
+        //
+        // // for(const event of eventCodes){
+        // //     total = await eventParticipantChecklistRepo.count({
+        // //         event_code: event,
+        // //     });
+        // //
+        // // }
 
 
-// async getEventsOverTime(actor:any){
-//
-//     return await eventRepo.query({
-//
-//         where:{
-//             business_code: actor.businessCode
-//         },
-//
-//         attributes:[
-//
-//             [
-//                 fn(
-//                     "DATE_TRUNC",
-//                     "month",
-//                     col("start_date")
-//                 ),
-//                 "month"
-//             ],
-//
-//             [
-//                 fn(
-//                     "COUNT",
-//                     col("id")
-//                 ),
-//                 "events"
-//             ]
-//
-//         ],
-//
-//         group:[
-//             literal(
-//                 "DATE_TRUNC('month', start_date)"
-//             )
-//         ],
-//
-//         order:[
-//             [
-//                 literal(
-//                     "DATE_TRUNC('month', start_date)"
-//                 ),
-//                 "ASC"
-//             ]
-//         ],
-//
-//         raw:true
-//
-//     });
-//
-// }
-//     async getTaskCompletion(actor:any){
-//
-//         const total = await eventChecklistRepo.count({});
-//
-//         return {
-//
-//             completed:0,
-//
-//             pending:total,
-//
-//             percentage:0
-//
-//         };
-//
-//     }
+        const eventParticipant = await eventParticipantChecklistRepo.findAll({
+            include: Array.isArray(query.include) ? query.include : [],
+            // where: {
+            //     business_code: actor.businessCode
+            // }
+        })
 
+        return eventParticipant
 
+        // return {
+        //     completed:0,
+        //     pending:total,
+        //     percentage:0
+        // };
 
+    }
+
+    // async getDashboard(actor:any){
+    //
+    //     const [summary, eventsOverTime, taskCompletion, reachImpressions, badgeBreakdown, topInfluencers] = await Promise.all([
+    //         this.getSummary(actor),
+    //         // this.getEventsOverTime(actor),
+    //         //
+    //         // this.getTaskCompletion(actor),
+    //         //
+    //         // this.getReachImpressions(actor),
+    //         //
+    //         // this.getBadgeBreakdown(actor),
+    //         //
+    //         // this.getTopInfluencers(actor)
+    //
+    //     ]);
+    //
+    //     return {
+    //
+    //         summary,
+    //         eventsOverTime,
+    //         // taskCompletion,
+    //         // reachImpressions,
+    //         // badgeBreakdown,
+    //         // topInfluencers
+    //     };
+    //
+    // }
 }
 
 

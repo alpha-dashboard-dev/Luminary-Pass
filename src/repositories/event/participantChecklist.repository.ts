@@ -31,6 +31,8 @@ class participantChecklistRepository {
 
     async findAll(options: any = {}) {
 
+        // console.log(options)
+
         const include = buildIncludes(
             this.tables,
             options.include || [],

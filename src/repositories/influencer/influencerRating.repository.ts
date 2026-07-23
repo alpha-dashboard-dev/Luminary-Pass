@@ -62,8 +62,15 @@ class InfluencerRatingRepository {
     }
 
     async query(options: any = {}) {
-        console.log(options)
+        // console.log(options)
         return await dbHelper.query(this.tables, options);
+    }
+
+    async aggregate(options: any = {}) {
+        return await dbHelper.aggregate(
+            this.tables,
+            options
+        );
     }
 }
 

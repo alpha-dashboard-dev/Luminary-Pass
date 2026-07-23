@@ -20,6 +20,20 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
     )
 
     fastify.get(
+        "/task-completion-rating",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+        analyticController.taskCompletionRating
+    )
+
+    fastify.get(
         "/get-total-event-completion-rate",
         {
             preHandler: [
@@ -31,6 +45,20 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
             ]
         },
         analyticController.getEventCompletionRate
+    )
+
+    fastify.get(
+        "/average-rating-of-each-influencer",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+        analyticController.averageRatingOfEachInfluencer
     )
 
     fastify.get(
@@ -87,5 +115,35 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
             ]
         },
         analyticController.getAverageRating
+    )
+
+    fastify.get(
+        "/events-overtime",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+
+        analyticController.getEventsOverTime
+    )
+
+    fastify.get(
+        "/get-top-influencers",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+
+        analyticController.getTopInfluencers
     )
 }
