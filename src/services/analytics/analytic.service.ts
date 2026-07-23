@@ -283,10 +283,6 @@ class analyticService {
     //     });
     // }
 
-    async TaskCompletionRating(query: any = {}, actor: any) {
-
-    }
-
     async taskCompletionRating(query: any = {} ,actor:any){
 
         // // console.log(query)
