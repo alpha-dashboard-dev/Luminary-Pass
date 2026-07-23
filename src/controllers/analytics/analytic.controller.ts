@@ -219,18 +219,8 @@ class analyticController {
     async getEventsOverTime(req: FastifyRequest, reply: FastifyReply) {
         try {
 
-            let include = req.query.include ?? "";
-            include = [
-                {
-                    alias: "event",
-                    attributes: [],
-                },
-            ]
             const result = await analyticService.getEventsOverTime(
-                {
-                    ...req.query,
-                    include
-                },
+                req.query,
                 req.user
             );
             return reply.status(200).send({
