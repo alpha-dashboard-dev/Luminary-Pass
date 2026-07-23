@@ -60,6 +60,11 @@ class InfluencerRatingRepository {
             options
         );
     }
+
+    async query(options: any = {}) {
+        console.log(options)
+        return await dbHelper.query(this.tables, options);
+    }
 }
 
 export default new InfluencerRatingRepository();

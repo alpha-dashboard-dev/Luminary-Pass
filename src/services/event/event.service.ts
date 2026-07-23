@@ -231,17 +231,6 @@ class EventService {
             event_code: eventCode
         });
     }
-
-    async totalEventByBusiness(businessCode: string){
-
-        let totalEvents;
-
-        totalEvents = await eventRepo.count({
-            business_code: businessCode
-        })
-
-        return totalEvents;
-    }
 }
 
 export default new EventService();

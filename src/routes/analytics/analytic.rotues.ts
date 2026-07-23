@@ -1,13 +1,12 @@
-import { FastifyInstance} from "fastify";
-import eventController from "../../controllers/event/event.controller";
+import {FastifyInstance} from "fastify";
 import {authenticate} from "../../middleware/authenticate.js";
 import {hasPermission} from "../../middleware/hasPermission.js";
+import analyticController from "../../controllers/analytics/analytic.controller.js";
 
 
-export default async function eventRoutes(fastify: FastifyInstance) {
-
-    fastify.post(
-        "/create-event",
+export default async function analyticRoutes(fastify: FastifyInstance) {
+    fastify.get(
+        "/get-total-events-by-business",
         {
             preHandler: [
                 authenticate,
@@ -17,76 +16,62 @@ export default async function eventRoutes(fastify: FastifyInstance) {
                 )
             ]
         },
-        eventController.create
+        analyticController.getTotalEventCount,
     )
 
     fastify.get(
-        '/get-all-events',
+        "/get-total-event-completion-rate",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
                     ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
+                    false
                 )
             ]
         },
-        eventController.getAll
+        analyticController.getEventCompletionRate
     )
 
     fastify.get(
-        '/get-one-event/:eventCode',
+        "/get-summary",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
                     ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
+                    false
                 )
             ]
         },
-        eventController.getByEventCode
+        analyticController.getSummary
     )
 
     fastify.get(
-        '/get-event-by-field',
+        "/get-dashboard",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
                     ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
+                    false
                 )
             ]
         },
-        eventController.getByField
+        analyticController.getDashboard
     )
 
-    fastify.put(
-        "/update-event/:eventCode",
+    fastify.get(
+        "/get-total-influencers",
         {
             preHandler: [
                 authenticate,
                 hasPermission(
                     ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
+                    false
                 )
             ]
         },
-        eventController.update
-    )
-
-    fastify.delete(
-        "/delete-event/:eventCode",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
-                )
-            ]
-        },
-        eventController.delete
+        analyticController.getTotalInfluencers
     )
 }

@@ -238,27 +238,6 @@ class eventController {
             });
         }
     }
-
-    async findTotalEvents(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const businessCode = String(req.params.businessCode)
-
-            const totalEvents = await eventService.totalEventByBusiness(businessCode);
-
-            return reply.status(200).send({
-                success: true,
-                totalEvents: totalEvents,
-            });
-
-        } catch (err: any) {
-
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
-        }
-
-    }
 }
 
 export default  new eventController();

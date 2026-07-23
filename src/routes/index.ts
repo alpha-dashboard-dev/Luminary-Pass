@@ -36,6 +36,8 @@ import facebookRoutes from "./socialMedia/facebook/facebook.routes.js";
 
 import signupRoutes from "./registration/influencerSignup.routes.js";
 
+import analyticRoutes from "./analytics/analytic.rotues.js";
+
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -76,4 +78,6 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(instagramRoutes, { prefix: "/instagram" });
     fastify.register(facebookRoutes, { prefix: "/facebook" });
     fastify.register(signupRoutes, { prefix: "/signup" });
+
+    fastify.register(analyticRoutes, { prefix: "/analytics" });
 }

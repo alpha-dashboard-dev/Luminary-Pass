@@ -59,6 +59,10 @@ class participantRepository {
             where,
         );
     }
+
+    async query(options: any = {}) {
+        return await dbHelper.query(this.tables, options);
+    }
 }
 
 export default new participantRepository();

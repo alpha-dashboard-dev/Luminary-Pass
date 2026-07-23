@@ -67,6 +67,10 @@ class EventRepository {
             options
         )
     }
+
+    async aggregate(options: any = {}) {
+        return await dbHelper.aggregate(this.tables, options);
+    }
 }
 
 export default new EventRepository();

@@ -1,0 +1,106 @@
+import { FastifyReply, FastifyRequest } from "fastify";
+import analyticService from "../../services/analytics/analytic.service.js";
+
+
+class analyticController {
+
+    async getTotalEventCount(req: FastifyRequest, reply: FastifyReply) {
+        try {
+                const result = await analyticService.getTotalEventCount(req.user);
+                return reply.status(200).send({
+                    success: true,
+                    message: "Total Event Count",
+                    data: result
+                });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getEventCompletionRate(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getEventCompletionRate(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Total Event Completion Rate",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getSummary(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getSummary(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Analytics Summary",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getDashboard(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getDashboard(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Dashboard",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getTotalInfluencers(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getTotalInfluencers(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Total Influencers",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+
+
+}
+
+export default new analyticController();

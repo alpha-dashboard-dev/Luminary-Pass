@@ -96,6 +96,12 @@ class dbHelper {
             });
         }
     }
+
+    async query(table: any, options: any = {}) {
+        if (this.orm === "sequelize") {
+            return await table.findAll(options);
+        }
+    }
 }
 
 export default new dbHelper();
