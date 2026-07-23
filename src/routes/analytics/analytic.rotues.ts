@@ -74,4 +74,18 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
         },
         analyticController.getTotalInfluencers
     )
+
+    fastify.get(
+        "/get-average-rating",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+        analyticController.getAverageRating
+    )
 }

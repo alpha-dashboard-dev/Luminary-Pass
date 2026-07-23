@@ -99,6 +99,40 @@ class analyticController {
         }
     }
 
+    async getAverageRating(req: FastifyRequest, reply: FastifyReply) {
+        try {
+
+            let include = req.query.include ?? "";
+            include = [
+                {
+                    alias: "event",
+                    attributes: [],
+                },
+            ]
+            const result = await analyticService.getAverageRating(
+                {
+                    ...req.query,
+                    include
+                },
+                req.user
+            );
+            return reply.status(200).send({
+                success: true,
+                message: "Average Rating",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+
 
 
 }

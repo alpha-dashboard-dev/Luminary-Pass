@@ -72,16 +72,15 @@ class analyticService {
 }
 
 
-    async getAverageRating(actor:any){
+    async getAverageRating(query: any = {}, actor:any){
+        // console.log(query, actor);
 
         const rows = await influencerRatingRepo.query({
 
             include:[
                 {
-                    association:"event",
-                    where:{
-                        business_code: actor.businessCode
-                    },
+                    association: "event",
+                    where:  {business_code: actor.businessCode},
                     attributes:[]
                 }
             ],
@@ -100,6 +99,8 @@ class analyticService {
 
         });
 
+        console.log(rows);
+
         return Number(rows[0].average || 0);
     }
 
@@ -111,7 +112,7 @@ class analyticService {
             this.getTotalEventCount(actor),
             this.getEventCompletionRate(actor),
             this.getTotalInfluencers(actor),
-            this.getAverageRating(actor)
+            // this.getAverageRating(actor)
 
         ]);
 

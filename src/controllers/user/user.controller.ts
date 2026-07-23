@@ -47,8 +47,7 @@ class UserController {
                 },
             ]
             // console.log(include)
-            const data =
-                await userService.getAll(
+            const data = await userService.getAll(
                     {
                         ...req.query,
                         include
