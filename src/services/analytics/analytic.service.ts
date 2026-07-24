@@ -83,10 +83,13 @@ class analyticService {
                     association: "event",
                     where: {
                         business_code: actor.businessCode,
+                        // business_code: "ORG00001"
                     },
                     attributes: [],
                 },
             ],
+
+            // logging: console.log,
 
             attributes: [
                 "influencer_code",
@@ -116,16 +119,22 @@ class analyticService {
 
     // Get Average Rating per influencer
     async averageRatingOfEachInfluencer(query: any = {}, actor:any){
+
+        // console.log(query)
+
         const influencerAverages = await influencerRatingRepo.findAll({
                 include: [
                     {
                         association: "event",
                         where: {
                             business_code: actor.businessCode,
+                            // business_code: "ORG00001"
                         },
                         attributes: [],
                     },
                 ],
+
+                // logging: console.log,
 
                 attributes: [
                     "influencer_code",
@@ -137,7 +146,8 @@ class analyticService {
                 group: ["influencer_code"],
 
                 raw: true,
-            });
+            },
+        );
 
         return influencerAverages;
     }
@@ -179,20 +189,21 @@ class analyticService {
         const include = [
             {
                 association:"checklist",
+                required: true,
                 attributes:[],
                 include:[
                     {
                         association:"event",
+                        required: true,
                         where:{
-                            // business_code: actor.businessCode
-                            business_code: "1D9C271F"
+                            business_code: actor.businessCode
+                            // business_code: "ORG00001"
                         },
                         attributes:[]
                     }
                 ]
             }
         ];
-
 
         const total = await participantChecklistRepo.count(
             {},
@@ -250,77 +261,68 @@ class analyticService {
     //     };
     // }
 
-    // async getTopInfluencers(query: any = {}, actor:any){
-    //
-    //     return await influencerRatingRepo.query({
-    //
-    //         include:[
-    //             {
-    //                 association:"event",
-    //                 where:{
-    //                     business_code: actor.businessCode
-    //                 },
-    //                 attributes:[]
-    //             },
-    //             {
-    //                 association:"influencer",
-    //                 attributes:[
-    //                     "influencer_code"
-    //                 ],
-    //                 include:[
-    //                     {
-    //                         association:"user",
-    //                         attributes:[
-    //                             "username"
-    //                         ]
-    //                     }
-    //                 ]
-    //             }
-    //         ],
-    //
-    //         attributes:[
-    //
-    //             "influencer_code",
-    //
-    //             [
-    //                 fn(
-    //                     "AVG",
-    //                     col("rating")
-    //                 ),
-    //                 "rating"
-    //             ],
-    //
-    //             [
-    //                 fn(
-    //                     "COUNT",
-    //                     col("id")),
-    //                 "ratings"
-    //             ]
-    //
-    //         ],
-    //
-    //         group:[
-    //             "influencer_code",
-    //             "influencer.influencer_code",
-    //             "influencer->user.id"
-    //         ],
-    //
-    //         order:[
-    //             [
-    //                 fn(
-    //                     "AVG",
-    //                     col("rating")
-    //                 ),
-    //                 "DESC"
-    //             ]
-    //         ],
-    //
-    //         limit:10,
-    //
-    //         raw:false
-    //
-    //     });
-    // }
+    async getTopInfluencers(query: any = {}, actor:any){
+
+        return await influencerRatingRepo.findAll({
+
+            include:[
+                {
+                    association:"event",
+                    where:{
+                        business_code: actor.businessCode
+                    },
+                    attributes:[]
+                },
+                {
+                    association:"influencer",
+                    attributes:["influencer_code"],
+                    include:[
+                        {
+                            association:"user",
+                            attributes:[
+                                "first_name"
+                            ]
+                        }
+                    ]
+                }
+            ],
+
+            logging: console.log,
+
+            attributes:[
+                "influencer_code",
+                [
+                    analytics.avg("InfluencerRating.rating"),
+                    "rating"
+                ],
+
+                [
+                    analytics.count("InfluencerRating.id"),
+                    "ratings"
+                ]
+
+            ],
+
+            group:[
+                "InfluencerRating.influencer_code",
+                "influencer.influencer_code",
+                "influencer->user.id"
+            ],
+
+            order:[
+                [
+                    analytics.avg("InfluencerRating.rating"),
+                    "DESC"
+                ]
+            ],
+
+            limit:10,
+
+            raw:  true,
+            nest: true
+
+        });
+    }
 
     // async getDashboard(actor:any){
     //
