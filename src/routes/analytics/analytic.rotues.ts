@@ -20,7 +20,7 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
     )
 
     fastify.get(
-        "/task-completion-rating",
+        "/get-total-influencers",
         {
             preHandler: [
                 authenticate,
@@ -30,7 +30,7 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
                 )
             ]
         },
-        analyticController.taskCompletionRating
+        analyticController.getTotalInfluencers
     )
 
     fastify.get(
@@ -48,6 +48,20 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
     )
 
     fastify.get(
+        "/get-average-rating",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+        analyticController.getAverageRating
+    )
+
+    fastify.get(
         "/average-rating-of-each-influencer",
         {
             preHandler: [
@@ -59,6 +73,35 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
             ]
         },
         analyticController.averageRatingOfEachInfluencer
+    )
+
+    fastify.get(
+        "/events-overtime",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+
+        analyticController.getEventsOverTime
+    )
+
+    fastify.get(
+        "/task-completion-rating",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00037", "PER00038", "PER00039", "PER00040"],
+                    false
+                )
+            ]
+        },
+        analyticController.taskCompletionRating
     )
 
     fastify.get(
@@ -87,49 +130,6 @@ export default async function analyticRoutes(fastify: FastifyInstance) {
             ]
         },
         analyticController.getDashboard
-    )
-
-    fastify.get(
-        "/get-total-influencers",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    false
-                )
-            ]
-        },
-        analyticController.getTotalInfluencers
-    )
-
-    fastify.get(
-        "/get-average-rating",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    false
-                )
-            ]
-        },
-        analyticController.getAverageRating
-    )
-
-    fastify.get(
-        "/events-overtime",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    false
-                )
-            ]
-        },
-
-        analyticController.getEventsOverTime
     )
 
     fastify.get(

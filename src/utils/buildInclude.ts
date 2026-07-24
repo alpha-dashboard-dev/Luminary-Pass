@@ -21,6 +21,8 @@ export function buildIncludes(model: any, includes: any[] = []) {
 
     const associations = model.associations || {};
 
+    // console.log(associations);
+
     const modelName = model.name;
 
     return includes.map(item => {

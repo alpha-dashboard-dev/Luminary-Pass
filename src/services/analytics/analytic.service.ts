@@ -4,6 +4,8 @@ import influencerRatingRepo from "../../repositories/influencer/influencerRating
 import eventParticipantChecklistRepo from "../../repositories/event/participantChecklist.repository"
 import {fn, col, literal} from "sequelize";
 import analytics from "./analyticHelper.js";
+import participantChecklistRepo from "../../repositories/event/participantChecklist.repository";
+import {buildIncludes} from "../../utils/buildInclude.js";
 
 
 class analyticService {
@@ -17,26 +19,6 @@ class analyticService {
         })
 
         return totalEvents;
-    }
-
-    async getEventCompletionRate(actor: any) {
-
-        // console.log(actor);
-        const total = await eventRepo.count({
-            business_code: actor.businessCode
-        });
-
-        if(total===0)
-            return 0;
-
-        const completed = await eventRepo.count({
-            business_code: actor.businessCode,
-            status: "completed"
-        });
-
-        return Number(
-            (completed*100/total).toFixed(2)
-        );
     }
 
     // get Total Influencers that participate in event
@@ -68,43 +50,34 @@ class analyticService {
 
         return eventParticipant;
 
-    //     const rows = await eventParticipantRepo.query({
-    //
-    //     include:[
-    //         {
-    //             association: "eventParticipant",
-    //             where:{
-    //                 business_code: actor.businessCode
-    //             },
-    //             attributes:[]
-    //         }
-    //     ],
-    //
-    //     attributes:[
-    //         [
-    //             fn(
-    //                 "COUNT",
-    //                 fn(
-    //                     "DISTINCT",
-    //                     col("influencer_code")
-    //                 )
-    //             ),
-    //             "total"
-    //         ]
-    //     ],
-    //
-    //     raw:true
-    // });
-    //
-    // console.log(rows);
-    //
-    // return Number(rows[0].total);
-}
+    }
+
+    async getEventCompletionRate(actor: any) {
+
+        // console.log(actor);
+        const total = await eventRepo.count({
+            business_code: actor.businessCode
+        });
+
+        if (total === 0)
+            return 0;
+
+        const completed = await eventRepo.count({
+            business_code: actor.businessCode,
+            status: "completed"
+        });
+
+        return Number(
+            (completed * 100 / total).toFixed(2)
+        );
+    }
+
+
     // Average rating across all influencer rating records for events owned by the business.
-
-
     async getAverageRating(query: any = {}, actor: any) {
-        const rows = await influencerRatingRepo.aggregate({
+
+        const rows = await influencerRatingRepo.findAll({
+
             include: [
                 {
                     association: "event",
@@ -114,31 +87,36 @@ class analyticService {
                     attributes: [],
                 },
             ],
+
             attributes: [
                 "influencer_code",
                 [
-                    fn("AVG", col("rating")),
+                    analytics.avg("rating"),
                     "average_rating",
                 ],
             ],
+
             group: ["influencer_code"],
+
             raw: true,
         });
-        if (!rows.length) return 0;
+
+        if (!rows.length) {
+            return 0;
+        }
 
         const total = rows.reduce(
             (sum: number, row: any) =>
                 sum + Number(row.average_rating),
             0
         );
+
         return total / rows.length;
     }
 
     // Get Average Rating per influencer
-
-
     async averageRatingOfEachInfluencer(query: any = {}, actor:any){
-        const influencerAverages = await influencerRatingRepo.aggregate({
+        const influencerAverages = await influencerRatingRepo.findAll({
                 include: [
                     {
                         association: "event",
@@ -152,7 +130,7 @@ class analyticService {
                 attributes: [
                     "influencer_code",
                     [
-                        fn("AVG", col("rating")),
+                        analytics.avg("rating"),
                         "average_rating",
                     ],
                 ],
@@ -163,26 +141,6 @@ class analyticService {
 
         return influencerAverages;
     }
-
-    // Analytics Summary
-    // async getSummary(actor:any) {
-    //
-    //     const [totalEvents, eventCompletionRate, influencers, averageRating] = await Promise.all([
-    //
-    //         this.getTotalEventCount(actor),
-    //         this.getEventCompletionRate(actor),
-    //         // this.getTotalInfluencers(actor),
-    //         // this.getAverageRating(actor)
-    //
-    //     ]);
-    //
-    //     return {
-    //         totalEvents,
-    //         eventCompletionRate,
-    //         influencers,
-    //         averageRating
-    //     };
-    // }
 
     async getEventsOverTime(query: any = {}, actor: any) {
         // console.log(query.period)
@@ -214,6 +172,83 @@ class analyticService {
         });
 
     }
+
+
+    async taskCompletionRating(query: any = {},actor:any){
+
+        const include = [
+            {
+                association:"checklist",
+                attributes:[],
+                include:[
+                    {
+                        association:"event",
+                        where:{
+                            // business_code: actor.businessCode
+                            business_code: "1D9C271F"
+                        },
+                        attributes:[]
+                    }
+                ]
+            }
+        ];
+
+
+        const total = await participantChecklistRepo.count(
+            {},
+            {
+                include
+            }
+        );
+
+
+        if(total === 0){
+            return {
+                completed:0,
+                pending:0,
+                percentage:0
+            };
+        }
+
+
+        const completed = await participantChecklistRepo.count(
+            {
+                completion_status:"completed"
+            },
+            {
+                include
+            }
+        );
+
+
+        return {
+            completed,
+            pending: total - completed,
+            percentage: Number(
+                ((completed * 100) / total).toFixed(2)
+            )
+        };
+    }
+
+    // Analytics Summary
+    // async getSummary(actor:any) {
+    //
+    //     const [totalEvents, eventCompletionRate, influencers, averageRating] = await Promise.all([
+    //
+    //         this.getTotalEventCount(actor),
+    //         this.getEventCompletionRate(actor),
+    //         // this.getTotalInfluencers(actor),
+    //         // this.getAverageRating(actor)
+    //
+    //     ]);
+    //
+    //     return {
+    //         totalEvents,
+    //         eventCompletionRate,
+    //         influencers,
+    //         averageRating
+    //     };
+    // }
 
     // async getTopInfluencers(query: any = {}, actor:any){
     //
@@ -285,64 +320,6 @@ class analyticService {
     //         raw:false
     //
     //     });
-    // }
-
-    // async taskCompletionRating(query: any = {} ,actor:any){
-    //
-    //     // // console.log(query)
-    //     //
-    //     // const event = await eventRepo.findAll(
-    //     //     {
-    //     //         where: {
-    //     //             business_code: actor.businessCode
-    //     //         },
-    //     //         include: Array.isArray(query.include) ? query.include : [],
-    //     //     }
-    //     // )
-    //     //
-    //     // if(!event){
-    //     //     throw new Error("Event does not belong to your business")
-    //     // }
-    //     //
-    //     // // console.log(event)
-    //     //
-    //     // const eventCodes = event.map(row => row.event_code);
-    //     //
-    //     // // console.log(eventCodes)
-    //     //
-    //     // let total = 0;
-    //     //
-    //     // for(const event of eventCodes){
-    //     //     total = await eventParticipantRepo.count({
-    //     //         event_code: event
-    //     //     })
-    //     // }
-    //     //
-    //     // // console.log(total);
-    //     //
-    //     // // for(const event of eventCodes){
-    //     // //     total = await eventParticipantChecklistRepo.count({
-    //     // //         event_code: event,
-    //     // //     });
-    //     // //
-    //     // // }
-    //
-    //
-    //     const eventParticipant = await eventParticipantChecklistRepo.findAll({
-    //         include: Array.isArray(query.include) ? query.include : [],
-    //         // where: {
-    //         //     business_code: actor.businessCode
-    //         // }
-    //     })
-    //
-    //     return eventParticipant
-    //
-    //     // return {
-    //     //     completed:0,
-    //     //     pending:total,
-    //     //     percentage:0
-    //     // };
-    //
     // }
 
     // async getDashboard(actor:any){

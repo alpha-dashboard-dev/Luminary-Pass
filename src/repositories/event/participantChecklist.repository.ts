@@ -61,6 +61,14 @@ class participantChecklistRepository {
             where,
         );
     }
+
+    async count(where: any, options: any = {}) {
+        return await dbHelper.count(
+            this.tables,
+            where,
+            options
+        )
+    }
 }
 
 export default new participantChecklistRepository();

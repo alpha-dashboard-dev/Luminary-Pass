@@ -23,63 +23,6 @@ class analyticController {
         }
     }
 
-    async getEventCompletionRate(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const result = await analyticService.getEventCompletionRate(req.user);
-            return reply.status(200).send({
-                success: true,
-                message: "Total Event Completion Rate",
-                data: result
-            });
-
-        } catch (err: any) {
-
-            return reply.status(401).send({
-                success: false,
-                message: err.message
-            });
-
-        }
-    }
-
-    async getSummary(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const result = await analyticService.getSummary(req.user);
-            return reply.status(200).send({
-                success: true,
-                message: "Analytics Summary",
-                data: result
-            });
-
-        } catch (err: any) {
-
-            return reply.status(401).send({
-                success: false,
-                message: err.message
-            });
-
-        }
-    }
-
-    async getDashboard(req: FastifyRequest, reply: FastifyReply) {
-        try {
-            const result = await analyticService.getDashboard(req.user);
-            return reply.status(200).send({
-                success: true,
-                message: "Dashboard",
-                data: result
-            });
-
-        } catch (err: any) {
-
-            return reply.status(401).send({
-                success: false,
-                message: err.message
-            });
-
-        }
-    }
-
     async getTotalInfluencers(req: FastifyRequest, reply: FastifyReply) {
         try {
 
@@ -100,6 +43,25 @@ class analyticController {
             return reply.status(200).send({
                 success: true,
                 message: "Total Influencers",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getEventCompletionRate(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getEventCompletionRate(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Total Event Completion Rate",
                 data: result
             });
 
@@ -179,15 +141,13 @@ class analyticController {
 
         }
     }
+
+
     async taskCompletionRating(req: FastifyRequest, reply: FastifyReply) {
         try {
 
             let include = req.query.include ?? "";
             include = [
-                {
-                    alias: "participant",
-                    attributes: [],
-                },
                 {
                     alias: "checklist",
                     attributes: [],
@@ -202,7 +162,44 @@ class analyticController {
             );
             return reply.status(200).send({
                 success: true,
-                message: "Average Rating",
+                message: "Task Completion Rating",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+    async getSummary(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getSummary(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Analytics Summary",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(401).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+    }
+
+    async getDashboard(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const result = await analyticService.getDashboard(req.user);
+            return reply.status(200).send({
+                success: true,
+                message: "Dashboard",
                 data: result
             });
 

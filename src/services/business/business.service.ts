@@ -419,7 +419,6 @@ class BusinessService {
             data
         );
     }
-
     // Deactivate business
 
     async deactivate(businessCode: string, data: any, actor: any) {
