@@ -167,6 +167,33 @@ class EventInvitationService {
             invitation_code: invitationCode
         });
     }
+
+    async respondToInvitation(invitationCode: string, data: any) {
+
+        const invitation = await eventInvitationRepo.findOne({
+            invitation_code: invitationCode
+        })
+
+        if (!invitation) {
+            throw new Error("invitation not found");
+        }
+
+        const allowed: any = {};
+        if (data.status !== undefined)
+            allowed.status = data.status;
+        if (data.respondedAt === undefined) {
+            allowed.responded_at = data.respondedAt;
+        } else {
+            allowed.responded_at = new Date();
+        }
+
+        return await eventInvitationRepo.update(
+            {
+                invitation_code: invitationCode
+            },
+            allowed
+        )
+    }
 }
 
 export default new EventInvitationService();

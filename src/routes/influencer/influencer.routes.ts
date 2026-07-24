@@ -94,4 +94,19 @@ export default async function influencerRoutes(fastify: FastifyInstance) {
         },
         influencerController.delete
     );
+
+
+    fastify.get(
+        "/find-event-invitation/:influencerCode",
+        {
+            preHandler: [
+                authenticate,
+                // hasPermission(
+                //     ["PER00033", "PER00034", "PER00035", "PER00036"],
+                //     true
+                // )
+            ]
+        },
+        influencerController.findEventInvitation
+    );
 }

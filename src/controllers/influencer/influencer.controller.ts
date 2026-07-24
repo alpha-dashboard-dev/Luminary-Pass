@@ -185,6 +185,28 @@ class InfluencerController {
             });
         }
     }
+
+
+//     see event invitations
+    async findEventInvitation(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+            const influencerCode = String(req.params.influencerCode)
+            const result = await influencerService.findEventInvitation(influencerCode);
+
+            return reply.status(200).send({
+                success: true,
+                result,
+            });
+
+        } catch (err: any) {
+
+            return reply.status(404).send({
+                success: false,
+                message: err.message,
+            });
+        }
+    }
 }
 
 export default  new InfluencerController();

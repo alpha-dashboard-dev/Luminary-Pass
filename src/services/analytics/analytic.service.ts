@@ -101,6 +101,8 @@ class analyticService {
     // return Number(rows[0].total);
 }
     // Average rating across all influencer rating records for events owned by the business.
+
+
     async getAverageRating(query: any = {}, actor: any) {
         const rows = await influencerRatingRepo.aggregate({
             include: [
@@ -133,6 +135,8 @@ class analyticService {
     }
 
     // Get Average Rating per influencer
+
+
     async averageRatingOfEachInfluencer(query: any = {}, actor:any){
         const influencerAverages = await influencerRatingRepo.aggregate({
                 include: [
@@ -283,63 +287,63 @@ class analyticService {
     //     });
     // }
 
-    async taskCompletionRating(query: any = {} ,actor:any){
-
-        // // console.log(query)
-        //
-        // const event = await eventRepo.findAll(
-        //     {
-        //         where: {
-        //             business_code: actor.businessCode
-        //         },
-        //         include: Array.isArray(query.include) ? query.include : [],
-        //     }
-        // )
-        //
-        // if(!event){
-        //     throw new Error("Event does not belong to your business")
-        // }
-        //
-        // // console.log(event)
-        //
-        // const eventCodes = event.map(row => row.event_code);
-        //
-        // // console.log(eventCodes)
-        //
-        // let total = 0;
-        //
-        // for(const event of eventCodes){
-        //     total = await eventParticipantRepo.count({
-        //         event_code: event
-        //     })
-        // }
-        //
-        // // console.log(total);
-        //
-        // // for(const event of eventCodes){
-        // //     total = await eventParticipantChecklistRepo.count({
-        // //         event_code: event,
-        // //     });
-        // //
-        // // }
-
-
-        const eventParticipant = await eventParticipantChecklistRepo.findAll({
-            include: Array.isArray(query.include) ? query.include : [],
-            // where: {
-            //     business_code: actor.businessCode
-            // }
-        })
-
-        return eventParticipant
-
-        // return {
-        //     completed:0,
-        //     pending:total,
-        //     percentage:0
-        // };
-
-    }
+    // async taskCompletionRating(query: any = {} ,actor:any){
+    //
+    //     // // console.log(query)
+    //     //
+    //     // const event = await eventRepo.findAll(
+    //     //     {
+    //     //         where: {
+    //     //             business_code: actor.businessCode
+    //     //         },
+    //     //         include: Array.isArray(query.include) ? query.include : [],
+    //     //     }
+    //     // )
+    //     //
+    //     // if(!event){
+    //     //     throw new Error("Event does not belong to your business")
+    //     // }
+    //     //
+    //     // // console.log(event)
+    //     //
+    //     // const eventCodes = event.map(row => row.event_code);
+    //     //
+    //     // // console.log(eventCodes)
+    //     //
+    //     // let total = 0;
+    //     //
+    //     // for(const event of eventCodes){
+    //     //     total = await eventParticipantRepo.count({
+    //     //         event_code: event
+    //     //     })
+    //     // }
+    //     //
+    //     // // console.log(total);
+    //     //
+    //     // // for(const event of eventCodes){
+    //     // //     total = await eventParticipantChecklistRepo.count({
+    //     // //         event_code: event,
+    //     // //     });
+    //     // //
+    //     // // }
+    //
+    //
+    //     const eventParticipant = await eventParticipantChecklistRepo.findAll({
+    //         include: Array.isArray(query.include) ? query.include : [],
+    //         // where: {
+    //         //     business_code: actor.businessCode
+    //         // }
+    //     })
+    //
+    //     return eventParticipant
+    //
+    //     // return {
+    //     //     completed:0,
+    //     //     pending:total,
+    //     //     percentage:0
+    //     // };
+    //
+    // }
 
     // async getDashboard(actor:any){
     //

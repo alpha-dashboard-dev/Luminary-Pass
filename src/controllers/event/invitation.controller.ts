@@ -184,6 +184,30 @@ class invitationController {
         }
     }
 
+    async respondToInvitation(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const invitationCode = String(req.params.invitationCode);
+
+            const data = req.body;
+            // console.log(data)
+            const result = await invitationService.respondToInvitation(invitationCode, data);
+            return reply.status(200).send({
+                success: true,
+                message: "Respond successfully submitted",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(400).send({
+                success: false,
+                message: err.message,
+            });
+        }
+    }
+
     //  DELETE invitation
     async delete(req: FastifyRequest, reply: FastifyReply) {
 

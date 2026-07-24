@@ -76,6 +76,20 @@ export default async function invitationRoutes(fastify: FastifyInstance) {
         invitationController.update
     )
 
+    fastify.put(
+        "/respond-to-invitation/:invitationCode",
+        {
+            preHandler: [
+                authenticate,
+                // hasPermission(
+                //     ["PER00045", "PER00046", "PER00047", "PER00048"],
+                //     false
+                // )
+            ]
+        },
+        invitationController.respondToInvitation
+    )
+
     fastify.delete(
         "/delete-invitation/:invitationCode",
         {

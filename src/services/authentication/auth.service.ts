@@ -88,6 +88,7 @@ class AuthService {
         //     throw new Error("Email and password are required");
         // }
 
+
         const user = await userRepo.findOne(
             { email },
             {
@@ -112,7 +113,7 @@ class AuthService {
 
 
         // it only check for business_owner so it may be uerrole.role === "business_owner"
-        if(userRole.role !== "admin") {
+        if(userRole.role !== "admin" && userRole.role !== "influencer") {
             const business = await businessRepo.findOne({
                 business_code: user.business_code,
             })

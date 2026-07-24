@@ -83,6 +83,7 @@ class EventService {
 
 
             const attachment = await attachmentService.uploadMultiple(images, options)
+
             return{
                 event,
                 eventTask,

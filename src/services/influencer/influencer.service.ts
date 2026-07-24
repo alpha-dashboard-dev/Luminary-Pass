@@ -2,6 +2,7 @@ import influencerRepo from "../../repositories/influencer/influencer.repository.
 import { generateCode } from "../../utils/generateCode.js";
 import {buildWhere} from "../../utils/buildWhere.js";
 import userRepo from "../../repositories/user/user.repository.js";
+import invitationRepo from "../../repositories/event/invitation.repository.js";
 
 class InfluencerService {
 
@@ -133,6 +134,32 @@ class InfluencerService {
         return await influencerRepo.delete({
             influencer_code: influencerCode
         });
+    }
+
+    async findEventInvitation(influencerCode: string, actor: any) {
+
+        const influencer = await influencerRepo.findOne({
+            influencer_code: influencerCode
+        })
+
+        if (!influencer) {
+            throw new Error("influencer not found");
+        }
+
+        const eventInvitation = await invitationRepo.findAll({
+            where: {
+                entity_code: influencerCode
+                // status: "accepted",
+            }
+        })
+
+        if (!eventInvitation) {
+            throw new Error("No Invitation found against this influencer");
+        }
+
+        // console.log(eventInvitation);
+
+        return eventInvitation;
     }
 }
 
