@@ -6,6 +6,7 @@ import eventRepo from "../../repositories/event/event.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
+import participantService from "./participant.service.js";
 
 class EventInvitationService {
 
@@ -176,6 +177,17 @@ class EventInvitationService {
 
         if (!invitation) {
             throw new Error("invitation not found");
+        }
+
+        // console.log(invitation);
+        if(data.status === "accepted") {
+            await participantService.create({
+                eventCode: invitation.event_code,
+                influencerCode: invitation.influencer_code,
+                source: "invitation",
+                sourceCode: invitation.invitation_code,
+                status: "approved",
+            })
         }
 
         const allowed: any = {};
