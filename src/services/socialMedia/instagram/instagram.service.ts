@@ -4,6 +4,7 @@ import SocialLoginRepo from "../../../repositories/socialLogin/socialLogin.repos
 import {generateCode} from "../../../utils/generateCode.js";
 import {InstagramMedia} from "../../../types/instagram/media.types.js";
 import socialLoginRepo from "../../../repositories/socialLogin/socialLogin.repository.js";
+import influencerService from "../../influencer/influencer.service.js";
 
 class InstagramService {
 
@@ -143,6 +144,7 @@ class InstagramService {
                     }
                 }
             );
+        console.log(response)
         return response.data;
     }
 
@@ -183,6 +185,11 @@ class InstagramService {
                     }
                 }
             );
+            console.log(response.data)
+            await influencerService.update(
+                { user_code: userCode },
+                response.data,
+            )
             return response.data;
 
         } catch (error: any) {

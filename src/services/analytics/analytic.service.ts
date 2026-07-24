@@ -324,6 +324,15 @@ class analyticService {
         });
     }
 
+    /*
+            Rating System
+            Each task  = 1 point
+            if approved = 1 point
+            else if rejected = 0
+            else pending excluded
+            Event Score = Approved Tasks + Total Tasks * 100
+     */
+
     // async getDashboard(actor:any){
     //
     //     const [summary, eventsOverTime, taskCompletion, reachImpressions, badgeBreakdown, topInfluencers] = await Promise.all([

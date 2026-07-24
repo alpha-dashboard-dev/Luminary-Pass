@@ -104,24 +104,24 @@ class dbHelper {
         }
     }
 
-    async aggregate(table: any, options: any = {}) {
-        if (this.orm === "sequelize") {
-            return await table.findAll({
-                attributes: options.attributes ?? [],
-                include: options.include ?? [],
-                where: options.where,
-                group: options.group,
-                having: options.having,
-                order: options.order,
-                limit: options.limit,
-                offset: options.offset,
-                raw: options.raw ?? true,
-                subQuery: options.subQuery ?? false,
-            });
-        }
-
-        // drizzle implementation...
-    }
+    // async aggregate(table: any, options: any = {}) {
+    //     if (this.orm === "sequelize") {
+    //         return await table.findAll({
+    //             attributes: options.attributes ?? [],
+    //             include: options.include ?? [],
+    //             where: options.where,
+    //             group: options.group,
+    //             having: options.having,
+    //             order: options.order,
+    //             limit: options.limit,
+    //             offset: options.offset,
+    //             raw: options.raw ?? true,
+    //             subQuery: options.subQuery ?? false,
+    //         });
+    //     }
+    //
+    //     // drizzle implementation...
+    // }
 }
 
 export default new dbHelper();

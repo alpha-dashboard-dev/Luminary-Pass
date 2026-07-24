@@ -115,7 +115,7 @@ class InfluencerSignupService {
 
     async connectInstagram(data:any){
 
-        const { userCode, providerUserId, accessToken } = data;
+        const { userCode, providerUserId, accessToken, expiresIn } = data;
 
         // console.log(userCode, providerUserId, accessToken)
         await onboardingService.canAccessStep(userCode, 2);
@@ -123,15 +123,14 @@ class InfluencerSignupService {
             user_code: userCode,
         });
 
-        const socialLoginCode = generateCode()
+        // const socialLoginCode = generateCode()
         await socialLoginService.create({
 
-            // social_login_code: socialLoginCode,
             userCode,
-            // influencerCode: influencer.influencer_code,
             provider:"instagram",
             providerUserId,
-            accessToken
+            accessToken,
+            expiresIn,
         });
 
         await onboardingService.completeStep(userCode, 2);

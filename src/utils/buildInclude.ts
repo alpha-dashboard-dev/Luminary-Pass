@@ -26,7 +26,9 @@ export function buildIncludes(model: any, includes: any[] = []) {
     const modelName = model.name;
 
     return includes.map(item => {
-        const alias = item.alias || item;
+        // const alias = item.alias || item;
+        const alias = typeof item === "string" ? item : item.association || item.alias;
+
         // console.log(alias)
 
         if (!associations[alias]) {
@@ -35,12 +37,35 @@ export function buildIncludes(model: any, includes: any[] = []) {
 
         const config = INCLUDE_CONFIG?.[modelName]?.[alias] || {};
 
+    //     return {
+    //         association: alias,
+    //         attributes: config.attributes,
+    //         where: config.where,
+    //         required: config.required,
+    //         include: buildNestedIncludes(config),
+    //     };
+    // }).filter(Boolean);
+
         return {
             association: alias,
-            attributes: config.attributes,
-            where: config.where,
-            required: config.required,
-            include: buildNestedIncludes(config),
+
+            attributes:
+                item.attributes ?? config.attributes,
+
+            where:
+                item.where ?? config.where,
+
+            required:
+                item.required ?? config.required,
+
+            include:
+                item.include
+                    ? buildIncludes(
+                        associations[alias].target,
+                        item.include
+                    )
+                    : buildNestedIncludes(config)
         };
+
     }).filter(Boolean);
 }

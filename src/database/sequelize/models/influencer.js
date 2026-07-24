@@ -46,6 +46,23 @@ class Influencer extends Model {
               allowNull: true,
           },
 
+          user_name:  {
+              type: DataTypes.STRING(100),
+              allowNull: true,
+          },
+          account_type:{
+              type: DataTypes.STRING(100),
+              allowNull: true,
+          },
+          follower_count: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
+           media_count: {
+              type: DataTypes.INTEGER,
+               allowNull: true,
+           } ,
+
           created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,

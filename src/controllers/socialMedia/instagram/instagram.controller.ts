@@ -51,21 +51,21 @@ class InstagramController {
         const signup = verifySignupToken(state);
         const userCode = signup.userCode;
         const token = await instagramService.exchangeCode(code);
+        const longToken = await instagramService.getLongLivedToken(token.access_token);
+        // console.log(longToken.expires_in)
 
         await influencerSignupService.connectInstagram({
             userCode,
             providerUserId: token.user_id,
             accessToken: token.access_token,
+            expiresIn: longToken.expires_in,
         })
-
-        // console.log(token);
-        // const longToken = await instagramService.getLongLivedToken(token.access_token);
+        // console.log(token)
         return reply.send({
             message: "Instagram connected",
-            // token: longToken
+            // token: longToken,
             access_token: token.access_token,
-            user_id: token.user_id
-
+            user_id: token.user_id,
         });
 
     }

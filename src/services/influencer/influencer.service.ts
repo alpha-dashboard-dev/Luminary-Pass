@@ -7,9 +7,12 @@ import invitationRepo from "../../repositories/event/invitation.repository.js";
 class InfluencerService {
 
 
+
     // Create Influencer
 
     async create(data: any) {
+
+        console.log(data)
 
 
         const user = await userRepo.findOne({
@@ -32,12 +35,23 @@ class InfluencerService {
 
         const influencerCode = generateCode();
 
+        /*
+        add these column in influencers table
+        username,
+        followers_count,
+        account_type,
+        media_type
+         */
         return await influencerRepo.create({
             influencer_code: influencerCode,
             user_code: data.userCode,
             bio: data.bio,
             gender: data.gender,
-            date_of_birth: data.dateOfBirth
+            date_of_birth: data.dateOfBirth,
+            user_name: data.username,
+            account_type: data.account_type,
+            follower_count: data.followers_count,
+            media_count: data.media_count,
         });
     }
 
