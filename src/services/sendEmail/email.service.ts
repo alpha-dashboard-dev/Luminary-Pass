@@ -67,6 +67,60 @@ class EmailService {
         `,
         });
     }
+
+
+
+    // async sendProfileSetupEmail(email: string, userCode: string, businessName: string) {
+    //
+    //     const token = crypto.randomBytes(32).toString("hex");
+    //
+    //     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    //
+    //     await userRepo.update(
+    //         {
+    //             user_code: userCode,
+    //         },
+    //         {
+    //             profile_setup_token: token,
+    //             profile_setup_token_expires_at: expiresAt,
+    //         }
+    //     );
+    //
+    //     const setupLink = `${env.APP_URL}/api/users/setup-profile?token=${token}`;
+    //
+    //     await this.transporter.sendMail({
+    //         from: `"Luminary Pass" <${env.SMTP_USER}>`,
+    //         to: email,
+    //         subject: "Complete Your Luminary Pass Account",
+    //         html: `
+    //         <h2>Welcome to Luminary Pass</h2>
+    //
+    //         <p>Your business <strong>${businessName}</strong> has been successfully onboarded.</p>
+    //
+    //         <p>
+    //             To access your dashboard, please complete your account setup.
+    //         </p>
+    //
+    //         <p>
+    //             During setup you'll choose:
+    //         </p>
+    //
+    //         <ul>
+    //             <li>First Name</li>
+    //             <li>Last Name</li>
+    //             <li>Password</li>
+    //         </ul>
+    //
+    //         <a href="${setupLink}">
+    //             Complete Your Profile
+    //         </a>
+    //
+    //         <p>
+    //             This invitation expires in 24 hours.
+    //         </p>
+    //     `,
+    //     });
+    // }
 }
 
 export default new EmailService();

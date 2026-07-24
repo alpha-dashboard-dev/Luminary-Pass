@@ -135,22 +135,22 @@ class BusinessService {
         }
     }
 
-    async  emailVerification(token: string){
-        const business = await businessRepo.findOne({
-            email_verification_token: token
-        });
-
-        if(!business){
-            throw new Error("invalid verification link")
-        }
-
-        const isExpired = business.email_verification_token_expires_at && new Date(business.email_Verification_token_expires_at).getTime() <= new Date();
-
-        if(isExpired){
-            throw new Error("Verification link is expires. Request for a new link")
-        }
-        await businessRepo.update()
-    }
+    // async  emailVerification(token: string){
+    //     const business = await businessRepo.findOne({
+    //         email_verification_token: token
+    //     });
+    //
+    //     if(!business){
+    //         throw new Error("invalid verification link")
+    //     }
+    //
+    //     const isExpired = business.email_verification_token_expires_at && new Date(business.email_verification_token_expires_at).getTime() <= new Date();
+    //
+    //     if(isExpired){
+    //         throw new Error("Verification link is expires. Request for a new link")
+    //     }
+    //     await businessRepo.update()
+    // }
 
     // Email Verification
     async verifyEmail(token: string) {
@@ -208,10 +208,34 @@ class BusinessService {
             business.business_code,
             business.name
         );
-
-
         return true;
     }
+
+    async updateBusinessOwnerProfile(data: any) {
+
+        const business = await businessRepo.findOne({
+            email: data.email,
+            email_verified: true,
+        })
+
+        if (!business) {
+            throw new Error("Business not found");
+        }
+
+        const allowed: any = {};
+        if (data.firstName !== undefined)
+            allowed.first_name = data.firstName;
+        if (data.lastName !== undefined)
+            allowed.last_name = data.lastName;
+        if (data.password) {
+            allowed.password = await hashPassword(data.password);
+        }
+        // console.log(allowed)
+        //
+        // console.log(business)
+
+    }
+
     // Create Business + Owner
     // async create(data: any) {
     //

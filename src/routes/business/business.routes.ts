@@ -25,6 +25,11 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         businessController.resendVerificationEmail
     );
 
+    // fastify.put(
+    //     "/update-owner-profile",
+    //     businessController.updateBusinessOwnerProfile,
+    // )
+
 
     //
     // fastify.post(

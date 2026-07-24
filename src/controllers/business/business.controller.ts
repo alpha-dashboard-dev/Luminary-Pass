@@ -73,6 +73,26 @@ class businessController {
         });
     }
 
+    // async updateBusinessOwnerProfile(req: FastifyRequest, reply: FastifyReply) {
+    //
+    //     try{
+    //         const data = req.body
+    //
+    //         await businessService.updateBusinessOwnerProfile(data)
+    //
+    //         return reply.send({
+    //             success: true,
+    //             message: "Business Owner Password Creation"
+    //         })
+    //
+    //     }catch(err){
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         })
+    //     }
+    // }
+
     // async create(req: FastifyRequest, reply: FastifyReply) {
     //
     //     try{

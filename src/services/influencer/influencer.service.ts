@@ -6,10 +6,6 @@ import userRepo from "../../repositories/user/user.repository.js";
 class InfluencerService {
 
 
-
-
-
-
     // Create Influencer
 
     async create(data: any) {

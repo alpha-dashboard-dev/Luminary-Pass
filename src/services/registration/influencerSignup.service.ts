@@ -22,7 +22,6 @@ class InfluencerSignupService {
     // Step 1
 
     async basicInfo(data: any){
-
         // console.log(data);
         const transaction = await db.sequelize.transaction();
 
@@ -128,23 +127,20 @@ class InfluencerSignupService {
         await socialLoginService.create({
 
             // social_login_code: socialLoginCode,
-
             userCode,
-
             // influencerCode: influencer.influencer_code,
             provider:"instagram",
-
             providerUserId,
             accessToken
-
         });
 
         await onboardingService.completeStep(userCode, 2);
         const signupToken = generateSignupToken(userCode);
 
-        console.log(signupToken)
+        // console.log(signupToken)
 
         return {
+            influencer,
             signupToken,
             currentStep: 3,
             message: "Instagram connected"
@@ -159,11 +155,9 @@ class InfluencerSignupService {
             3
         );
 
-
         const influencer = await influencerService.getByField({
                 user_code:userCode
             });
-
 
         const attachment = await attachmentService.upload(
                 file,
@@ -176,7 +170,6 @@ class InfluencerSignupService {
                     visibility:"private"
                 }
             );
-
 
         await onboardingService.completeStep(
             userCode,
