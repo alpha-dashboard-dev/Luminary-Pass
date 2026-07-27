@@ -180,7 +180,19 @@ class InfluencerService {
     }
 
 
-    // async submitEventTask()
+    async submitEventTask(checklistCode: string, taskData: any, actor: any) {
+
+        // console.log(checklistCode, taskData, actor);
+
+        const influencer = await influencerRepo.findOne({
+            user_code: actor.userCode
+        })
+
+
+        console.log(influencer);
+
+
+    }
 }
 
 export default new InfluencerService();

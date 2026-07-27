@@ -40,8 +40,8 @@ class participantChecklistService {
             submitted_at: data.submittedAt || new Date(),
             review_status: data.reviewStatus,
             reviewed_by: data.reviewedBy || null,
-            reviewed_at: data.reviewedAt,
-            review_notes: data.reviewNotes,
+            reviewed_at: data.reviewedAt || null,
+            review_notes: data.reviewNotes || null,
             completion_status: data.reviewCompletionStatus,
             points_awarded: data.pointsAwarded,
         });

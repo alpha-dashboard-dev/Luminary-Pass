@@ -207,6 +207,34 @@ class InfluencerController {
             });
         }
     }
+
+
+    async submitEventTask(req: FastifyRequest, reply: FastifyReply) {
+
+        try{
+
+            const taskCode = String(req.params.taskCode)
+            const data = req.body
+
+            // console.log(req.user)
+
+            const result = await influencerService.submitEventTask(
+                taskCode,
+                data,
+                req.user
+            )
+            return reply.status(200).send({
+                success: true,
+                result,
+            });
+
+        } catch(err: any) {
+            return reply.status(404).send({
+                success: false,
+                message: err.message,
+            })
+        }
+    }
 }
 
 export default  new InfluencerController();

@@ -109,4 +109,18 @@ export default async function influencerRoutes(fastify: FastifyInstance) {
         },
         influencerController.findEventInvitation
     );
+
+    fastify.post(
+        "/submit-event-task/:taskCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00089"],
+                    true
+                )
+            ]
+        },
+        influencerController.submitEventTask
+    )
 }
