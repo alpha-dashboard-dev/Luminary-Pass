@@ -3,6 +3,7 @@ import { generateCode } from "../../utils/generateCode.js";
 import {buildWhere} from "../../utils/buildWhere.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import invitationRepo from "../../repositories/event/invitation.repository.js";
+import participantRepo from "../../repositories/event/participant.repository.js";
 
 class InfluencerService {
 
@@ -188,8 +189,24 @@ class InfluencerService {
             user_code: actor.userCode
         })
 
+        // console.log(influencer);
 
-        console.log(influencer);
+        const participantExists = await participantRepo.findOne({
+            influencer_code: influencer.influencer_code
+        })
+
+        console.log(participantExists)
+
+        if(participantExists.status === "checked_in"){
+
+
+
+        }else{
+            throw new Error("Influencer don't attend the event, so you're not able to submit the event task");
+        }
+
+
+
 
 
     }
