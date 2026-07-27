@@ -267,6 +267,13 @@ class InfluencerService {
             throw new Error("Task not found.");
         }
 
+        const participantExists = await participantRepo.findOne({
+            event_code: eventCode,
+            influencer_code: influencer.influencer_code
+        })
+
+        // console.log(participantExists)
+
         const instagramMedia = await instagramService.getMedia(influencer.influencer_code);
 
         const validIds = new Set(
@@ -298,7 +305,7 @@ class InfluencerService {
 
             await participantChecklistService.create({
 
-                participantCode: influencer.influencer_code,
+                participantCode: participantExists.participant_code,
                 checklistCode: task.checklist_code,
                 submissionUrl: media.permalink,
                 submissionType: media.media_type,
@@ -348,60 +355,3 @@ class InfluencerService {
 }
 
 export default new InfluencerService();
-
-/*
-import influencerRepo from "../../repositories/influencer/influencer.repository.js";
-import participantChecklistRepo from "../../repositories/event/participantChecklist.repository.js";
-import instagramService from "../instagram/instagram.service.js";
-import { generateCode } from "../../utils/generateCode.js";
-
-class InfluencerService {
-async selectPostsAgainstEvent(
-    eventCode: string,
-    actor: any
-) {
-
-    const influencer =
-        await influencerRepo.findOne({
-            user_code: actor.userCode
-        });
-
-    if (!influencer) {
-        throw new Error("Influencer doesn't exist.");
-    }
-
-    const instagramMedia =
-        await instagramService.getMedia(
-            influencer.influencer_code
-        );
-
-    return instagramMedia.map((item: any) => ({
-
-        id: item.id,
-
-        mediaType: item.media_type,
-
-        mediaUrl: item.media_url,
-
-        thumbnailUrl: item.thumbnail_url,
-
-        permalink: item.permalink,
-
-        caption: item.caption,
-
-        timestamp: item.timestamp,
-
-        likeCount: item.like_count,
-
-        commentsCount: item.comments_count
-
-    }));
-
-}
-
-}
-
-}
-
-export default new InfluencerService();
- */
