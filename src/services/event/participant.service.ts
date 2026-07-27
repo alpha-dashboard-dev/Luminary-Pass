@@ -135,6 +135,10 @@ class participantService {
             participant_code: participantCode
         });
     }
+
+    async participantCheckin(participantCode: string, actor: any) {
+
+    }
 }
 
 export default new participantService();
