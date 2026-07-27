@@ -4,6 +4,7 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import participantRepo from "../../repositories/event/participant.repository.js";
 import checkListRepo from "../../repositories/event/checkList.repository.js";
+import instagramService from "../socialMedia/instagram/instagram.service.js";
 
 class participantChecklistService {
 
@@ -114,7 +115,7 @@ class participantChecklistService {
 
         if (!checklist) throw new Error("Participant checklist not found");
 
-        console.log(data);
+        // console.log(data);
         const allowed : any = {}
 
         if(data.reviewNotes !== undefined)
@@ -128,7 +129,7 @@ class participantChecklistService {
         if(data.reviewedBy !== undefined)
             allowed.reviewed_by = data.reviewedBy;
 
-        console.log(allowed)
+        // console.log(allowed)
 
         return await participantChecklistRepo.update(
             { participant_checklist_code: participantChecklistCode },
@@ -163,8 +164,25 @@ class participantChecklistService {
             throw new Error("Participant Task does not exist");
         }
 
-        // console.log(task.review_status);
+        // console.log(task);
 
+        const influencer = await participantRepo.findOne({
+            participant_code: task.participant_code
+        })
+
+        // console.log(influencer.influencer_code);
+
+        const media =  await instagramService.getMedia(influencer.influencer_code)
+
+        // console.log(instagramMedia);
+
+        const matched = media.find(m => m.permalink === task.submission_url);
+
+        if (!matched) {
+            throw new Error("Instagram post not found.");
+        }
+
+        // console.log(matched);
         let reviewTask;
 
         if(task.review_status === "pending")

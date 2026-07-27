@@ -270,7 +270,7 @@ class InstagramService {
      * Fetch user media
      */
     async getMedia(userCode: string, fields: string, limit: bigint) {
-        // console.log(userCode, fields);
+        // console.log(userCode);
 
         try {
 
@@ -311,7 +311,7 @@ class InstagramService {
                 );
 
 
-            return response.data;
+            return response.data.data;
 
 
         } catch (error: any) {
