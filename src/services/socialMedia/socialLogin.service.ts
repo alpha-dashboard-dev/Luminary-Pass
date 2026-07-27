@@ -17,7 +17,7 @@ class socialLoginService {
             provider_user_id: data.providerUserId,
             access_token: data.accessToken,
             refresh_token: data.refreshToken,
-            token_expires_at: data.expiresIn,
+            token_expires_at: data.expiresAt,
             last_login_at: data.lastLoginAt || new Date(),
         });
     }

@@ -79,7 +79,7 @@ class InfluencerSignupService {
             //
             const onboarding = await onboardingService.create(
                 {
-                    userCode: userCode,
+                    userCode: influencerCode,
                 },
                 {   transaction }
             );
@@ -87,14 +87,14 @@ class InfluencerSignupService {
             // console.log(onboarding.toJSON());
 
             await onboardingService.completeStep(
-                userCode,
+                influencerCode,
                 InfluencerSignupStep.BASIC_INFO,
                 {   transaction }
             );
 
             await transaction.commit();
 
-            const signupToken = generateSignupToken(user.user_code);
+            const signupToken = generateSignupToken(influencerCode);
 
             return {
                 user: user,
@@ -119,15 +119,16 @@ class InfluencerSignupService {
 
         // console.log(userCode, providerUserId, accessToken)
         await onboardingService.canAccessStep(userCode, 2);
-        const influencer = await influencerService.getByField({
-            user_code: userCode,
+        const influencer = await influencerRepo.findOne({
+            influencer_code: userCode
         });
+
+        // console.log(influencer);
 
         // const socialLoginCode = generateCode()
         await socialLoginService.create({
-
             userCode,
-            provider:"instagram",
+            provider:   "instagram",
             providerUserId,
             accessToken,
             expiresIn,
