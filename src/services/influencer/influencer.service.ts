@@ -119,17 +119,27 @@ class InfluencerService {
     // Update influencer
     async update(influencerCode: string, data: any, actor: any) {
 
-        console.log(influencerCode)
-
+        // console.log(influencerCode, data)
         const influencer = await influencerRepo.findOne({
             influencer_code: influencerCode
         });
 
         if (!influencer) throw new Error("influencer not found");
 
+        const allowed: any = {};
+        if (data.username !== undefined)
+            allowed.user_name = data.username;
+        if (data.account_type !== undefined)
+            allowed.account_type = data.account_type;
+        if (data.followers_count !== undefined)
+            allowed.follower_count = data.followers_count;
+        if(data.media_count !== undefined)
+            allowed.media_count = data.media_count;
+
+
         return await influencerRepo.update(
             { influencer_code: influencerCode },
-            data
+            allowed
         );
     }
 

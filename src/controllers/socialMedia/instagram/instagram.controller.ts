@@ -57,15 +57,16 @@ class InstagramController {
         await influencerSignupService.connectInstagram({
             userCode,
             providerUserId: token.user_id,
-            accessToken: token.access_token,
+            accessToken: longToken.access_token,
             expiresIn: longToken.expires_in,
         })
         // console.log(token)
         return reply.send({
             message: "Instagram connected",
             // token: longToken,
-            access_token: token.access_token,
+            access_token: longToken.access_token,
             user_id: token.user_id,
+            expires_in: longToken.expires_in
         });
 
     }
@@ -102,7 +103,7 @@ class InstagramController {
 
         const {userCode, fields} = req.query as any;
 
-        // console.log(fieldArray);
+        // console.log(userCode);
         const profile = await instagramService.getProfile(userCode, fields);
 
         return reply.send(profile);

@@ -148,19 +148,89 @@ class InstagramService {
         return response.data;
     }
 
+    // refresh Token
+    async refreshAccessToken(accessToken: string) {
+
+        const response = await instagramGraphApi.get(
+
+            "/refresh_access_token",
+
+            {
+                params: {
+                    grant_type: "ig_refresh_token",
+                    access_token: accessToken
+                }
+            }
+
+        );
+
+        return response.data;
+
+    }
+
+    async getValidAccessToken(userCode: string) {
+
+        const social = await SocialLoginRepo.findOne({
+
+            where: {
+                user_code: userCode,
+                provider: "instagram"
+            }
+
+        });
+
+        if (!social) {
+            throw new Error("Instagram account not connected.");
+        }
+
+        // Refresh 7 days before expiry
+        const remainingDays =
+            (social.token_expires_at.getTime() - Date.now()) /
+            (1000 * 60 * 60 * 24);
+
+        if (remainingDays > 7) {
+            return social.access_token;
+        }
+
+        const refreshed = await this.refreshAccessToken(
+            social.access_token
+        );
+
+        const expiresAt = new Date(
+            Date.now() + refreshed.expires_in * 1000
+        );
+
+        await SocialLoginRepo.update(
+            {
+                access_token: refreshed.access_token,
+                token_expires_at: expiresAt
+            },
+            {
+                where: {
+                    social_login_code: social.social_login_code
+                }
+            }
+        );
+
+        return refreshed.access_token;
+    }
+
 
 
     // Get Influencer Instagram Profile
     async getProfile(userCode: string, fields: string) {
         try {
 
-            // console.log(fields)
+            // console.log(userCode);
+            // const token = await this.getValidAccessToken(userCode);
+            // console.log(token);
             const user = await socialLoginRepo.findOne(
                 {
                     user_code: userCode
                 }
             )
 
+            // console.log(user);
             if (!user) {
                 throw new Error("User not found");
             }
@@ -185,9 +255,10 @@ class InstagramService {
                     }
                 }
             );
-            console.log(response.data)
+            
+            // console.log(response.data)
             await influencerService.update(
-                { user_code: userCode },
+                userCode,
                 response.data,
             )
             return response.data;

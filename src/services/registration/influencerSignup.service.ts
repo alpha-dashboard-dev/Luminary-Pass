@@ -123,6 +123,8 @@ class InfluencerSignupService {
             influencer_code: userCode
         });
 
+        const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
         // console.log(influencer);
 
         // const socialLoginCode = generateCode()
@@ -131,7 +133,7 @@ class InfluencerSignupService {
             provider:   "instagram",
             providerUserId,
             accessToken,
-            expiresIn,
+            expiresAt,
         });
 
         await onboardingService.completeStep(userCode, 2);
