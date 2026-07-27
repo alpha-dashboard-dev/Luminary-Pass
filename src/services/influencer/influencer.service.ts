@@ -81,6 +81,7 @@ class InfluencerService {
 
     // Get influencers By influencer code
     async getByInfluencerCode(influencerCode: string, query: any = {}, actor: any) {
+        console.log(influencerCode);
 
         const influencer = await influencerRepo.findOne(
             {
