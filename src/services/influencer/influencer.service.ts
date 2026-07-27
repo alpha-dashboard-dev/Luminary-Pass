@@ -200,13 +200,9 @@ class InfluencerService {
         if(participantExists.status === "checked_in"){
 
 
-
         }else{
             throw new Error("Influencer don't attend the event, so you're not able to submit the event task");
         }
-
-
-
 
 
     }
