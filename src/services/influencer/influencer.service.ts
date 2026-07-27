@@ -4,6 +4,10 @@ import {buildWhere} from "../../utils/buildWhere.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import invitationRepo from "../../repositories/event/invitation.repository.js";
 import participantRepo from "../../repositories/event/participant.repository.js";
+import instagramService from "../socialMedia/instagram/instagram.service.js";
+import participantChecklistRepo from "../../repositories/event/participantChecklist.repository.js";
+import participantChecklistService from "../event/participantChecklist.service.js";
+import checkListRepo from "../../repositories/event/checkList.repository.js";
 
 class InfluencerService {
 
@@ -203,9 +207,201 @@ class InfluencerService {
         }else{
             throw new Error("Influencer don't attend the event, so you're not able to submit the event task");
         }
+    }
 
+    async selectPostsAgainstEvent(eventCode: string, actor: any) {
+
+        const influencer = await influencerRepo.findOne({
+                user_code: actor.userCode
+            });
+
+        if (!influencer) {
+            throw new Error("Influencer doesn't exist.");
+        }
+
+        const instagramMedia = await instagramService.getMedia(influencer.influencer_code);
+
+        return instagramMedia.map((item: any) => ({
+
+            id: item.id,
+
+            mediaType: item.media_type,
+
+            mediaUrl: item.media_url,
+
+            thumbnailUrl: item.thumbnail_url,
+
+            permalink: item.permalink,
+
+            caption: item.caption,
+
+            timestamp: item.timestamp,
+
+            likeCount: item.like_count,
+
+            commentsCount: item.comments_count
+
+        }));
 
     }
+
+    async submitSelectedPosts(eventCode: string, mediaIds: string[], actor: any) {
+
+        if (!Array.isArray(mediaIds) || mediaIds.length === 0) {
+            throw new Error("Please select at least one post.");
+        }
+
+        const influencer = await influencerRepo.findOne(
+            {user_code: actor.userCode}
+        );
+
+        if (!influencer) {
+            throw new Error("Influencer doesn't exist.");
+        }
+
+        const task = await checkListRepo.findOne({
+            event_code: eventCode,
+        })
+
+        if (!task) {
+            throw new Error("Task not found.");
+        }
+
+        const instagramMedia = await instagramService.getMedia(influencer.influencer_code);
+
+        const validIds = new Set(
+            instagramMedia.map(
+                (media: any) => media.id
+            )
+        );
+
+        // console.log("validIds", validIds);
+        const selectedMedia = [];
+
+        for (const mediaId of mediaIds) {
+
+            if (!validIds.has(mediaId)) {
+                throw new Error(
+                    `Invalid media selected: ${mediaId}`
+                );
+            }
+
+            const media = instagramMedia.find(
+                (item: any) =>
+                    item.id === mediaId
+            );
+
+            selectedMedia.push(media);
+        }
+
+        for (const media of selectedMedia) {
+
+            await participantChecklistService.create({
+
+                participantCode: influencer.influencer_code,
+                checklistCode: task.checklist_code,
+                submissionUrl: media.permalink,
+                submissionType: media.media_type,
+            })
+
+            // await participantChecklistRepo.create({
+            //
+            //     participant_checklist_code: generateCode(),
+            //
+            //     event_code: eventCode,
+            //
+            //     influencer_code:
+            //     influencer.influencer_code,
+            //
+            //     // instagram_media_id:
+            //     // media.id,
+            //
+            //     submission_url:
+            //     media.permalink,
+            //
+            //     media_type:
+            //     media.media_type,
+            //
+            //     media_url:
+            //     media.media_url,
+            //
+            //     thumbnail_url:
+            //     media.thumbnail_url,
+            //
+            //     caption:
+            //     media.caption,
+            //
+            //     metadata:
+            //         JSON.stringify(media)
+            //
+            // });
+
+        }
+
+        return {
+            message: "Instagram posts submitted successfully.",
+            totalSubmitted: selectedMedia.length
+
+        };
+    }
+
 }
 
 export default new InfluencerService();
+
+/*
+import influencerRepo from "../../repositories/influencer/influencer.repository.js";
+import participantChecklistRepo from "../../repositories/event/participantChecklist.repository.js";
+import instagramService from "../instagram/instagram.service.js";
+import { generateCode } from "../../utils/generateCode.js";
+
+class InfluencerService {
+async selectPostsAgainstEvent(
+    eventCode: string,
+    actor: any
+) {
+
+    const influencer =
+        await influencerRepo.findOne({
+            user_code: actor.userCode
+        });
+
+    if (!influencer) {
+        throw new Error("Influencer doesn't exist.");
+    }
+
+    const instagramMedia =
+        await instagramService.getMedia(
+            influencer.influencer_code
+        );
+
+    return instagramMedia.map((item: any) => ({
+
+        id: item.id,
+
+        mediaType: item.media_type,
+
+        mediaUrl: item.media_url,
+
+        thumbnailUrl: item.thumbnail_url,
+
+        permalink: item.permalink,
+
+        caption: item.caption,
+
+        timestamp: item.timestamp,
+
+        likeCount: item.like_count,
+
+        commentsCount: item.comments_count
+
+    }));
+
+}
+
+}
+
+}
+
+export default new InfluencerService();
+ */

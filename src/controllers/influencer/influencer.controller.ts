@@ -235,6 +235,67 @@ class InfluencerController {
             })
         }
     }
+
+
+    async selectPostsAgainstEvent(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { eventCode } = req.params as any;
+
+            const result = await influencerService.selectPostsAgainstEvent(
+                    eventCode,
+                    req.user
+                );
+
+            return reply.send({
+                success: true,
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+
+    }
+
+    async submitSelectedPosts(req: FastifyRequest, reply: FastifyReply) {
+
+        try {
+
+            const { eventCode } = req.params as any;
+
+            const { mediaIds } = req.body as any;
+
+            // console.log(mediaIds);
+
+            const result = await influencerService.submitSelectedPosts(
+                    eventCode,
+                    mediaIds,
+                    req.user
+                );
+
+            return reply.send({
+                success: true,
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+
+    }
+
 }
 
 export default  new InfluencerController();
