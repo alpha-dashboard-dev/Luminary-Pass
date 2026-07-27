@@ -10,6 +10,8 @@ class participantChecklistService {
 
     async create(data: any) {
 
+        // console.log(data);
+
         const participantExists = await participantRepo.findOne({
             participant_code: data.participantCode
         })
@@ -34,9 +36,9 @@ class participantChecklistService {
             checklist_code: data.checklistCode,
             submission_url: data.submissionUrl,
             submission_type: data.submissionType,
-            submitted_at: data.submittedAt,
+            submitted_at: data.submittedAt || new Date(),
             review_status: data.reviewStatus,
-            reviewed_by: data.reviewedBy,
+            reviewed_by: data.reviewedBy || null,
             reviewed_at: data.reviewedAt,
             review_notes: data.reviewNotes,
             completion_status: data.reviewCompletionStatus,
@@ -112,9 +114,25 @@ class participantChecklistService {
 
         if (!checklist) throw new Error("Participant checklist not found");
 
+        console.log(data);
+        const allowed : any = {}
+
+        if(data.reviewNotes !== undefined)
+            allowed.review_notes = data.reviewNotes;
+        if(data.pointsAwarded !== undefined)
+            allowed.points_awarded = data.pointsAwarded;
+        if(data.reviewedAt !== undefined)
+            allowed.reviewed_at = data.reviewedAt || new Date();
+        if(data.reviewStatus !== undefined)
+            allowed.review_status = data.reviewStatus;
+        if(data.reviewedBy !== undefined)
+            allowed.reviewed_by = data.reviewedBy;
+
+        console.log(allowed)
+
         return await participantChecklistRepo.update(
             { participant_checklist_code: participantChecklistCode },
-            data
+            allowed
         );
     }
 
@@ -132,6 +150,37 @@ class participantChecklistService {
             participant_checklist_code: participantChecklistCode
         });
     }
+
+    async reviewParticipantTask(participantChecklistCode: string, data: any, actor: any) {
+
+        // console.log(data, actor)
+
+        const task = await participantChecklistRepo.findOne({
+            participant_checklist_code: participantChecklistCode
+        })
+
+        if(!task){
+            throw new Error("Participant Task does not exist");
+        }
+
+        // console.log(task.review_status);
+
+        let reviewTask;
+
+        if(task.review_status === "pending")
+        {
+            reviewTask = await this.update(participantChecklistCode, {
+                ...data,
+                reviewedBy: actor.businessCode
+            })
+        }else {
+            throw new Error(`Task is already ${task.review_status}`);
+        }
+
+
+        return reviewTask;
+    }
+
 }
 
 export default new participantChecklistService();

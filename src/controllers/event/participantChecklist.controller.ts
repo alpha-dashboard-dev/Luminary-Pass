@@ -186,6 +186,34 @@ class participantChecklistController {
             });
         }
     }
+
+
+    async reviewParticipantTask(req: FastifyRequest, reply: FastifyReply) {
+        try {
+            const checklistCode = String(req.params.checklistCode)
+
+            const data = req.body;
+
+            const result = await participantChecklistService.reviewParticipantTask(
+                checklistCode,
+                data,
+                req.user
+            );
+
+            return reply.status(200).send({
+                success: true,
+                message: "Task Reviewed successfully",
+                data: result
+            });
+
+        } catch (err: any) {
+
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+    }
 }
 
 export default  new participantChecklistController();

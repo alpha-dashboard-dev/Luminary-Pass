@@ -266,58 +266,25 @@ class InstagramService {
         }
     }
 
-    async saveSocialLogin(userCode:string, tokenData:any, profile:any){
-
-
-        const existing = await SocialLoginRepo.findOne({
-
-                where:{
-                    provider: "instagram",
-                    provider_user_id: tokenData.user_id
-                }
-            });
-
-        const expiresAt = tokenData.expires_in ? new Date(Date.now() + tokenData.expires_in * 1000) : null;
-
-        if(existing){
-            await existing.update({
-                access_token: tokenData.access_token,
-                token_expires_at: expiresAt,
-                last_login_at: new Date()
-            });
-            return existing;
-        }
-
-        return await SocialLoginRepo.create({
-
-            social_login_code: generateCode(),
-
-            user_code: userCode,
-            provider: "instagram",
-            provider_user_id: profile.id,
-            access_token: tokenData.access_token,
-            token_expires_at: expiresAt,
-            last_login_at: new Date()
-
-        });
-    }
-
     /**
      * Fetch user media
      */
     async getMedia(userCode: string, fields: string, limit: bigint) {
+        // console.log(userCode, fields);
 
         try {
 
-            const user = await socialLoginRepo.findOne(
-                {
-                    user_code: userCode
-                }
-            )
+            const token = await this.getValidAccessToken(userCode);
 
-            if (!user) {
-                throw new Error("User not found");
-            }
+            // const user = await socialLoginRepo.findOne(
+            //     {
+            //         user_code: userCode
+            //     }
+            // )
+            //
+            // if (!user) {
+            //     throw new Error("User not found");
+            // }
 
             const fieldArray = fields ? fields.split(",").map(f => f.trim()) : undefined;
 
@@ -335,7 +302,7 @@ class InstagramService {
 
                             fields: profileFields.join(","),
                             limit,
-                            access_token: user.access_token
+                            access_token: token
 
                         }
 

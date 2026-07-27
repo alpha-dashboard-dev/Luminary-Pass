@@ -89,4 +89,18 @@ export default async function participantChecklistRoutes(fastify: FastifyInstanc
         },
         participantChecklistController.delete
     )
+
+    fastify.put(
+        "/review-participant-task/:checklistCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00089", "PER00090", "PER00091", "PER00092"],
+                    true
+                )
+            ]
+        },
+        participantChecklistController.reviewParticipantTask
+    )
 }
