@@ -163,25 +163,23 @@ class InstagramService {
             }
 
         );
-
         return response.data;
-
     }
 
     async getValidAccessToken(userCode: string) {
 
-        const social = await SocialLoginRepo.findOne({
+        // console.log(userCode);
 
-            where: {
+        const social = await SocialLoginRepo.findOne({
                 user_code: userCode,
                 provider: "instagram"
-            }
-
         });
 
         if (!social) {
             throw new Error("Instagram account not connected.");
         }
+
+        // console.log(social);
 
         // Refresh 7 days before expiry
         const remainingDays =
@@ -222,18 +220,18 @@ class InstagramService {
         try {
 
             // console.log(userCode);
-            // const token = await this.getValidAccessToken(userCode);
+            const token = await this.getValidAccessToken(userCode);
             // console.log(token);
-            const user = await socialLoginRepo.findOne(
-                {
-                    user_code: userCode
-                }
-            )
-
-            // console.log(user);
-            if (!user) {
-                throw new Error("User not found");
-            }
+            // const user = await socialLoginRepo.findOne(
+            //     {
+            //         user_code: userCode
+            //     }
+            // )
+            //
+            // // console.log(user);
+            // if (!user) {
+            //     throw new Error("User not found");
+            // }
 
             const fieldArray = fields ? fields.split(",").map(f => f.trim()) : undefined;
 
@@ -251,11 +249,11 @@ class InstagramService {
                 {
                     params: {
                         fields: profileFields.join(","),
-                        access_token: user.access_token
+                        access_token: token
                     }
                 }
             );
-            
+
             // console.log(response.data)
             await influencerService.update(
                 userCode,

@@ -10,7 +10,7 @@ class InfluencerService {
     // Create Influencer
     async create(data: any) {
 
-        console.log(data)
+        // console.log(data)
 
 
         const user = await userRepo.findOne({
@@ -33,13 +33,6 @@ class InfluencerService {
 
         const influencerCode = generateCode();
 
-        /*
-        add these column in influencers table
-        username,
-        followers_count,
-        account_type,
-        media_type
-         */
         return await influencerRepo.create({
             influencer_code: influencerCode,
             user_code: data.userCode,
@@ -136,6 +129,7 @@ class InfluencerService {
         if(data.media_count !== undefined)
             allowed.media_count = data.media_count;
 
+        // console.log(allowed);
 
         return await influencerRepo.update(
             { influencer_code: influencerCode },
