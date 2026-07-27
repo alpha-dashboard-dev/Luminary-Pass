@@ -11,7 +11,6 @@ import checkListRepo from "../../repositories/event/checkList.repository.js";
 
 class InfluencerService {
 
-
     // Create Influencer
     async create(data: any) {
 
@@ -281,7 +280,6 @@ class InfluencerService {
                 (media: any) => media.id
             )
         );
-
         // console.log("validIds", validIds);
         const selectedMedia = [];
 
@@ -339,7 +337,7 @@ class InfluencerService {
             //     media.caption,
             //
             //     metadata:
-            //         JSON.stringify(media)
+            //    JSON.stringify(media)
             //
             // });
 
