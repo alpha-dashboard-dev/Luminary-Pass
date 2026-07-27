@@ -3,6 +3,7 @@ import participantChecklistRepo from "../../repositories/event/participantCheckl
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import participantRepo from "../../repositories/event/participant.repository.js";
+import checkListRepo from "../../repositories/event/checkList.repository.js";
 
 class participantChecklistService {
 
@@ -15,6 +16,14 @@ class participantChecklistService {
 
         if (!participantExists) {
             throw new Error("Participant does not exist");
+        }
+
+        const taskExists = await checkListRepo.findOne({
+            checklist_code: data.checklistCode
+        })
+
+        if(!taskExists) {
+            throw new Error("Task does not exist");
         }
 
         const participantChecklistCode = generateCode();

@@ -7,9 +7,7 @@ import invitationRepo from "../../repositories/event/invitation.repository.js";
 class InfluencerService {
 
 
-
     // Create Influencer
-
     async create(data: any) {
 
         console.log(data)
