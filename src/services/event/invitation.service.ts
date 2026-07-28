@@ -64,7 +64,7 @@ class EventInvitationService {
 
         // add separate column for start & end date and time
 
-        return await eventInvitationRepo.create({
+        const invitation = await eventInvitationRepo.create({
             invitation_code: invitationCode,
             event_code: data.eventCode,
             entity_type: data.entityType,
@@ -75,6 +75,24 @@ class EventInvitationService {
             status: data.status,
             responded_at: data.respondedAt || null,
         });
+
+        // send invitation notification to influencer
+
+        const notification = await notficationService.sendToUser(
+            data.influencerCode,
+            "Event Invitation",
+            "Accept Event Invitation",
+            {
+                type: "EVENT_INVITATION",
+                eventCode: data.eventCode,
+            }
+        )
+
+
+        return {
+            invitation: invitation,
+            notification: notification,
+        }
     }
 
     // Get all invitations
