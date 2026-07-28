@@ -14,7 +14,6 @@ class NotificationService {
         });
 
     }
-
     // Send notification to all active sessions of a user
     async sendToUser(userCode: string, title: string, body: string, data: Record<string, string> = {}) {
 

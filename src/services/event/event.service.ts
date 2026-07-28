@@ -2,15 +2,10 @@ import eventRepo from "../../repositories/event/event.repository";
 import initModels from "../../database/sequelize/models/index.cjs";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import businessRepo from "../../repositories/business/business.repository.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
-import userRepo from "../../repositories/user/user.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
 import {normalizeDateOnly, normalizeDeadline, normalizeTimeToHHMM, parseDate} from "../../utils/dateTimeFormat.js";
 import attachmentService from "../mediaAttachment/attachment.service.js";
-import invitationRepo from "../../repositories/event/invitation.repository.js";
-import invitationService from "./invitation.service.js";
-
 const db = initModels();
 
 class EventService {

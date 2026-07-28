@@ -157,9 +157,9 @@ class EventInvitationService {
     /*
         Today's completed Task
         1) Influencer submit selected media against event, from their Instagram profile, store media IDs in database.
-        2) Business owner see the submitted media against the event, and give remarks, on each media.
-        3)
-
+        2) Business owner see the submitted media via Media ID's against the event, and give remarks, on each media.
+        3) Firebase console configuration,
+        4) FCM token saved when user login, the frontend send the fcmToken
      */
 
     // Delete invitation
