@@ -62,6 +62,8 @@ class EventInvitationService {
 
         const invitationCode = generateCode();
 
+        // add separate column for start & end date and time
+
         const invitation = await eventInvitationRepo.create({
             invitation_code: invitationCode,
             event_code: data.eventCode,
