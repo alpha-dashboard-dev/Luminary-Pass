@@ -63,7 +63,7 @@ class ParticipantChecklistMedia extends Model {
     static associate(models){
 
         ParticipantChecklistMedia.belongsTo(
-            models.ParticipantChecklist,
+            models.EventParticipantChecklist,
             {
                 foreignKey:"participant_checklist_code",
                 targetKey:"participant_checklist_code",

@@ -5,11 +5,71 @@ import userRepo from "../../repositories/user/user.repository.js";
 import invitationRepo from "../../repositories/event/invitation.repository.js";
 import participantRepo from "../../repositories/event/participant.repository.js";
 import instagramService from "../socialMedia/instagram/instagram.service.js";
-import participantChecklistRepo from "../../repositories/event/participantChecklist.repository.js";
-import participantChecklistService from "../event/participantChecklist.service.js";
 import checkListRepo from "../../repositories/event/checkList.repository.js";
+import participantChecklistMediaRepo from "../../repositories/event/paticipant_checklist_media"
+import participantChecklistRepo from "../../repositories/event/participantChecklist.repository.js";
 
 class InfluencerService {
+    private async validateSubmission(eventCode: string, influencerCode: string) {
+
+        const task =
+            await checkListRepo.findOne({
+                event_code: eventCode
+            });
+
+        if (!task) {
+            throw new Error("Task not found.");
+        }
+
+        const participant = await participantRepo.findOne({
+                event_code: eventCode,
+                influencer_code: influencerCode
+            });
+
+        if (!participant) {
+            throw new Error(
+                "Influencer is not participating in this event."
+            );
+        }
+
+        return {
+            task,
+            participant
+        };
+
+    }
+
+    private async getSelectedMedia(influencerCode: string, mediaIds: string[]) {
+
+        const instagramMedia = await instagramService.getMedia(influencerCode);
+
+        const mediaMap = new Map(
+                instagramMedia.map(
+                    (item: any) => [item.id, item]
+                )
+            );
+
+        const selectedMedia = [];
+
+        for (const mediaId of mediaIds) {
+
+            const media = mediaMap.get(mediaId);
+
+            if (!media) {
+                throw new Error(
+                    `Invalid media selected: ${mediaId}`
+                );
+            }
+
+            selectedMedia.push(media);
+
+        }
+
+        return selectedMedia;
+
+    }
+
+
 
     // Create Influencer
     async create(data: any) {
@@ -246,108 +306,67 @@ class InfluencerService {
 
     async submitSelectedPosts(eventCode: string, mediaIds: string[], actor: any) {
 
-        if (!Array.isArray(mediaIds) || mediaIds.length === 0) {
-            throw new Error("Please select at least one post.");
-        }
+        // console.log(eventCode, mediaIds, actor);
+        try{
 
-        const influencer = await influencerRepo.findOne(
-            {user_code: actor.userCode}
-        );
-
-        if (!influencer) {
-            throw new Error("Influencer doesn't exist.");
-        }
-
-        const task = await checkListRepo.findOne({
-            event_code: eventCode,
-        })
-
-        if (!task) {
-            throw new Error("Task not found.");
-        }
-
-        const participantExists = await participantRepo.findOne({
-            event_code: eventCode,
-            influencer_code: influencer.influencer_code
-        })
-
-        // console.log(participantExists)
-
-        const instagramMedia = await instagramService.getMedia(influencer.influencer_code);
-
-        const validIds = new Set(
-            instagramMedia.map(
-                (media: any) => media.id
-            )
-        );
-        // console.log("validIds", validIds);
-        const selectedMedia = [];
-
-        for (const mediaId of mediaIds) {
-
-            if (!validIds.has(mediaId)) {
-                throw new Error(
-                    `Invalid media selected: ${mediaId}`
-                );
+            if (!Array.isArray(mediaIds) || mediaIds.length === 0) {
+                throw new Error("Please select at least one post.");
             }
 
-            const media = instagramMedia.find(
-                (item: any) =>
-                    item.id === mediaId
-            );
+            const influencer = await influencerRepo.findOne({
+                user_code: actor.userCode
+            });
 
-            selectedMedia.push(media);
+            if (!influencer) {
+                throw new Error("Influencer doesn't exist.");
+            }
+
+            const { task, participant } = await this.validateSubmission(eventCode, influencer.influencer_code);
+
+            // console.log(task, participant);
+
+            const selectedMedia = await this.getSelectedMedia(influencer.influencer_code, mediaIds);
+
+            // console.log(selectedMedia);
+
+            const checklist = await participantChecklistRepo.findOne({
+                participant_code: participant.participant_code,
+                checklist_code: task.checklist_code,
+            });
+
+            // console.log(checklist);
+            //
+            // const participantChecklistMediaCode = generateCode()
+            //
+            const mediaRecords = selectedMedia.map((media: any) => ({
+                participant_checklist_media_code: generateCode(),
+                participant_checklist_code: checklist.participant_checklist_code,
+                instagram_media_id: media.id
+            }));
+
+            // console.log(mediaRecords);
+
+            await participantChecklistMediaRepo.bulkCreate(mediaRecords);
+
+            return {
+
+                message: "Instagram posts submitted successfully.",
+
+                totalSubmitted: mediaRecords.length
+
+            };
+
+
+        } catch (error: any) {
+
+            // console.log(error);
+            //
+            // console.log(error.errors);
+            //
+            // console.log(error.parent);
+
+            throw error;
         }
-
-        for (const media of selectedMedia) {
-
-            await participantChecklistService.create({
-
-                participantCode: participantExists.participant_code,
-                checklistCode: task.checklist_code,
-                submissionUrl: media.permalink,
-                submissionType: media.media_type,
-            })
-
-            // await participantChecklistRepo.create({
-            //
-            //     participant_checklist_code: generateCode(),
-            //
-            //     event_code: eventCode,
-            //
-            //     influencer_code:
-            //     influencer.influencer_code,
-            //
-            //     // instagram_media_id:
-            //     // media.id,
-            //
-            //     submission_url:
-            //     media.permalink,
-            //
-            //     media_type:
-            //     media.media_type,
-            //
-            //     media_url:
-            //     media.media_url,
-            //
-            //     thumbnail_url:
-            //     media.thumbnail_url,
-            //
-            //     caption:
-            //     media.caption,
-            //
-            //     metadata:
-            //    JSON.stringify(media)
-            //
-            // });
-
-        }
-
-        return {
-            message: "Instagram posts submitted successfully.",
-            totalSubmitted: selectedMedia.length
-
-        };
     }
 
 }

@@ -21,7 +21,6 @@ module.exports = {
             participant_checklist_code: {
                 type: Sequelize.STRING(8),
                 allowNull: false,
-                unique: true,
             },
 
             instagram_media_id:{
