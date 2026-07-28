@@ -1,7 +1,8 @@
 import { getApps, initializeApp, cert } from "firebase-admin/app";
 import {env} from "./env.js";
 
-const firebaseAdmin = getApps().length > 0 ? getApps()[0] : initializeApp({
+const firebaseAdmin = getApps().length > 0 ? getApps()[0]
+        : initializeApp({
             credential: cert({
                 projectId: env.FIREBASE_PROJECT_ID!,
                 clientEmail: env.FIREBASE_CLIENT_EMAIL!,
