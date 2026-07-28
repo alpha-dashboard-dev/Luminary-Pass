@@ -1,4 +1,4 @@
-import admin from "../../config/firebase";
+import firebaseAdmin from "../../config/firebase";
 import { Op } from "sequelize";
 import userSessionRepo from "../../repositories/user/userSession.repository";
 
@@ -7,7 +7,7 @@ class NotificationService {
     // send notification to single FCM token
     async sendToToken(token: string, title: string, body: string, data: Record<string, string> = {}) {
 
-        return await admin.messaging().send({
+        return await firebaseAdmin.messaging().send({
             token,
             notification: {title, body},
             data,
@@ -47,7 +47,7 @@ class NotificationService {
 
         }));
 
-        const response = await admin.messaging().sendEach(messages);
+        const response = await firebaseAdmin.messaging().sendEach(messages);
 
         // Remove invalid tokens
         for (let i = 0; i < response.responses.length; i++) {

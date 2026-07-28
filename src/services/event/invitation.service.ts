@@ -7,7 +7,6 @@ import influencerRepo from "../../repositories/influencer/influencer.repository.
 import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import participantService from "./participant.service.js";
-import notficationService from "../notifications/notfication.service.js";
 
 class EventInvitationService {
 
@@ -154,6 +153,15 @@ class EventInvitationService {
         );
     }
 
+
+    /*
+        Today's completed Task
+        1) Influencer submit selected media against event, from their Instagram profile, store media IDs in database.
+        2) Business owner see the submitted media against the event, and give remarks, on each media.
+        3)
+
+     */
+
     // Delete invitation
 
     async delete(invitationCode: string, actor: any) {
@@ -179,6 +187,8 @@ class EventInvitationService {
         if (!invitation) {
             throw new Error("invitation not found");
         }
+
+
 
         // console.log(invitation);
         if(data.status === "accepted") {
