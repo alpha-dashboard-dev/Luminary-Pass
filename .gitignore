@@ -14,3 +14,4 @@ yarn-error.log*
 .env
 
 storage/
+credentials/firebase-service-account.json

@@ -82,12 +82,7 @@ class AuthService {
 
         // console.log(data);
 
-        const { email, password } = data;
-
-        // if (!email || !password) {
-        //     throw new Error("Email and password are required");
-        // }
-
+        const { email, password, fcmToken, deviceName, deviceType, timezone } = data;
 
         const user = await userRepo.findOne(
             { email },
@@ -153,27 +148,16 @@ class AuthService {
         await userSessionRepo.create({
 
             session_code: sessionCode,
-
             user_code: user.user_code,
-
             refresh_token: refreshToken,
-
             ip_address: request.ip,
-
             user_agent: request.headers["user-agent"],
-
-            device_name: null,
-
-            device_type: "desktop",
-
-            timezone: null,
-
-            fcm_token: null,
-
+            device_name: deviceName ?? null,
+            device_type: deviceType ?? "desktop",
+            timezone: timezone ?? null,
+            fcm_token: fcmToken ?? null,
             status: "active",
-
             expires_at: refreshExpiry,
-
             last_activity_at: new Date(),
 
         });
@@ -186,22 +170,10 @@ class AuthService {
                 organizationCode: user.organization_code,
                 businessCode: user.business_code,
                 roleCode: user.role_code,
-
                 role: user.role,
-                // firstName: user.first_name,
-                //
-                // lastName: user.last_name,
-                //
-                // email: user.email,
-                //
-                // phone: user.phone,
-
             },
-
             accessToken,
-
             refreshToken,
-
             expiresIn: env.JWT_ACCESS_TOKEN_EXPIRES_IN,
 
         };
@@ -331,237 +303,3 @@ class AuthService {
 }
 
 export default new AuthService();
-
-/*
-
-async register(data: any) {
-
-    const {
-        firstName,
-        lastName,
-        email,
-        phone,
-        password,
-        confirmPassword,
-
-        bio,
-        gender,
-        dateOfBirth,
-
-        instagram,
-
-        verificationScreenshot,
-
-        portfolioImages
-    } = data;
-
-
-    // 1. Validate password
-
-    if(password !== confirmPassword){
-        throw new Error("Password does not match");
-    }
-
-
-    // 2. Create User
-
-    const user = await userService.create({
-
-        firstName,
-        lastName,
-
-        email,
-        phone,
-
-        password,
-
-        roleCode: "INF00001", // influencer role
-
-        userType: "INFLUENCER",
-
-        status: "ACTIVE"
-
-    });
-
-
-
-    // 3. Create Influencer Profile
-
-    const influencer =
-        await influencerService.create({
-
-            userCode: user.user_code,
-
-            bio,
-
-            gender,
-
-            dateOfBirth
-
-        });
-
-
-
-    // 4. Save Instagram Login Data
-
-    if(instagram){
-
-        await socialLoginService.create({
-
-            userCode: user.user_code,
-
-            influencerCode:
-            influencer.influencer_code,
-
-            provider: "INSTAGRAM",
-
-            socialId: instagram.id,
-
-            username: instagram.username,
-
-            accessToken: instagram.accessToken,
-
-            refreshToken:
-            instagram.refreshToken || null
-
-        });
-
-    }
-
-
-
-    // 5. Save Instagram verification screenshot
-
-    if(verificationScreenshot){
-
-        await attachmentService.create({
-
-            entityType: "influencers",
-
-            entityCode:
-            influencer.influencer_code,
-
-            title:
-            "Instagram Insights Screenshot",
-
-            mediaType:
-            verificationScreenshot.mediaType,
-
-            fileName:
-            verificationScreenshot.fileName,
-
-            fileExtension:
-            verificationScreenshot.fileExtension,
-
-            fileSize:
-            verificationScreenshot.fileSize,
-
-            url:
-            verificationScreenshot.url,
-
-            isPrimary:true,
-
-            visibility:"PRIVATE",
-
-            uploadedBy:
-            user.user_code,
-
-            displayOrder:1,
-
-            status:"ACTIVE"
-
-        });
-
-    }
-
-
-
-    // 6. Save Portfolio Images
-
-    if(!portfolioImages || portfolioImages.length < 4){
-
-        throw new Error(
-            "Minimum 4 portfolio images are required"
-        );
-
-    }
-
-
-    let order = 1;
-
-    for(const image of portfolioImages){
-
-
-        await attachmentService.create({
-
-            entityType:"influencers",
-
-            entityCode:
-            influencer.influencer_code,
-
-
-            title:
-            "Influencer Portfolio",
-
-
-            mediaType:
-            image.mediaType,
-
-
-            fileName:
-            image.fileName,
-
-
-            fileExtension:
-            image.fileExtension,
-
-
-            fileSize:
-            image.fileSize,
-
-
-            url:
-            image.url,
-
-
-            isPrimary:
-            order === 1,
-
-
-            visibility:"PUBLIC",
-
-
-            uploadedBy:
-            user.user_code,
-
-
-            displayOrder:
-            order,
-
-
-            status:"ACTIVE"
-
-        });
-
-
-        order++;
-
-    }
-
-
-
-    return {
-
-        userCode:
-        user.user_code,
-
-        influencerCode:
-        influencer.influencer_code,
-
-        message:
-        "Your application has been submitted. Our team will review within 24 hours."
-
-    };
-
-}
- */
