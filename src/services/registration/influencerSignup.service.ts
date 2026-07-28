@@ -7,11 +7,9 @@ import userRepo from "../../repositories/user/user.repository.js";
 import {generateCode} from "../../utils/generateCode.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 import initModels from "../../database/sequelize/models/index.cjs";
-import influencerOnboardingRepo from "../../repositories/influencer/influencerOnboarding.repositories.js";
 import {InfluencerSignupStep} from "../../utils/constants/influencerSignupSteps.js";
 import {hashPassword} from "../../utils/hashPassword.js";
 import {generateSignupToken} from "../../utils/signupToken.js";
-import CloudinaryStorage from "../mediaAttachment/drivers/cloudinaryStorage.js";
 
 
 const db = initModels()

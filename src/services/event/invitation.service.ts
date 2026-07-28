@@ -7,6 +7,7 @@ import influencerRepo from "../../repositories/influencer/influencer.repository.
 import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import participantService from "./participant.service.js";
+import notficationService from "../notifications/notfication.service.js";
 
 class EventInvitationService {
 
@@ -153,15 +154,6 @@ class EventInvitationService {
         );
     }
 
-
-    /*
-        Today's completed Task
-        1) Influencer submit selected media against event, from their Instagram profile, store media IDs in database.
-        2) Business owner see the submitted media via Media ID's against the event, and give remarks, on each media.
-        3) Firebase console configuration,
-        4) FCM token saved when user login, the frontend send the fcmToken
-     */
-
     // Delete invitation
 
     async delete(invitationCode: string, actor: any) {
@@ -188,8 +180,6 @@ class EventInvitationService {
             throw new Error("invitation not found");
         }
 
-
-
         // console.log(invitation);
         if(data.status === "accepted") {
             await participantService.create({
@@ -199,6 +189,10 @@ class EventInvitationService {
                 sourceCode: invitation.invitation_code,
                 status: "approved",
             })
+
+            // send Notification to business owner that influencer accepted or declined event invitation
+
+            // const notification = await notficationService.sendToUser()
         }
 
         const allowed: any = {};
