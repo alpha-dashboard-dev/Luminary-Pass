@@ -8,6 +8,8 @@ import userRepo from "../../repositories/user/user.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
 import {normalizeDateOnly, normalizeDeadline, normalizeTimeToHHMM, parseDate} from "../../utils/dateTimeFormat.js";
 import attachmentService from "../mediaAttachment/attachment.service.js";
+import invitationRepo from "../../repositories/event/invitation.repository.js";
+import invitationService from "./invitation.service.js";
 
 const db = initModels();
 
@@ -28,6 +30,7 @@ class EventService {
 
             const eventCode = generateCode()
             const checklistCode = generateCode()
+            const invitationCode = generateCode()
             const venue = await venueRepo.findOne({
                 business_code: actor.businessCode,
             })
@@ -96,55 +99,6 @@ class EventService {
             throw err;
         }
     }
-
-    // async create(data: any, actor: any) {
-    //
-    //     // console.log(data.eventData.eventName, actor);
-    //     const business = await businessRepo.findOne({
-    //         business_code: data.businessCode,
-    //     })
-    //
-    //     if(!business) {
-    //         throw new Error("Business does not exist")
-    //     }
-    //
-    //     const venue = await venueRepo.findOne({
-    //         venue_code: data.venueCode
-    //     })
-    //
-    //     if(!venue) {
-    //         throw new Error("Venue does not exist")
-    //     }
-    //
-    //     const creator = await userRepo.findOne({
-    //         user_code: data.createdBy
-    //     })
-    //
-    //     if(!creator) {
-    //         throw new Error("Creator does not exist")
-    //     }
-    //
-    //     const eventCode = generateCode();
-    //
-    //     // add separate column for start & end date and time
-    //
-    //     return await eventRepo.create({
-    //         event_code: eventCode,
-    //         business_code: data.businessCode,
-    //         venue_code: data.venueCode,
-    //         title: data.title,
-    //         description: data.description,
-    //         start_datetime: data.startDateTime,
-    //         end_datetime: data.endDateTime,
-    //         application_deadline: data.applicationDeadline,
-    //         influencer_capacity: data.influencerCapacity,
-    //         dress_code: data.dressCode,
-    //         special_instructions: data.specialInstructions,
-    //         visibility: data.visibility,
-    //         created_by: data.createdBy,
-    //         status: data.status,
-    //     });
-    // }
 
     // Get all events
     async getAll(query: any = {}) {
@@ -232,6 +186,7 @@ class EventService {
             event_code: eventCode
         });
     }
+
 
 
 }

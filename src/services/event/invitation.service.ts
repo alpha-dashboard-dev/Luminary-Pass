@@ -207,6 +207,9 @@ class EventInvitationService {
             allowed
         )
     }
+
+
+
 }
 
 export default new EventInvitationService();
