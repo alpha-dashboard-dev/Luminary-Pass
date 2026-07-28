@@ -4,29 +4,18 @@ import userSessionRepo from "../../repositories/user/userSession.repository";
 
 class NotificationService {
 
-    /**
-     * Send notification to a single FCM token
-     */
+    // send notification to single FCM token
     async sendToToken(token: string, title: string, body: string, data: Record<string, string> = {}) {
 
         return await admin.messaging().send({
-
             token,
-
-            notification: {
-                title,
-                body,
-            },
-
+            notification: {title, body},
             data,
-
         });
 
     }
 
-    /**
-     * Send notification to all active sessions of a user
-     */
+    // Send notification to all active sessions of a user
     async sendToUser(userCode: string, title: string, body: string, data: Record<string, string> = {}) {
 
         const sessions = await userSessionRepo.findAll({
