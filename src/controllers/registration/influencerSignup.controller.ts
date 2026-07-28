@@ -2,6 +2,7 @@ import influencerSignupService from "../../services/registration/influencerSignu
 import onboardingService from "../../services/registration/onboarding.service.js";
 import {validateInfluencerBasicInfoRegistration} from "../../utils/validator.js";
 import {verifySignupToken} from "../../utils/signupToken.js";
+import {FastifyReply, FastifyRequest} from "fastify";
 
 
 class InfluencerSignupController {
@@ -27,7 +28,7 @@ class InfluencerSignupController {
     }
 
     // Step 2
-    async connectInstagram(req:any,reply:any){
+    async connectInstagram(req:any,reply:any) {
 
 
         const result = await influencerSignupService.connectInstagram(req.body);
@@ -35,9 +36,9 @@ class InfluencerSignupController {
 
         return reply.send({
 
-            success:true,
+            success: true,
 
-            data:result
+            data: result
 
         });
 

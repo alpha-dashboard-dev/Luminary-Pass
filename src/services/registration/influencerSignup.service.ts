@@ -150,14 +150,13 @@ class InfluencerSignupService {
     // Step 3
     async uploadVerification(userCode:string, file:any){
 
-        await onboardingService.canAccessStep(
-            userCode,
-            3
-        );
+        await onboardingService.canAccessStep(userCode, 3);
 
-        const influencer = await influencerService.getByField({
-                user_code:userCode
-            });
+        const influencer = await influencerService.getByField(
+            {
+                user_code:  userCode
+            }
+        );
 
         const attachment = await attachmentService.upload(
                 file,
@@ -166,7 +165,7 @@ class InfluencerSignupService {
                     entityCode: influencer.influencer_code,
                     attachmentCategory: "other",
                     mediaType: "image",
-                    uploadedBy:userCode,
+                    uploadedBy: userCode,
                     visibility:"private"
                 }
             );
