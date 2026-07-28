@@ -38,6 +38,8 @@ import signupRoutes from "./registration/influencerSignup.routes.js";
 
 import analyticRoutes from "./analytics/analytic.rotues.js";
 
+import participantChecklistMediaRoutes from "./event/participantChecklistMedia.js";
+
 
 export default async function routes(fastify: FastifyInstance) {
     fastify.register(authRoutes, { prefix: "/auth" });
@@ -80,4 +82,6 @@ export default async function routes(fastify: FastifyInstance) {
     fastify.register(signupRoutes, { prefix: "/signup" });
 
     fastify.register(analyticRoutes, { prefix: "/analytics" });
+
+    fastify.register(participantChecklistMediaRoutes, { prefix: "/participant-checklist-media" });
 }

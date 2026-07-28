@@ -322,47 +322,49 @@ class InstagramService {
 
     }
 
-    async getMediaById(mediaId: string, accessToken: string) {
-        // console.log(accessToken)
+    async getMediaById(userCode: string, mediaId: string) {
+        // console.log(userCode);
         try {
+
+            const token = await this.getValidAccessToken(userCode);
 
             const response = await instagramGraphApi.get(
 
-                    `/${mediaId}`,
+                `/${mediaId}`,
 
-                    {
+                {
 
-                        params: {
+                    params: {
 
-                            fields: [
+                        fields: [
 
-                                "id",
+                            "id",
 
-                                "caption",
+                            "caption",
 
-                                "media_type",
+                            "media_type",
 
-                                "media_url",
+                            "media_url",
 
-                                "thumbnail_url",
+                            "thumbnail_url",
 
-                                "permalink",
+                            "permalink",
 
-                                "timestamp",
+                            "timestamp",
 
-                                "like_count",
+                            "like_count",
 
-                                "comments_count"
+                            "comments_count"
 
-                            ].join(","),
+                        ].join(","),
 
-                            access_token: accessToken
-
-                        }
+                        access_token: token
 
                     }
 
-                );
+                }
+
+            );
 
 
             return response.data;
@@ -374,6 +376,60 @@ class InstagramService {
         }
 
     }
+
+
+    // async getMediaById(mediaId: string, accessToken: string) {
+    //     // console.log(accessToken)
+    //     try {
+    //
+    //         const response = await instagramGraphApi.get(
+    //
+    //                 `/${mediaId}`,
+    //
+    //                 {
+    //
+    //                     params: {
+    //
+    //                         fields: [
+    //
+    //                             "id",
+    //
+    //                             "caption",
+    //
+    //                             "media_type",
+    //
+    //                             "media_url",
+    //
+    //                             "thumbnail_url",
+    //
+    //                             "permalink",
+    //
+    //                             "timestamp",
+    //
+    //                             "like_count",
+    //
+    //                             "comments_count"
+    //
+    //                         ].join(","),
+    //
+    //                         access_token: accessToken
+    //
+    //                     }
+    //
+    //                 }
+    //
+    //             );
+    //
+    //
+    //         return response.data;
+    //
+    //     } catch (error: any) {
+    //
+    //         this.handleInstagramError(error);
+    //
+    //     }
+    //
+    // }
 
     async getComments(mediaId: string, accessToken: string) {
 

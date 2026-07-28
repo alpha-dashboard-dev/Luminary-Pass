@@ -154,11 +154,11 @@ class InstagramController {
 
         try {
 
-            const {token, mediaId} = req.query as any;
+            const {userCode, mediaId} = req.query as any;
             // console.log(mediaId, token);
 
 
-            const media = await instagramService.getMediaById(mediaId, token);
+            const media = await instagramService.getMediaById(userCode, mediaId);
 
             return reply.send({
 
