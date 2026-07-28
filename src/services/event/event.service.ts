@@ -232,6 +232,8 @@ class EventService {
             event_code: eventCode
         });
     }
+
+
 }
 
 export default new EventService();

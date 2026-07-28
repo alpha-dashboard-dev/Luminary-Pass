@@ -7,6 +7,7 @@ import influencerRepo from "../../repositories/influencer/influencer.repository.
 import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import participantService from "./participant.service.js";
+import notficationService from "../notifications/notfication.service.js";
 
 class EventInvitationService {
 
