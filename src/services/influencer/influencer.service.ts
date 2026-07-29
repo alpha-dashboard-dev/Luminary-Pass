@@ -72,9 +72,9 @@ class InfluencerService {
 
 
     // Create Influencer
-    async create(data: any) {
+    async create(data: any, options?: any) {
 
-        // console.log(data)
+        console.log(data)
 
 
         const user = await userRepo.findOne({
@@ -82,7 +82,7 @@ class InfluencerService {
         })
 
         if(!user){
-            throw new Error("Influencer does not exist");
+            throw new Error("User does not exist");
         }
 
         const influencer = await influencerRepo.findOne(
@@ -97,17 +97,20 @@ class InfluencerService {
 
         const influencerCode = generateCode();
 
-        return await influencerRepo.create({
-            influencer_code: influencerCode,
-            user_code: data.userCode,
-            bio: data.bio,
-            gender: data.gender,
-            date_of_birth: data.dateOfBirth,
-            user_name: data.username,
-            account_type: data.account_type,
-            follower_count: data.followers_count,
-            media_count: data.media_count,
-        });
+        return await influencerRepo.create(
+            {
+                influencer_code: influencerCode,
+                user_code: data.userCode,
+                bio: data.bio,
+                gender: data.gender,
+                date_of_birth: data.dateOfBirth,
+                user_name: data.username,
+                account_type: data.account_type,
+                follower_count: data.followers_count,
+                media_count: data.media_count,
+            },
+            options
+        );
     }
 
     // Get all influencers

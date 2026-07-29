@@ -21,7 +21,7 @@ export default async function signupRoutes(fastify: FastifyInstance){
         controller.uploadVerification
     );
 
-    fastify.put(
+    fastify.post(
         "/profile",
         controller.profile
     );
@@ -31,14 +31,9 @@ export default async function signupRoutes(fastify: FastifyInstance){
         controller.portfolio
     );
 
-    fastify.get(
-        "/status",
-        {
-            preHandler:[
-                authenticate
-            ]
-        },
-        controller.status
-    );
+    // fastify.get(
+    //     "/status",
+    //     controller.status
+    // );
 
 }

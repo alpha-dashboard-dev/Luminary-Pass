@@ -1,4 +1,3 @@
-import userService from "../user/user.service";
 import influencerService from "../influencer/influencer.service";
 import onboardingService from "../registration/onboarding.service";
 import socialLoginService from "../socialMedia/socialLogin.service.js";
@@ -20,7 +19,7 @@ const db = initModels()
 
 class InfluencerSignupService {
 
-    // Step 1
+    // Step 1 Basic Information
 
     async basicInfo(data: any){
         // console.log(data);
@@ -113,8 +112,8 @@ class InfluencerSignupService {
             throw err;
         }
     }
-    // Step 2
 
+    // Step 2 Connect Instagram
     async connectInstagram(data:any){
 
         const { userCode, providerUserId, accessToken, expiresIn } = data;
@@ -182,7 +181,7 @@ class InfluencerSignupService {
         };
     }
 
-    // Step 3
+    // Step 3 Upload Verification
     async uploadVerification(userCode:string, file:any){
 
         // console.log(userCode, file);
@@ -234,7 +233,7 @@ class InfluencerSignupService {
 
     }
 
-    // Step 4
+    // Step 4 Complete Profile
     async profile(userCode:string, data:any){
 
         const transaction = await db.sequelize.transaction();
@@ -245,25 +244,25 @@ class InfluencerSignupService {
 
                 await onboardingService.canAccessStep(userCode, InfluencerSignupStep.PROFILE);
 
-                const influencer = await influencerRepo.findOne({
-                    user_code: userCode
-                });
-
-                if(!influencer){
-                    throw new Error("Influencer doesn't exist");
-                }
-
-            // console.log(influencer);
-
-                const result = await influencerRepo.update(
+                const influencer = await influencerService.create(
                     {
-                        influencer_code: influencer.influencer_code,
-                    },
-                    {
+                        userCode: userCode,
                         bio: bio
                     },
                     { transaction }
                 );
+
+            // console.log(influencer);
+
+                // const result = await influencerRepo.update(
+                //     {
+                //         influencer_code: influencer.influencer_code,
+                //     },
+                //     {
+                //         bio: bio
+                //     },
+                //     { transaction }
+                // );
 
                 const influencerLocation = await locationService.create(
                     {
@@ -312,7 +311,9 @@ class InfluencerSignupService {
                 await transaction.commit();
                 return {
                     message: "Profile completed",
-                    result: result,
+                    Influencer: influencer,
+                    Location: influencerLocation,
+                    Categories: influencerCategories,
                     signupToken: signupToken,
                     nextStep: InfluencerSignupStep.PORTFOLIO
                 };
@@ -325,7 +326,7 @@ class InfluencerSignupService {
         }
     }
 
-    // upload portfolio
+    // Step 5 Upload Portfolio Images
     async portfolio(userCode:string, uploadedFiles:any[]){
 
         // console.log(userCode, uploadedFiles);
