@@ -7,7 +7,9 @@ import eventRepo from "../../repositories/event/event.repository.js";
 
 class LocationService {
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
+
+        // console.log(data, options);
 
         switch (data.entityType) {
             case "business":
@@ -46,15 +48,15 @@ class LocationService {
 
         return await locationRepo.create({
             location_code: locationCode,
-            entity_type: data.entityType,
-            entity_code: data.entityCode,
-            address_line_1: data.addressLine1,
-            address_line_2: data.addressLine2,
-            city: data.city,
-            state: data.state,
-            country: data.country,
-            postal_code: data.postalCode,
-        });
+            entity_type: data.entityType || null,
+            entity_code: data.entityCode || null,
+            address_line_1: data.addressLine1 || null,
+            address_line_2: data.addressLine2 || null,
+            city: data.city || null,
+            state: data.state || null,
+            country: data.country || null,
+            postal_code: data.postalCode || null,
+        }, options);
     }
 
     // Get all Locations

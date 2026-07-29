@@ -46,7 +46,7 @@ class InfluencerRepository {
 
     async update(where: any, data: any, options: any = {}) {
 
-        console.log(data)
+        // console.log(data)
         return dbHelper.update(
             this.tables,
             where,

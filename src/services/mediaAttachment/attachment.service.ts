@@ -1,15 +1,11 @@
 import attachmentRepo from "../../repositories/mediaAttachment/attachment.repository";
-
 import FolderGenerator from "./helpers/folderGenerator";
 import FileNameGenerator from "./helpers/fileNameGenerator";
 import EntityResolver from "./helpers/entityResolver";
-
 import AttachmentValidator from "./validator/attachmentValidator";
-
 import { generateCode } from "../../utils/generateCode";
 import StorageFactory from "./storageFactory.service";
 import {parseMimeType} from "../../utils/attachment.js";
-
 
 class AttachmentService {
 
@@ -25,7 +21,7 @@ class AttachmentService {
      */
     async upload(file:any, options:any){
 
-        console.log(file, options);
+        // console.log(file, options);
 
         AttachmentValidator.validate(file);
         const entity = await EntityResolver.exists(

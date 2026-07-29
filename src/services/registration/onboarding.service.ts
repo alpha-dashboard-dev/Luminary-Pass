@@ -59,7 +59,7 @@ class InfluencerOnboardingService {
             {
                 completed_step: step,
                 current_step: isLastStep ? step : step + 1,
-                status: isLastStep ? "completed" : "pending"
+                status: isLastStep ? "completed" : "pending",
             },
             options
         );
@@ -71,6 +71,7 @@ class InfluencerOnboardingService {
     }
 
     async canAccessStep(userCode:string, step:number){
+        // console.log(userCode);
         const onboarding = await this.getByUserCode(userCode);
 
         if(step > onboarding.current_step){
@@ -79,7 +80,7 @@ class InfluencerOnboardingService {
         return true;
     }
 
-    async update(userCode: string, data: any){
+    async update(userCode: string, data: any, options?: any){
 
         // console.log(userCode, data);
 

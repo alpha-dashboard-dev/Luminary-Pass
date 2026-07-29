@@ -12,10 +12,11 @@ import {hashPassword} from "../../utils/hashPassword.js";
 import {generateSignupToken} from "../../utils/signupToken.js";
 import socialLoginRepo from "../../repositories/socialLogin/socialLogin.repository.js";
 import {parseMimeType} from "../../utils/attachment.js";
+import locationService from "../location/location.service.js";
+import categoryService from "../category/category.service.js";
 
 
 const db = initModels()
-
 
 class InfluencerSignupService {
 
@@ -236,92 +237,142 @@ class InfluencerSignupService {
     // Step 4
     async profile(userCode:string, data:any){
 
-        await onboardingService.canAccessStep(userCode, 4);
+        const transaction = await db.sequelize.transaction();
 
-        const influencer = await influencerRepo.findOne({
-            user_code: userCode
-        });
+        try {
 
-        if(!influencer){
-            throw new Error("Influencer doesn't exist");
+                const {bio, categories, country, city} = data
+
+                await onboardingService.canAccessStep(userCode, InfluencerSignupStep.PROFILE);
+
+                const influencer = await influencerRepo.findOne({
+                    user_code: userCode
+                });
+
+                if(!influencer){
+                    throw new Error("Influencer doesn't exist");
+                }
+
+            // console.log(influencer);
+
+                const result = await influencerRepo.update(
+                    {
+                        influencer_code: influencer.influencer_code,
+                    },
+                    bio,
+                    { transaction }
+                );
+                let influencerCategories;
+
+                for( const category of categories ){
+
+                    // console.log(category);
+
+                    influencerCategories = await categoryService.create(
+                        {
+                            entityType: "influencer",
+                            entityCode: influencer.influencer_code,
+                            categoryName: category
+
+                        },
+                        {   transaction }
+                    )
+
+                }
+
+                const influencerLocation = await locationService.create(
+                    {
+                        entityType: "user",
+                        entityCode: userCode,
+                        country: country,
+                        city: city
+                    },
+
+                    { transaction }
+                )
+            //
+                const signupToken = generateSignupToken(userCode);
+                const onboarding = await onboardingService.update(
+                    userCode,
+                    {
+                        signup_token: signupToken.token,
+                        expires_at: signupToken.expiresAt,
+                    },
+                    { transaction}
+                );
+                await onboardingService.completeStep(
+                    userCode,
+                    InfluencerSignupStep.PROFILE,
+                    { transaction }
+                );
+
+                await transaction.commit();
+                return {
+                    message: "Profile completed",
+                    result: result,
+                    signupToken: signupToken,
+                    nextStep: InfluencerSignupStep.PORTFOLIO
+                };
+
+        } catch(err){
+
+            if(!transaction.finished)
+                await transaction.rollback();
+            throw err;
         }
-
-        // console.log(influencer);
-
-        const result = await influencerService.update(
-            influencer.influencer_code,
-            data
-        );
-
-        const signupToken = generateSignupToken(userCode);
-        const onboarding = await onboardingService.update(
-            userCode,
-            {
-                signup_token: signupToken.token,
-                expires_at: signupToken.expiresAt,
-            },
-        );
-        await onboardingService.completeStep(
-            userCode,
-            InfluencerSignupStep.PROFILE
-        );
-        return {
-            message: "Profile completed",
-            signupToken: signupToken,
-            currentStep: 5
-
-        };
-
     }
 
     // upload portfolio
     async portfolio(userCode:string, uploadedFiles:any[]){
 
         // console.log(userCode, uploadedFiles);
+        try{
+                if(uploadedFiles.length < 2){
+                    throw new Error("Minimum 4 images required");
+                }
 
+                await onboardingService.canAccessStep(userCode, 5);
 
-        if(uploadedFiles.length < 2){
-            throw new Error("Minimum 4 images required");
+                const influencer = await influencerRepo.findOne({
+                    user_code: userCode
+                });
+
+                if(!influencer){
+                    throw new Error("Influencer doesn't exist");
+                }
+
+                // console.log(influencer);
+
+                const attachments = attachmentService.uploadMultiple(
+                    uploadedFiles,
+                    {
+                        entityType: "influencer",
+                        entityCode: influencer.influencer_code,
+                        attachmentCategory: "portfolio",
+                        uploadedBy: userCode,
+                        visibility: "public"
+                    }
+                )
+
+                await onboardingService.completeStep(userCode, InfluencerSignupStep.PORTFOLIO);
+
+                // const signupToken = generateSignupToken(userCode);
+                // const onboarding = await onboardingService.update(
+                //     userCode,
+                //     {
+                //         signup_token: null,
+                //         expires_at: null,
+                //         status: "completed"
+                //     },
+                // );
+            return {
+                    message: "Application submitted",
+                    attachments
+                };
+        } catch (err){
+            throw err;
         }
 
-        await onboardingService.canAccessStep(userCode, 5);
-
-        const influencer = await influencerRepo.findOne({
-            user_code: userCode
-        });
-
-        if(!influencer){
-            throw new Error("Influencer doesn't exist");
-        }
-
-        // console.log(influencer);
-
-        const attachments = attachmentService.uploadMultiple(
-            uploadedFiles,
-            {
-                entityType: "influencer",
-                entityCode: influencer.influencer_code,
-                attachmentCategory: "portfolio",
-                uploadedBy: userCode,
-                visibility: "public"
-            }
-        )
-
-        await onboardingService.completeStep(userCode, InfluencerSignupStep.PORTFOLIO);
-
-        // const signupToken = generateSignupToken(userCode);
-        // const onboarding = await onboardingService.update(
-        //     userCode,
-        //     {
-        //         signup_token: null,
-        //         expires_at: null,
-        //         status: "completed"
-        //     },
-        // );
-        return {
-            message: "Application submitted",
-            attachments
-        };
     }
 }
 

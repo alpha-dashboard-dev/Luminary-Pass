@@ -6,7 +6,7 @@ import influencerRepo from "../../repositories/influencer/influencer.repository.
 
 class CategoryService {
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
 
         // console.log(data.entityType)
 
@@ -38,7 +38,7 @@ class CategoryService {
             category_code: categoryCode,
             entity_type: data.entityType,
             entity_code: data.entityCode,
-            name: data.name,
+            name: data.categoryName,
             description: data.description,
             status: data.status
         });
