@@ -11,10 +11,10 @@ class FileNameGenerator {
         //     .toISOString()
         //     .replace(/[-:.TZ]/g, "");
 
-        return `${entityCode}_${category}_${originalName}${extension}`;
+        // return `${entityCode}_${category}_${originalName}${extension}`;
 
 
-        // return `${entityCode}_${category}_${timestamp}_${generateCode()}${extension}`;
+        return `${entityCode}_${category}_${originalName}`;
 
     }
 

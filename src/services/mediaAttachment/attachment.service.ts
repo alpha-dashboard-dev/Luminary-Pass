@@ -32,6 +32,8 @@ class AttachmentService {
             options.entityCode
         );
 
+        // console.log(entity);
+
         if(!entity){
             throw new Error(`${options.entityType} not found`);
         }

@@ -28,11 +28,6 @@ export default async function signupRoutes(fastify: FastifyInstance){
 
     fastify.post(
         "/portfolio",
-        {
-            preHandler:[
-                authenticate
-            ]
-        },
         controller.portfolio
     );
 

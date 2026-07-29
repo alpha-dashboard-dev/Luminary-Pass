@@ -9,7 +9,7 @@ class InfluencerSignupController {
 
 
     // Step 1
-    async basicInfo(req:any, reply:any){
+    async basicInfo(req: FastifyRequest, reply: FastifyReply){
 
         const data = req.body;
 
@@ -28,117 +28,134 @@ class InfluencerSignupController {
     }
 
     // Step 2
-    async connectInstagram(req:any,reply:any) {
+    async connectInstagram(req: FastifyRequest,reply: FastifyReply) {
+
+        try{
+            const result = await influencerSignupService.connectInstagram(req.body);
 
 
-        const result = await influencerSignupService.connectInstagram(req.body);
+            return reply.send({
 
+                success: true,
 
-        return reply.send({
+                data: result
 
-            success: true,
+            });
 
-            data: result
-
-        });
-
+        }catch(err){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
+        }
 
     }
 
     // Step 3
-    async uploadVerification(req:any,reply:any){
+    async uploadVerification(req: FastifyRequest,   reply: FastifyReply){
 
-        const auth = req.headers.authorization;
+        try{
 
-        if (!auth) {
-            throw new Error("Unauthorized");
+            const { signupToken } = req.query as any
+
+            const token = verifySignupToken(signupToken);
+            const userCode = token.userCode;
+            const file = await req.file();
+
+            if (!file) {
+                throw new Error("Verification image required");
+            }
+
+            const result = await influencerSignupService.uploadVerification(userCode, file);
+
+            return reply.send({
+                success:true,
+                data:result
+            });
+
+        }catch(err){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
         }
-
-        const token = auth.replace("Bearer ", "");
-
-        const data = verifySignupToken(token)
-        // console.log(data.userCode)
-
-
-        const file = await req.file();
-        // const userCode = req.user.userCode;
-
-        const result = await influencerSignupService.uploadVerification(data.userCode, file);
-
-        return reply.send({
-
-            success:true,
-
-            data:result
-
-        });
-
 
     }
 
-//     Step 4
-    async profile(req:any,reply:any){
-        const auth = req.headers.authorization;
+//     Step 4 Complete Profile
+    async profile(req: FastifyRequest,  reply: FastifyReply){
 
-        if (!auth) {
-            throw new Error("Unauthorized");
+        try{
+
+            const { signupToken } = req.query as any
+
+            const token = verifySignupToken(signupToken);
+            const userCode = token.userCode;
+            const data = req.body;
+            // console.log(userCode, data);
+
+            const result = await influencerSignupService.profile(userCode, data);
+
+            return reply.send({
+                success:true,
+                data:result
+
+            });
+
+        }catch(err){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
         }
-
-        const token = auth.replace("Bearer ", "");
-
-        const user = verifySignupToken(token);
-        const data = req.body;
-
-        const result = await influencerSignupService.profile(user.userCode, data);
-
-        return reply.send({
-
-            success:true,
-
-            data:result
-
-        });
-
 
     }
 
 //     Step 5: upload portfolio Images
-    async portfolio(req:any,reply:any){
+    async portfolio(req: FastifyRequest,reply: FastifyReply){
+
+        try{
+
+            const { signupToken } = req.query as any
+            console.log("before token");
+
+            const token = verifySignupToken(signupToken);
+            const userCode = token.userCode;
+            console.log("userCode:", userCode);
+
+            const uploadedFiles=[];
+            console.log("before files");
+            //
+            //
+            for await(const file of req.files()){
+                console.log("file received:", file.filename);
+                if (!file.mimetype.startsWith("image/")) {
+                    throw new Error(
+                        `${file.filename} is not an image`
+                    );
+                }
+                uploadedFiles.push(file);
+            }
+            //
+            // console.log(userCode, uploadedFiles)
+
+            const result = await influencerSignupService.portfolio(req.user.userCode, uploadedFiles);
 
 
-        const files=[];
+            return reply.send({
 
+                success:true,
 
-        for await(
-            const file of req.files()
-            ){
+                data:result
 
-            files.push(file);
+            });
 
+        }catch(err){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            });
         }
-
-
-
-        const result =
-            await influencerSignupService.portfolio(
-
-                req.user.userCode,
-
-                files
-
-            );
-
-
-
-        return reply.send({
-
-            success:true,
-
-            data:result
-
-        });
-
-
     }
 
 //     Resume status

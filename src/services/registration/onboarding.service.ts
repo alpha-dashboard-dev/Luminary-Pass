@@ -81,7 +81,7 @@ class InfluencerOnboardingService {
 
     async update(userCode: string, data: any){
 
-        console.log(userCode, data);
+        // console.log(userCode, data);
 
         const user = await influencerOnboardingRepo.findOne({
             user_code: userCode

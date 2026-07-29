@@ -17,6 +17,12 @@ await app.register(multipart, {
     }
 });
 
+// app.addHook("onRequest", async (req) => {
+//     console.log("METHOD:", req.method);
+//     console.log("URL:", req.url);
+//     console.log("HEADERS:", req.headers);
+// });
+
 app.register(routes, { prefix: "/api" });
 
 // app.ready(() => {

@@ -184,6 +184,14 @@ class InfluencerService {
         if (!influencer) throw new Error("influencer not found");
 
         const allowed: any = {};
+        if(data.bio !== undefined)
+            allowed.bio = data.bio;
+        if(data.gender !== undefined)
+            allowed.gender = data.gender;
+        if(data.dateOfBirth !== undefined)
+            allowed.date_of_birth = data.dateOfBirth;
+        if(data.description !== undefined)
+            allowed.description = data.description;
         if (data.username !== undefined)
             allowed.user_name = data.username;
         if (data.account_type !== undefined)

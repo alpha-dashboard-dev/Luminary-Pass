@@ -11,6 +11,7 @@ import {InfluencerSignupStep} from "../../utils/constants/influencerSignupSteps.
 import {hashPassword} from "../../utils/hashPassword.js";
 import {generateSignupToken} from "../../utils/signupToken.js";
 import socialLoginRepo from "../../repositories/socialLogin/socialLogin.repository.js";
+import {parseMimeType} from "../../utils/attachment.js";
 
 
 const db = initModels()
@@ -183,6 +184,11 @@ class InfluencerSignupService {
     // Step 3
     async uploadVerification(userCode:string, file:any){
 
+        // console.log(userCode, file);
+
+        const mediaType = parseMimeType(file.mimetype)
+        // console.log(mediaType);
+
         await onboardingService.canAccessStep(userCode, 3);
 
         const influencer = await influencerService.getByField(
@@ -191,24 +197,33 @@ class InfluencerSignupService {
             }
         );
 
+        // console.log(influencer);
+        //
         const attachment = await attachmentService.upload(
                 file,
                 {
                     entityType: "influencer",
                     entityCode: influencer.influencer_code,
-                    attachmentCategory: "other",
-                    mediaType: "image",
+                    attachmentCategory: "proof",
+                    mediaType: mediaType.fileType,
                     uploadedBy: userCode,
-                    visibility:"private"
+                    visibility: "private"
                 }
             );
 
+        const signupToken = generateSignupToken(userCode);
+        const onboarding = await onboardingService.update(
+            userCode,
+            {
+                signup_token: signupToken.token,
+                expires_at: signupToken.expiresAt,
+            },
+        );
+        //
         await onboardingService.completeStep(
             userCode,
             3
         );
-
-        const signupToken = generateSignupToken(userCode);
 
         return {
             attachment,
@@ -221,127 +236,141 @@ class InfluencerSignupService {
     // Step 4
     async profile(userCode:string, data:any){
 
-
         await onboardingService.canAccessStep(userCode, 4);
 
-        const influencer = await influencerService.getByField({
-                user_code: userCode
-            });
+        const influencer = await influencerRepo.findOne({
+            user_code: userCode
+        });
 
-        // console.log(influencer.influencer_code);
+        if(!influencer){
+            throw new Error("Influencer doesn't exist");
+        }
 
-        await influencerService.update(
+        // console.log(influencer);
+
+        const result = await influencerService.update(
             influencer.influencer_code,
             data
         );
+
+        const signupToken = generateSignupToken(userCode);
+        const onboarding = await onboardingService.update(
+            userCode,
+            {
+                signup_token: signupToken.token,
+                expires_at: signupToken.expiresAt,
+            },
+        );
         await onboardingService.completeStep(
             userCode,
-            4
+            InfluencerSignupStep.PROFILE
         );
         return {
-            message: "Profile completed"
+            message: "Profile completed",
+            signupToken: signupToken,
+            currentStep: 5
+
         };
+
+    }
+
+    // upload portfolio
+    async portfolio(userCode:string, files:any[]){
+
+        console.log(userCode, files);
+
+
+        if(files.length < 4){
+
+            throw new Error(
+                "Minimum 4 images required"
+            );
+
+        }
+        //
+        //
+        //
+        // await onboardingService.canAccessStep(
+        //     userCode,
+        //     5
+        // );
+        //
+        //
+        //
+        // const influencer =
+        //     await influencerService.findByUserCode(
+        //         userCode
+        //     );
+        //
+        //
+        //
+        // let order=1;
+        //
+        //
+        // for(const file of files){
+        //
+        //
+        //
+        //     const uploaded =
+        //         await cloudinaryService.upload(
+        //
+        //             file,
+        //
+        //             {
+        //
+        //                 folder:
+        //                     `luminary-pass/influencers/${influencer.influencer_code}/portfolio`
+        //
+        //             }
+        //
+        //         );
+        //
+        //
+        //
+        //
+        //     await attachmentService.create({
+        //
+        //         entityType:"influencer",
+        //
+        //         entityCode: influencer.influencer_code,
+        //
+        //         category:"portfolio",
+        //
+        //         url: uploaded.secureUrl,
+        //
+        //         publicId: uploaded.publicId,
+        //
+        //         displayOrder: order,
+        //         visibility:"public",
+        //
+        //         uploadedBy:userCode
+        //
+        //     });
+        //
+        //
+        //     order++;
+        //
+        // }
+        //
+        //
+        //
+        //
+        // await onboardingService.completeStep(
+        //     userCode,
+        //     5
+        // );
+        //
+        //
+        //
+        // return {
+        //
+        //     message:
+        //         "Application submitted"
+        //
+        // };
 
 
     }
-    //
-    // async portfolio(
-    //     userCode:string,
-    //     files:any[]
-    // ){
-    //
-    //
-    //     if(files.length < 4){
-    //
-    //         throw new Error(
-    //             "Minimum 4 images required"
-    //         );
-    //
-    //     }
-    //
-    //
-    //
-    //     await onboardingService.canAccessStep(
-    //         userCode,
-    //         5
-    //     );
-    //
-    //
-    //
-    //     const influencer =
-    //         await influencerService.findByUserCode(
-    //             userCode
-    //         );
-    //
-    //
-    //
-    //     let order=1;
-    //
-    //
-    //     for(const file of files){
-    //
-    //
-    //
-    //         const uploaded =
-    //             await cloudinaryService.upload(
-    //
-    //                 file,
-    //
-    //                 {
-    //
-    //                     folder:
-    //                         `luminary-pass/influencers/${influencer.influencer_code}/portfolio`
-    //
-    //                 }
-    //
-    //             );
-    //
-    //
-    //
-    //
-    //         await attachmentService.create({
-    //
-    //             entityType:"influencer",
-    //
-    //             entityCode: influencer.influencer_code,
-    //
-    //             category:"portfolio",
-    //
-    //             url: uploaded.secureUrl,
-    //
-    //             publicId: uploaded.publicId,
-    //
-    //             displayOrder: order,
-    //             visibility:"public",
-    //
-    //             uploadedBy:userCode
-    //
-    //         });
-    //
-    //
-    //         order++;
-    //
-    //     }
-    //
-    //
-    //
-    //
-    //     await onboardingService.completeStep(
-    //         userCode,
-    //         5
-    //     );
-    //
-    //
-    //
-    //     return {
-    //
-    //         message:
-    //             "Application submitted"
-    //
-    //     };
-    //
-    //
-    // }
 }
 
 
