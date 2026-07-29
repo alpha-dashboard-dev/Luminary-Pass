@@ -9,23 +9,9 @@ import influencerSignupService from "../../../services/registration/influencerSi
 
 class InstagramController {
 
-    // async login(req:FastifyRequest, reply:FastifyReply){
-    //
-    //     const url = instagramService.getLoginUrl();
-    //     // console.log(url);
-    //     return reply.redirect(url);
-    // }
-
     // Instagram Login from Frontend
     async login(req: FastifyRequest, reply: FastifyReply) {
 
-        // const auth = req.headers.authorization;
-        //
-        // if (!auth) {
-        //     throw new Error("Unauthorized");
-        // }
-        //
-        // const token = auth.replace("Bearer ", "");
         const { signupToken } = req.query as {
             signupToken: string
         };
@@ -33,7 +19,6 @@ class InstagramController {
         if (!signupToken) {
             throw new Error("Signup token required");
         }
-
 
         const payload = verifySignupToken(signupToken);
 
@@ -54,7 +39,7 @@ class InstagramController {
         const longToken = await instagramService.getLongLivedToken(token.access_token);
         // console.log(longToken.expires_in)
 
-        await influencerSignupService.connectInstagram({
+        const result = await influencerSignupService.connectInstagram({
             userCode,
             providerUserId: token.user_id,
             accessToken: longToken.access_token,
@@ -66,7 +51,8 @@ class InstagramController {
             // token: longToken,
             access_token: longToken.access_token,
             user_id: token.user_id,
-            expires_in: longToken.expires_in
+            expires_in: longToken.expires_in,
+            result: result.signupToken
         });
 
     }

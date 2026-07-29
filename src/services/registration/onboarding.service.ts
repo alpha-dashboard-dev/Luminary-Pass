@@ -79,6 +79,28 @@ class InfluencerOnboardingService {
         return true;
     }
 
+    async update(userCode: string, data: any){
+
+        console.log(userCode, data);
+
+        const user = await influencerOnboardingRepo.findOne({
+            user_code: userCode
+        })
+
+        if(!user){
+            throw new Error("User does not exist");
+        }
+
+        const result = await influencerOnboardingRepo.update(
+            {
+                user_code: userCode,
+            },
+            data,
+        )
+
+        return result;
+    }
+
 
 }
 

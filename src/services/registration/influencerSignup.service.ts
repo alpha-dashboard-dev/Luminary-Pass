@@ -10,6 +10,7 @@ import initModels from "../../database/sequelize/models/index.cjs";
 import {InfluencerSignupStep} from "../../utils/constants/influencerSignupSteps.js";
 import {hashPassword} from "../../utils/hashPassword.js";
 import {generateSignupToken} from "../../utils/signupToken.js";
+import socialLoginRepo from "../../repositories/socialLogin/socialLogin.repository.js";
 
 
 const db = initModels()
@@ -119,8 +120,30 @@ class InfluencerSignupService {
         // console.log(userCode, providerUserId, accessToken)
         await onboardingService.canAccessStep(userCode, 2);
         const influencer = await influencerRepo.findOne({
-            influencer_code: userCode
+            user_code: userCode
         });
+
+        // console.log(influencer);
+
+        const existing = await socialLoginRepo.findOne({
+            user_code: userCode,
+            provider: "instagram",
+        });
+
+        if (existing) {
+            throw new Error("Instagram account is already connected.");
+        }
+
+        // console.log(existing);
+
+        // const existingProvider = await socialLoginRepo.findOne({
+        //     provider: "instagram",
+        //     provider_user_id: providerUserId,
+        // });
+        // console.log(existingProvider);
+        // if (existingProvider && existingProvider.user_code !== userCode) {
+        //     throw new Error("This Instagram account is already connected to another user.");
+        // }
 
         const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
@@ -129,14 +152,23 @@ class InfluencerSignupService {
         // const socialLoginCode = generateCode()
         await socialLoginService.create({
             userCode,
-            provider:   "instagram",
+            provider: "instagram",
             providerUserId,
             accessToken,
             expiresAt,
         });
 
-        await onboardingService.completeStep(userCode, 2);
         const signupToken = generateSignupToken(userCode);
+        console.log(signupToken);
+        const onboarding = await onboardingService.update(
+           userCode,
+            {
+                signup_token: signupToken.token,
+                expires_at: signupToken.expiresAt,
+            },
+        );
+
+        await onboardingService.completeStep(userCode, 2);
 
         // console.log(signupToken)
 
