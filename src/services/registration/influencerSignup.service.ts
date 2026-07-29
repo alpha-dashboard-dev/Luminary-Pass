@@ -74,10 +74,13 @@ class InfluencerSignupService {
                 },
                 {   transaction }
             );
-            //
+
+            const signupToken = generateSignupToken(userCode);
             const onboarding = await onboardingService.create(
                 {
-                    userCode: influencerCode,
+                    userCode: userCode,
+                    signupToken: signupToken.token,
+                    expiresAt: signupToken.expiresAt,
                 },
                 {   transaction }
             );
@@ -85,14 +88,12 @@ class InfluencerSignupService {
             // console.log(onboarding.toJSON());
 
             await onboardingService.completeStep(
-                influencerCode,
+                userCode,
                 InfluencerSignupStep.BASIC_INFO,
                 {   transaction }
             );
 
             await transaction.commit();
-
-            const signupToken = generateSignupToken(influencerCode);
 
             return {
                 user: user,

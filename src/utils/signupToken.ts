@@ -4,7 +4,7 @@ import {env} from "../config/env.js";
 const SIGNUP_TOKEN_EXPIRES = "1d";
 
 export function generateSignupToken(userCode: string) {
-    return jwt.sign(
+    const token = jwt.sign(
         {
             userCode,
             type: "signup"
@@ -14,6 +14,15 @@ export function generateSignupToken(userCode: string) {
             expiresIn: SIGNUP_TOKEN_EXPIRES
         }
     );
+
+    const decoded = jwt.decode(token) as jwt.JwtPayload;
+
+    return {
+        token,
+        expiresAt: decoded.exp
+            ? new Date(decoded.exp * 1000)
+            : null,
+    }
 }
 
 export function verifySignupToken(token: string) {

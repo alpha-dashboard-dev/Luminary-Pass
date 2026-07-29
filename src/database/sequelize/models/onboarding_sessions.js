@@ -43,7 +43,14 @@ class OnboardingSession extends Model {
                     allowNull: false,
                     defaultValue: "pending",
                 },
-
+                signup_token: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
+                },
+                expires_at: {
+                    type: DataTypes.DATE,
+                    allowNull: true,
+                },
                 created_at: {
                     type: DataTypes.DATE,
                     defaultValue: DataTypes.NOW,

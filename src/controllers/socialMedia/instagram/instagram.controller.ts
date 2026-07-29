@@ -321,3 +321,10 @@ class InstagramController {
 
 
 export default new InstagramController();
+
+/*
+Influencer signup Process steps
+1) Basic info
+2) Connect Instagram OAuth
+3) Upload verification picture
+ */

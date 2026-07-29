@@ -7,7 +7,7 @@ class InfluencerOnboardingService {
 
 
     async create(data: any, options?: any) {
-        const { userCode } = data;
+        const { userCode, signupToken, expiresAt } = data;
 
         return influencerOnboardingRepo.create(
             {
@@ -15,7 +15,9 @@ class InfluencerOnboardingService {
                 user_code: userCode,
                 current_step: InfluencerSignupStep.BASIC_INFO,
                 completed_step: 0,
-                status: "pending"
+                status: "pending",
+                signup_token: signupToken,
+                expires_at: expiresAt,
             },
             options
         );

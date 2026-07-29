@@ -39,6 +39,15 @@ module.exports = {
                 defaultValue: "pending",
             },
 
+            signup_token: {
+                type: Sequelize.TEXT,
+                allowNull: true,
+            },
+            expires_at: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
+
             created_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
