@@ -13,14 +13,8 @@ class NotificationService {
         this.messaging = getMessaging(firebaseAdmin);
     }
 
-
     // Send notification to single FCM token
-    async sendToToken(
-        token: string,
-        title: string,
-        body: string,
-        data: Record<string, string> = {}
-    ) {
+    async sendToToken(token: string, title: string, body: string, data: Record<string, string> = {}) {
 
         return await this.messaging.send({
 
