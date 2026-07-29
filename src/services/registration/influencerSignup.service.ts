@@ -169,7 +169,7 @@ class InfluencerSignupService {
             },
         );
 
-        await onboardingService.completeStep(userCode, 2);
+        await onboardingService.completeStep(userCode, InfluencerSignupStep.INSTAGRAM_CONNECT);
 
         // console.log(signupToken)
 
@@ -222,7 +222,7 @@ class InfluencerSignupService {
         //
         await onboardingService.completeStep(
             userCode,
-            3
+            InfluencerSignupStep.VERIFICATION,
         );
 
         return {
@@ -275,101 +275,53 @@ class InfluencerSignupService {
     }
 
     // upload portfolio
-    async portfolio(userCode:string, files:any[]){
+    async portfolio(userCode:string, uploadedFiles:any[]){
 
-        console.log(userCode, files);
+        // console.log(userCode, uploadedFiles);
 
 
-        if(files.length < 4){
-
-            throw new Error(
-                "Minimum 4 images required"
-            );
-
+        if(uploadedFiles.length < 2){
+            throw new Error("Minimum 4 images required");
         }
-        //
-        //
-        //
-        // await onboardingService.canAccessStep(
-        //     userCode,
-        //     5
-        // );
-        //
-        //
-        //
-        // const influencer =
-        //     await influencerService.findByUserCode(
-        //         userCode
-        //     );
-        //
-        //
-        //
-        // let order=1;
-        //
-        //
-        // for(const file of files){
-        //
-        //
-        //
-        //     const uploaded =
-        //         await cloudinaryService.upload(
-        //
-        //             file,
-        //
-        //             {
-        //
-        //                 folder:
-        //                     `luminary-pass/influencers/${influencer.influencer_code}/portfolio`
-        //
-        //             }
-        //
-        //         );
-        //
-        //
-        //
-        //
-        //     await attachmentService.create({
-        //
-        //         entityType:"influencer",
-        //
-        //         entityCode: influencer.influencer_code,
-        //
-        //         category:"portfolio",
-        //
-        //         url: uploaded.secureUrl,
-        //
-        //         publicId: uploaded.publicId,
-        //
-        //         displayOrder: order,
-        //         visibility:"public",
-        //
-        //         uploadedBy:userCode
-        //
-        //     });
-        //
-        //
-        //     order++;
-        //
-        // }
-        //
-        //
-        //
-        //
-        // await onboardingService.completeStep(
-        //     userCode,
-        //     5
-        // );
-        //
-        //
-        //
-        // return {
-        //
-        //     message:
-        //         "Application submitted"
-        //
-        // };
 
+        await onboardingService.canAccessStep(userCode, 5);
 
+        const influencer = await influencerRepo.findOne({
+            user_code: userCode
+        });
+
+        if(!influencer){
+            throw new Error("Influencer doesn't exist");
+        }
+
+        // console.log(influencer);
+
+        const attachments = attachmentService.uploadMultiple(
+            uploadedFiles,
+            {
+                entityType: "influencer",
+                entityCode: influencer.influencer_code,
+                attachmentCategory: "portfolio",
+                uploadedBy: userCode,
+                visibility: "public"
+            }
+        )
+
+        await onboardingService.completeStep(userCode, InfluencerSignupStep.PORTFOLIO);
+
+        // const signupToken = generateSignupToken(userCode);
+        // const onboarding = await onboardingService.update(
+        //     userCode,
+        //     {
+        //         signup_token: null,
+        //         expires_at: null,
+        //         status: "completed"
+        //     },
+        // );
+        return {
+            message: "Application submitted",
+            attachments
+        };
     }
 }
 

@@ -8,6 +8,7 @@ import AttachmentValidator from "./validator/attachmentValidator";
 
 import { generateCode } from "../../utils/generateCode";
 import StorageFactory from "./storageFactory.service";
+import {parseMimeType} from "../../utils/attachment.js";
 
 
 class AttachmentService {
@@ -24,7 +25,7 @@ class AttachmentService {
      */
     async upload(file:any, options:any){
 
-        // console.log(file, options);
+        console.log(file, options);
 
         AttachmentValidator.validate(file);
         const entity = await EntityResolver.exists(
@@ -79,11 +80,15 @@ class AttachmentService {
      */
     async uploadMultiple(files:any[], options:any){
 
-        // console.log(files, options);
-
         const attachments=[];
+
         for(const file of files){
-            const attachment = await this.upload(file, options);
+            const media_type = parseMimeType(file.mimetype)
+            const attachment = await this.upload(file,
+                {
+                    ...options,
+                    mediaType: media_type.fileType
+                });
             attachments.push(attachment);
         }
         return attachments;

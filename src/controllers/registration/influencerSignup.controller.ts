@@ -117,30 +117,32 @@ class InfluencerSignupController {
         try{
 
             const { signupToken } = req.query as any
-            console.log("before token");
 
             const token = verifySignupToken(signupToken);
             const userCode = token.userCode;
-            console.log("userCode:", userCode);
 
             const uploadedFiles=[];
-            console.log("before files");
-            //
+
             //
             for await(const file of req.files()){
-                console.log("file received:", file.filename);
+                // console.log("file received:", file);
                 if (!file.mimetype.startsWith("image/")) {
                     throw new Error(
                         `${file.filename} is not an image`
                     );
                 }
-                uploadedFiles.push(file);
+                const buffer = await file.toBuffer();
+
+                uploadedFiles.push({
+                    filename: file.filename,
+                    mimetype: file.mimetype,
+                    buffer
+                });
             }
             //
             // console.log(userCode, uploadedFiles)
 
-            const result = await influencerSignupService.portfolio(req.user.userCode, uploadedFiles);
-
+            const result = await influencerSignupService.portfolio(userCode, uploadedFiles);
 
             return reply.send({
 
@@ -159,28 +161,17 @@ class InfluencerSignupController {
     }
 
 //     Resume status
-    async status(req:any,reply:any){
+    async status(req: FastifyRequest,reply: FastifyReply){
 
-
-        const result = await onboardingService.getByUserCode(
-                req.user.userCode
-            );
-
-
+        const result = await onboardingService.getByUserCode(req.user.userCode);
 
         return reply.send({
-
             success:true,
-
             data:result
 
         });
-
-
     }
 
 
 }
-
-
 export default new InfluencerSignupController();
