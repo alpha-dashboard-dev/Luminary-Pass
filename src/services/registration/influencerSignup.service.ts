@@ -161,7 +161,7 @@ class InfluencerSignupService {
         });
 
         const signupToken = generateSignupToken(userCode);
-        console.log(signupToken);
+        // console.log(signupToken);
         const onboarding = await onboardingService.update(
            userCode,
             {
