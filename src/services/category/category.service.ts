@@ -16,32 +16,44 @@ class CategoryService {
                     venue_code: data.entityCode,
                 });
 
-                if(venue){
-                    throw new Error("Venue already exist");
+                if(!venue){
+                    throw new Error("Venue doesn't exist");
                 }
                 break;
 
             case "influencer":
-
                 const influencer = await influencerRepo.findOne({
                     influencer_code: data.entityCode,
                 })
+                // console.log(influencer);
                 if (!influencer){
-                    throw new Error("Influencer already exist");
+                    throw new Error("Influencer doesn't exist");
                 }
                 break;
         }
 
-        const categoryCode = generateCode();
-
-        return await categoryRepo.create({
-            category_code: categoryCode,
-            entity_type: data.entityType,
+        const category = await categoryRepo.findOne({
             entity_code: data.entityCode,
             name: data.categoryName,
-            description: data.description,
-            status: data.status
-        });
+        })
+
+        if(category){
+            throw new Error(`${data.categoryName} category already exist for ${data.entityType}`);
+        }
+
+        const categoryCode = generateCode();
+
+        return await categoryRepo.create(
+            {
+                category_code: categoryCode,
+                entity_type: data.entityType,
+                entity_code: data.entityCode,
+                name: data.categoryName,
+                description: data.description,
+                status: data.status
+            },
+            options
+        );
     }
 
     // Get all Categories

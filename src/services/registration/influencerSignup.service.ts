@@ -259,9 +259,23 @@ class InfluencerSignupService {
                     {
                         influencer_code: influencer.influencer_code,
                     },
-                    bio,
+                    {
+                        bio: bio
+                    },
                     { transaction }
                 );
+
+                const influencerLocation = await locationService.create(
+                    {
+                        entityType: "user",
+                        entityCode: userCode,
+                        country: country,
+                        city: city
+                    },
+
+                    { transaction }
+                )
+
                 let influencerCategories;
 
                 for( const category of categories ){
@@ -279,17 +293,6 @@ class InfluencerSignupService {
                     )
 
                 }
-
-                const influencerLocation = await locationService.create(
-                    {
-                        entityType: "user",
-                        entityCode: userCode,
-                        country: country,
-                        city: city
-                    },
-
-                    { transaction }
-                )
             //
                 const signupToken = generateSignupToken(userCode);
                 const onboarding = await onboardingService.update(

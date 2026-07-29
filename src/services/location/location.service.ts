@@ -42,6 +42,14 @@ class LocationService {
                 break;
         }
 
+        const location = await locationRepo.findOne({
+            entity_code: data.entityCode,
+        })
+
+        if (location){
+            throw new Error(`Location already exist for ${data.entityType}`);
+        }
+
         // Add Status column in Location Table
 
         const locationCode = generateCode();
