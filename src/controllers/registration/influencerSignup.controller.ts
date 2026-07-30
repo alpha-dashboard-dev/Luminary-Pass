@@ -3,6 +3,7 @@ import onboardingService from "../../services/registration/onboarding.service.js
 import {validateInfluencerBasicInfoRegistration} from "../../utils/validator.js";
 import {verifySignupToken} from "../../utils/signupToken.js";
 import {FastifyReply, FastifyRequest} from "fastify";
+import * as repl from "node:repl";
 
 
 class InfluencerSignupController {
@@ -170,6 +171,28 @@ class InfluencerSignupController {
             data:result
 
         });
+    }
+
+
+    // Influencer Registration through Website
+    async registerInfluencer(req: FastifyRequest, reply: FastifyReply){
+        try{
+
+            const data = req.body;
+
+            const result = await influencerSignupService.registerInfluencer(data);
+
+            return reply.send({
+                success: true,
+                data: result
+            })
+
+        }catch(err){
+            return reply.code(400).send({
+                success: false,
+                message: err.message
+            })
+        }
     }
 
 

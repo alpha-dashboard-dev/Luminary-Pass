@@ -36,4 +36,9 @@ export default async function signupRoutes(fastify: FastifyInstance){
     //     controller.status
     // );
 
+    fastify.post(
+        "/register-influencer",
+        controller.registerInfluencer
+    )
+
 }

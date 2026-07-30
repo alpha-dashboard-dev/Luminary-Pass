@@ -13,12 +13,17 @@ import socialLoginRepo from "../../repositories/socialLogin/socialLogin.reposito
 import {parseMimeType} from "../../utils/attachment.js";
 import locationService from "../location/location.service.js";
 import categoryService from "../category/category.service.js";
+import userService from "../user/user.service.js";
+import {parseFollowerRange} from "../../utils/parseFollowerCount.js";
+import locationRepo from "../../repositories/location/location.repository.js";
+import categoryRepo from "../../repositories/category/category.repository.js";
 
 
 const db = initModels()
 
 class InfluencerSignupService {
 
+    // Influencer Registration through Mobile App
     // Step 1 Basic Information
 
     async basicInfo(data: any){
@@ -239,7 +244,6 @@ class InfluencerSignupService {
         const transaction = await db.sequelize.transaction();
 
         try {
-
                 const {bio, categories, country, city} = data
 
                 await onboardingService.canAccessStep(userCode, InfluencerSignupStep.PROFILE);
@@ -284,7 +288,7 @@ class InfluencerSignupService {
                     influencerCategories = await categoryService.create(
                         {
                             entityType: "influencer",
-                            entityCode: influencer.influencer_code,
+                            entityCode: userCode,
                             categoryName: category
 
                         },
@@ -378,6 +382,115 @@ class InfluencerSignupService {
         }
 
     }
+
+
+
+    //   Influencer Registration through Website
+
+    async registerInfluencer(data: any){
+
+        const transaction = await db.sequelize.transaction();
+
+        try{
+                const {fullName, instaUserName, email, phone, followersRange, country, category, description } = data
+                    // console.log(fullName, instaUserName, email, phone, followersRange, country, category, description);
+
+                const followerRange = parseFollowerRange(followersRange);
+                // console.log(followerRange);
+                if(email){
+                    // console.log("email", email)
+                    const emailExists = await userRepo.findOne(
+                        {
+                            email: email
+                        }
+                    );
+
+                    if (emailExists) {
+                        throw new Error("Email already exists");
+                    }
+                }
+
+                if(phone){
+                    const phoneExists = await userRepo.findOne({
+                        phone: phone
+                    })
+
+                    if (phoneExists) {
+                        throw new Error("Phone already exists");
+                    }
+                }
+
+                const userCode = generateCode();
+                const influencerCode = generateCode();
+                const locationCode = generateCode();
+                const categoryCode = generateCode();
+
+                const user = await userRepo.create(
+                    {
+                        user_code: userCode,
+                        first_name: fullName || null,
+                        email: email || null,
+                        phone: phone || null,
+                        role_code: "ROL00003",
+                        status: "inactive"
+                    },
+                    {   transaction }
+                );
+
+
+                const influencer = await influencerRepo.create(
+                    {
+                        influencer_code: influencerCode,
+                        user_code: userCode,
+                        user_name: instaUserName,
+                        min_followers: followerRange.minFollowers,
+                        max_followers: followerRange.maxFollowers,
+                        description: description,
+                    },
+                    {   transaction }
+                );
+
+                const influencerLocation = await locationRepo.create(
+                    {
+                        location_code: locationCode,
+                        entity_type: "user",
+                        entity_code: userCode,
+                        country: country,
+                        // status: "inactive"
+                    },
+
+                    { transaction }
+                )
+
+                const influencerCategories = await categoryRepo.create(
+                    {
+                        category_code: categoryCode,
+                        entity_type: "influencer",
+                        entity_code: influencerCode,
+                        name: category,
+                        status: "inactive"
+
+                    },
+                    {   transaction }
+                )
+                await transaction.commit();
+                return {
+                    message: "Registration Successfully completed",
+                    Influencer: influencer,
+                    Location: influencerLocation,
+                    Categories: influencerCategories,
+                };
+
+        } catch(err){
+            if(!transaction.finished)
+                await transaction.rollback();
+
+            // console.log(err)
+            throw err;
+        }
+
+    }
+
 }
 
 

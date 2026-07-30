@@ -10,10 +10,7 @@ class UserController {
             const data = req.body;
             // console.log(data);
             validateUser(data);
-            const result =  await userService.create(
-                data,
-                req.user
-            )
+            const result =  await userService.create(data)
             return reply.status(200).send({
                 success: true,
                 message: "User created successfully",

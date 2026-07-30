@@ -58,6 +58,14 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       } ,
+      min_followers: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      max_followers: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
 
       created_at: {
         type: Sequelize.DATE,

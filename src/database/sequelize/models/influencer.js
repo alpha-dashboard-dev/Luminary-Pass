@@ -61,8 +61,15 @@ class Influencer extends Model {
            media_count: {
               type: DataTypes.INTEGER,
                allowNull: true,
-           } ,
-
+           },
+          min_followers: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
+          max_followers: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
           created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,

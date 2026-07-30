@@ -3,6 +3,7 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class CategoryService {
 
@@ -22,12 +23,12 @@ class CategoryService {
                 break;
 
             case "influencer":
-                const influencer = await influencerRepo.findOne({
-                    influencer_code: data.entityCode,
+                const influencer = await userRepo.findOne({
+                    user_code: data.entityCode,
                 })
                 // console.log(influencer);
                 if (!influencer){
-                    throw new Error("Influencer doesn't exist");
+                    throw new Error("User doesn't    exist");
                 }
                 break;
         }

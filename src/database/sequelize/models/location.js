@@ -61,6 +61,10 @@ class Location extends Model {
             type: DataTypes.STRING(50),
             allowNull: true,
           },
+          // status: {
+          //     type: DataTypes.ENUM("active", "inactive"),
+          //     allowNull: true,
+          // },
 
           created_at: {
             type: DataTypes.DATE,

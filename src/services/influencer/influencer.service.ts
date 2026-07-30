@@ -74,7 +74,7 @@ class InfluencerService {
     // Create Influencer
     async create(data: any, options?: any) {
 
-        console.log(data)
+        // console.log(data)
 
 
         const user = await userRepo.findOne({
@@ -112,7 +112,6 @@ class InfluencerService {
             options
         );
     }
-
     // Get all influencers
 
     async getAll(query: any = {}, actor: any) {
