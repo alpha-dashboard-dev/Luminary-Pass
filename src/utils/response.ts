@@ -20,3 +20,5 @@ export class ApiResponse {
         });
     }
 }
+
+// use in userController for testing activateInfluencerAccount

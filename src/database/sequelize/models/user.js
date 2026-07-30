@@ -89,6 +89,19 @@ class User extends Model {
             defaultValue: "active",
           },
 
+          profile_setup_token: {
+              type: DataTypes.STRING(255),
+              allowNull: true,
+          },
+          profile_setup_token_expires_at: {
+              type: DataTypes.DATE,
+              allowNull: true,
+          },
+          profile_completed: {
+              type: DataTypes.BOOLEAN,
+              allowNull: true,
+              defaultValue: false,
+          },
           created_at: {
             type: DataTypes.DATE,
             allowNull: false,

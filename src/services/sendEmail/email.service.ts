@@ -69,7 +69,10 @@ class EmailService {
         });
     }
 
+
     async sendProfileSetupEmail(email: string, userCode: string, businessName: string) {
+
+        // console.log(email, userCode, businessName);
 
         const token = crypto.randomBytes(32).toString("hex");
 
@@ -92,29 +95,55 @@ class EmailService {
             to: email,
             subject: "Complete Your Luminary Pass Account",
             html: `
-            <h2>Welcome to Luminary Pass</h2>
+           <h2>Welcome to Luminary Pass</h2>
 
-            <p>Your business <strong>${businessName}</strong> has been successfully onboarded.</p>
-
+            <p>Hello,</p>
+            
             <p>
-                To access your dashboard, please complete your account setup.
+            You have been invited to join <strong>${businessName}</strong> on
+            Luminary Pass.
             </p>
-
+            
             <p>
-                During setup you'll choose:
+            Before you can access your account, please complete your profile by
+            setting your name and password.
             </p>
-            <ul>
-                <li>First Name</li>
-                <li>Last Name</li>
-                <li>Password</li>
-            </ul>
-
-            <a href="${setupLink}">
-                Complete Your Profile
-            </a>
-
+            
+            <p style="margin:30px 0;">
+                <a
+                    href="${setupLink}"
+                    style="
+                        background:#4F46E5;
+                        color:#fff;
+                        text-decoration:none;
+                        padding:12px 24px;
+                        border-radius:6px;
+                        display:inline-block;
+                    "
+                >
+                    Complete Profile
+                </a>
+            </p>
+            
             <p>
-                This invitation expires in 24 hours.
+            If the button doesn't work, copy and paste the following link into your
+            browser:
+            </p>
+            
+            <p>${setupLink}</p>
+            
+            <p>
+            This invitation link will expire in <strong>24 hours</strong>.
+            </p>
+            
+            <p>
+            If you were not expecting this invitation, you can safely ignore this
+            email.
+            </p>
+            
+            <p>
+            Thank you,<br>
+            Luminary Pass Team
             </p>
         `,
         });

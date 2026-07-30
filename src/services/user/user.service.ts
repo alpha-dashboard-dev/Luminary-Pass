@@ -4,6 +4,11 @@ import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js"
 import initModels from "../../database/sequelize/models/index.cjs";
+import emailService from "../sendEmail/email.service.js";
+import businessRepo from "../../repositories/business/business.repository.js";
+import locationRepo from "../../repositories/location/location.repository.js";
+import categoryRepo from "../../repositories/category/category.repository.js";
+import influencerRepo from "../../repositories/influencer/influencer.repository.js";
 
 const db = initModels();
 
@@ -180,10 +185,8 @@ class UserService {
 
 
     // activate Influencer Account through Website & send email to set up their profile
-    async activateInfluencerAccount(userCode: string, data: any){
-
+    async sendProfileSetupLink(userCode: string){
         try{
-
                 const user = await userRepo.findOne({
                     user_code: userCode
                 });
@@ -192,15 +195,140 @@ class UserService {
                     throw new Error("User not found");
                 }
 
-                return await userRepo.update({
-                        user_code: userCode
-                    },
-                    data
-                );
+                // console.log(user.email);
+
+                const result = await emailService.sendProfileSetupEmail(user.email, userCode, user.first_name );
+
+                return result;
 
         } catch(err){
             throw err
+        }
+    }
+    async verifySetupLink(token: string){
+        const user = await userRepo.findOne({
+            profile_setup_token: token,
+        });
 
+
+        if (!user) {
+            throw new Error("Invalid verification link");
+        }
+        // console.log(user)
+
+        const isExpired = user.profile_setup_token_expires_at && new Date(user.profile_setup_token_expires_at) <= new Date();
+
+
+        if (isExpired) {
+            throw new Error("Verification link expired. Request for a new link");
+        }
+
+        // await userRepo.update(
+        //     {
+        //         user_code: user.user_code,
+        //     },
+        //     {
+        //         profile_setup_token: null,
+        //         profile_setup_token_expires_at: null,
+        //         // profile_completed: true,
+        //     }
+        // );
+
+        return true;
+    }
+
+    async setupProfile(data: any){
+
+        // console.log(data)
+
+        try{
+
+            const user = await userRepo.findOne({
+                profile_setup_token: data.token,
+            });
+
+
+            if (!user) {
+                throw new Error("Invalid verification link");
+            }
+            // console.log(user)
+
+            const isExpired = user.profile_setup_token_expires_at && new Date(user.profile_setup_token_expires_at) <= new Date();
+
+
+            if (isExpired) {
+                throw new Error("Verification link expired. Request for a new link");
+            }
+
+            let hashedPassword;
+            if(data.password)
+                hashedPassword = await hashPassword(data.password);
+
+            await userRepo.update(
+                {
+                    user_code: user.user_code,
+                },
+                {
+                    first_name: data.firstName,
+                    last_name: data.lastName,
+                    password: hashedPassword,
+                    profile_setup_token: null,
+                    profile_setup_token_expires_at: null,
+                    profile_completed: true,
+                }
+            );
+
+
+
+        } catch(err){
+            throw err
+        }
+    }
+
+
+    async activateInfluencerAccount(userCode: string, data: any){
+
+        try{
+
+            const user = await userRepo.findOne({
+                user_code: userCode
+            })
+
+            if (!user) {
+                throw new Error("User not found");
+            }
+
+            if(user.profile_completed){
+                await userRepo.update(
+                    {user_code: userCode},
+                    data
+                )
+
+                await locationRepo.update(
+                    {
+                        entity_code: userCode,
+                    },
+                    {
+                        status: true
+                    }
+                )
+
+                const influencer = await influencerRepo.findOne({
+                    user_code: userCode
+                })
+
+                await categoryRepo.update(
+                    {
+                        entity_code: influencer.influencer_code,
+                    },
+                    data
+                )
+
+                return true
+            }
+
+        }catch(err){
+            throw err
         }
 
     }

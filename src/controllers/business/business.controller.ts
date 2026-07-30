@@ -32,7 +32,7 @@ class businessController {
         }
     }
 
-    async verifyEmail(request, reply) {
+    async verifyEmail(request: FastifyRequest, reply: FastifyReply) {
 
         const { token } = request.query as { token: string };
 
@@ -60,7 +60,7 @@ class businessController {
     }
 
 
-    async resendVerificationEmail(request, reply) {
+    async resendVerificationEmail(request: FastifyRequest, reply: FastifyReply) {
         const { email } = request.body as {
             email: string;
         };

@@ -1,6 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import userService from "../../services/user/user.service";
 import {validateUser} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
+import businessService from "../../services/business/business.service.js";
 
 class UserController {
 
@@ -239,6 +241,163 @@ class UserController {
             });
         }
     }
+
+   async sendProfileSetupLink(req: FastifyRequest, reply: FastifyReply) {
+
+        try{
+
+            const userCode = String(req.params.userCode)
+
+            const result = await userService.sendProfileSetupLink(userCode);
+
+            return reply.status(200).send({
+                success: true,
+                result,
+            })
+
+
+        }catch(err){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+   }
+
+   async verifySetupLink(req: FastifyRequest, reply: FastifyReply) {
+
+        try{
+                const { token } = req.query as { token: string };
+
+                const result = await userService.verifySetupLink(token);
+            return reply.type("text/html").send(`
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Complete Profile</title>
+</head>
+<body style="font-family:Arial;max-width:500px;margin:50px auto">
+    <h2>Complete Your Profile</h2>
+
+    <form id="setupForm">
+
+        <label>First Name</label><br/>
+        <input id="firstName" required /><br/><br/>
+
+        <label>Last Name</label><br/>
+        <input id="lastName" required /><br/><br/>
+
+        <label>Password</label><br/>
+        <input id="password" type="password" required /><br/><br/>
+
+        <label>Confirm Password</label><br/>
+        <input id="confirmPassword" type="password" required /><br/><br/>
+
+        <button type="submit">
+            Complete Profile
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <script>
+
+        const token = "${token}";
+
+        document
+            .getElementById("setupForm")
+            .addEventListener("submit", async (e) => {
+
+                e.preventDefault();
+
+                const body = {
+                    token,
+                    firstName: document.getElementById("firstName").value,
+                    lastName: document.getElementById("lastName").value,
+                    password: document.getElementById("password").value,
+                    confirmPassword: document.getElementById("confirmPassword").value
+                };
+
+                const res = await fetch("/api/users/setup-profile", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(body)
+                });
+
+                const data = await res.json();
+
+                document.getElementById("message").innerHTML =
+                    data.message;
+
+            });
+
+    </script>
+
+</body>
+</html>
+`);
+            //     return reply.status(200).send({
+            //     success: true,
+            //     result,
+            // })
+
+
+        }catch(err){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+
+        }
+   }
+
+
+
+   async setupProfile(req: FastifyRequest, reply: FastifyReply) {
+        try{
+
+            const data = req.body;
+            const result = await userService.setupProfile(data);
+
+            return ApiResponse.success(
+                reply,
+                result,
+                "Profile setup completed successfully",
+            )
+
+        }catch(err){
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
+   }
+
+
+   async activateInfluencerAccount(req: FastifyRequest, reply: FastifyReply) {
+        try{
+
+            const userCode = String(req.params.userCode)
+            const data = req.body;
+
+            const result = await userService.activateInfluencerAccount(userCode, data);
+
+            return ApiResponse.success(
+                reply,
+                result,
+                "Influencer Account Activated successfully",
+            )
+
+        }catch(err){
+            return ApiResponse.error(
+                false,
+                err.message,
+                );
+        }
+   }
 }
 
 export default  new UserController();

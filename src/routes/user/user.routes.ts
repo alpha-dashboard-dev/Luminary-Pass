@@ -110,4 +110,42 @@ export default async function userRoutes(fastify: FastifyInstance) {
         },
         userController.delete
     );
+
+    fastify.put(
+        "/send-profile-setup-link/:userCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00001", "PER00002", "PER00003", "PER00004"],
+                    true
+                )
+            ]
+        },
+        userController.sendProfileSetupLink
+    )
+
+    fastify.get(
+        "/setup-profile",
+        userController.verifySetupLink
+    )
+
+    fastify.post(
+        "/setup-profile",
+        userController.setupProfile
+    )
+
+    fastify.patch(
+        "/activate-influencer-account/:userCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00001", "PER00002", "PER00003", "PER00004"],
+                    true
+                )
+            ]
+        },
+        userController.activateInfluencerAccount
+    )
 }
