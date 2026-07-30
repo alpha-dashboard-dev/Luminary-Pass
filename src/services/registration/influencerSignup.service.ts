@@ -383,9 +383,6 @@ class InfluencerSignupService {
 
     }
 
-
-    // location Code    entityType  entityCode city country
-
     //   Influencer Registration through Website
 
     async registerInfluencer(data: any){
@@ -457,7 +454,6 @@ class InfluencerSignupService {
                         entity_type: "user",
                         entity_code: userCode,
                         country: country,
-                        // status: "inactive"
                     },
 
                     { transaction }

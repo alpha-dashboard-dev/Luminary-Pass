@@ -183,6 +183,33 @@ class UserService {
             data
         );
     }
+
+
+    // activate Influencer Account through Website & send email to set up their profile
+    async activateInfluencerAccount(userCode: string, data: any){
+
+        try{
+
+                const user = await userRepo.findOne({
+                    user_code: userCode
+                });
+
+                if (!user) {
+                    throw new Error("User not found");
+                }
+
+                return await userRepo.update({
+                        user_code: userCode
+                    },
+                    data
+                );
+
+        } catch(err){
+            throw err
+
+        }
+
+    }
 }
 
 export default new UserService();
