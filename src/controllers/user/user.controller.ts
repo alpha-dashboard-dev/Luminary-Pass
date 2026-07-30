@@ -73,6 +73,7 @@ class UserController {
 
         try {
             let include = req.query.include ?? "";
+
             include = [
                 {
                     alias: "role",
