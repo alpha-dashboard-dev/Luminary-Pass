@@ -47,7 +47,6 @@ class UserController {
                     attributes: [],
                 }
             ]
-            // console.log(include)
             const data = await userService.getAll(
                     {
                         ...req.query,
@@ -87,6 +86,10 @@ class UserController {
                     alias: "business",
                     attributes: [],
                 },
+                {
+                    alias: "influencer",
+                    attributes: [],
+                }
             ]
             const userCode = String(req.params.userCode)
             const result = await userService.getByUserCode(

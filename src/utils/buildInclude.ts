@@ -33,7 +33,7 @@ export function buildIncludes(model: any, includes: any[] = []) {
         // const alias = item.alias || item;
         const alias = typeof item === "string" ? item : item.association || item.alias;
 
-        console.log(alias)
+        // console.log(alias)
 
         if (!associations[alias]) {
             return null;
@@ -52,16 +52,11 @@ export function buildIncludes(model: any, includes: any[] = []) {
 
         return {
             association: alias,
-
             // attributes: item.attributes ?? config.attributes,
             attributes: item.attributes?.length ? item.attributes : config.attributes,
-
             where: item.where ?? config.where,
-
             required: item.required ?? config.required,
-
             include: item.include ? buildIncludes(associations[alias].target, item.include) : buildNestedIncludes(config)
         };
-
     }).filter(Boolean);
 }

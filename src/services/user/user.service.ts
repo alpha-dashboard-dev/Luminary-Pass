@@ -62,15 +62,9 @@ class UserService {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        if(!actor){
-            throw new Error("Unauthorized Access");
-        }
-
         return userRepo.findAll({
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
+            include: Array.isArray(query.include) ? query.include : [],
             limit: query.limit ? Number(query.limit) : undefined,
             offset: query.offset ? Number(query.offset) : undefined,
             order: [

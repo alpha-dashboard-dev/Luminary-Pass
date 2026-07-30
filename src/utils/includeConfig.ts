@@ -15,10 +15,9 @@ export const INCLUDE_CONFIG = {
     User: {
         role: {
             attributes: ["role", "rank", "description"],
-
             // include:{
             //     permissions: {
-            //         attributes: ["api", "name"]
+            //         attributes: ["module", "name"]
             //     }
             // }
         },

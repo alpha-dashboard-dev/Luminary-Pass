@@ -3,7 +3,7 @@ import { Op } from "sequelize";
 
 export function buildWhere(filters: any = {}) {
 
-    console.log(filters);
+    // console.log(filters);
 
     const where: any = {};
 
