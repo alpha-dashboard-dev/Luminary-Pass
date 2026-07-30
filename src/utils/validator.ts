@@ -601,3 +601,71 @@ export const validateInfluencerBasicInfoRegistration = (data: any) => {
         throw new Error("Password mismatch");
     }
 }
+
+export const validateInfluencerApplication = (data: any) => {
+    const {fullName, instaUserName, email, phone, followersRange, country, category, description} = data;
+
+    // Full Name
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error("Full name must be at least 2 characters long.");
+    }
+
+    // Instagram Username
+    if (!instaUserName || instaUserName.trim().length < 1) {
+        throw new Error("Instagram username is required.");
+    }
+
+    const instagramRegex = /^[a-zA-Z0-9._]+$/;
+    if (!instagramRegex.test(instaUserName)) {
+        throw new Error("Invalid Instagram username.");
+    }
+
+    // Email Required
+    if(!email){
+        throw new Error("Email address is required.");
+    }
+
+    if (!isValidEmail(email)) {
+        throw new Error("Invalid email address.");
+    }
+    // Phone
+    if (phone) {
+        validatePhone(phone);
+    }
+
+    // Followers Range
+    if (!followersRange) {
+        throw new Error("Followers range is required.");
+    }
+
+    const followersRangeRegex = /^\d+[kKmM]?\s*-\s*\d+[kKmM]?$/;
+
+    if (!followersRangeRegex.test(followersRange.trim())) {
+        throw new Error(
+            "Followers range must be in the format '1k - 5k'."
+        );
+    }
+
+    // Country
+    if (!country || country.trim().length < 2) {
+        throw new Error("Country is required.");
+    }
+
+    // Category
+    if (!category || category.trim().length < 2) {
+        throw new Error("Category is required.");
+    }
+
+    // Description
+    if (!description || description.trim().length < 10) {
+        throw new Error(
+            "Description must be at least 10 characters long."
+        );
+    }
+
+    if (description.length > 1000) {
+        throw new Error(
+            "Description cannot exceed 1000 characters."
+        );
+    }
+};

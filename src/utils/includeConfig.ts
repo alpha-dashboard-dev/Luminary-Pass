@@ -27,6 +27,9 @@ export const INCLUDE_CONFIG = {
         },
         business: {
             attributes: ["name", "email", "status"],
+        },
+        influencer: {
+            attributes: ["user_name", "min_followers", "max_followers"],
         }
     },
 

@@ -1,6 +1,6 @@
 import influencerSignupService from "../../services/registration/influencerSignup.service";
 import onboardingService from "../../services/registration/onboarding.service.js";
-import {validateInfluencerBasicInfoRegistration} from "../../utils/validator.js";
+import {validateInfluencerApplication, validateInfluencerBasicInfoRegistration} from "../../utils/validator.js";
 import {verifySignupToken} from "../../utils/signupToken.js";
 import {FastifyReply, FastifyRequest} from "fastify";
 import * as repl from "node:repl";
@@ -179,6 +179,8 @@ class InfluencerSignupController {
         try{
 
             const data = req.body;
+
+            validateInfluencerApplication(data)
 
             const result = await influencerSignupService.registerInfluencer(data);
 

@@ -6,10 +6,13 @@ function buildNestedIncludes(config: any): any[] {
         return [];
     }
 
+    // console.log(config)
+
     return Object.entries(config.include).map(
         ([alias, childConfig]: any) => ({
             association: alias,
             attributes: childConfig.attributes,
+            // attributes: childConfig.attributes?.length ? childConfig.attributes : undefined,
             where: childConfig.where,
             required: childConfig.required,
             include: buildNestedIncludes(childConfig),
@@ -24,12 +27,13 @@ export function buildIncludes(model: any, includes: any[] = []) {
     // console.log(associations);
 
     const modelName = model.name;
+    // console.log(modelName)
 
     return includes.map(item => {
         // const alias = item.alias || item;
         const alias = typeof item === "string" ? item : item.association || item.alias;
 
-        // console.log(alias)
+        console.log(alias)
 
         if (!associations[alias]) {
             return null;
@@ -49,22 +53,14 @@ export function buildIncludes(model: any, includes: any[] = []) {
         return {
             association: alias,
 
-            attributes:
-                item.attributes ?? config.attributes,
+            // attributes: item.attributes ?? config.attributes,
+            attributes: item.attributes?.length ? item.attributes : config.attributes,
 
-            where:
-                item.where ?? config.where,
+            where: item.where ?? config.where,
 
-            required:
-                item.required ?? config.required,
+            required: item.required ?? config.required,
 
-            include:
-                item.include
-                    ? buildIncludes(
-                        associations[alias].target,
-                        item.include
-                    )
-                    : buildNestedIncludes(config)
+            include: item.include ? buildIncludes(associations[alias].target, item.include) : buildNestedIncludes(config)
         };
 
     }).filter(Boolean);

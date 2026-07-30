@@ -35,6 +35,8 @@ class UserRepository {
             this.tables,
             options.include || [],
         )
+
+        // console.log(include)
         return await dbHelper.findAll(
             this.tables,
             {

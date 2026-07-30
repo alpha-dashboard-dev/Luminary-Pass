@@ -84,6 +84,10 @@ class AuthService {
 
         const { email, password, fcmToken, deviceName, deviceType, timezone } = data;
 
+        // let customFCMToken = !fcmToken ? generateCode() : null;
+
+        // console.log(customFCMToken);
+
         const user = await userRepo.findOne(
             { email },
             {
@@ -159,7 +163,6 @@ class AuthService {
             status: "active",
             expires_at: refreshExpiry,
             last_activity_at: new Date(),
-
         });
 
         return {

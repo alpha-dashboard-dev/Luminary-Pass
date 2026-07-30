@@ -42,6 +42,10 @@ class UserController {
                     alias: "business",
                     attributes: [],
                 },
+                {
+                    alias: "influencer",
+                    attributes: [],
+                }
             ]
             // console.log(include)
             const data = await userService.getAll(
