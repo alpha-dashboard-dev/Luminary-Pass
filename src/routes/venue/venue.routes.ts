@@ -28,8 +28,8 @@ export default async function venueRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00065", "PER00018", "PER00066", "PER00070"],
-                    false
+                    ["PER00018"], // read permission
+                    true
                 )
             ]
         },
@@ -44,7 +44,7 @@ export default async function venueRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00017", "PER00018", "PER00019", "PER00020"],
-                    true
+                    false
                 )
             ]
         },
@@ -73,11 +73,26 @@ export default async function venueRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00017", "PER00018", "PER00019", "PER00020"],
-                    true
+                    false
                 )
             ]
         },
         venueController.update
+    );
+
+    // update venue profile
+    fastify.put(
+        "/update-venue-profile",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00065", "PER00069", "PER00070", "PER00071"],
+                    false
+                )
+            ]
+        },
+        venueController.updateVenueProfile
     );
 
     // Deactivate Venue

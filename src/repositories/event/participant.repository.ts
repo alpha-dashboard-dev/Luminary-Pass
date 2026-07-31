@@ -59,6 +59,20 @@ class participantRepository {
             where,
         );
     }
+
+    async count(where: any, options: any = {}) {
+        // console.log(where);
+        return await dbHelper.count(
+            this.tables,
+            where,
+            options
+        )
+    }
+
+    async query(options: any = {}) {
+        // console.log(options)
+        return await dbHelper.query(this.tables, options);
+    }
 }
 
 export default new participantRepository();

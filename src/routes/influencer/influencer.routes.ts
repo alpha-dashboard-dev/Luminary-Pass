@@ -1,6 +1,5 @@
 import { FastifyInstance } from "fastify";
 import influencerController from "../../controllers/influencer/influencer.controller";
-
 import { authenticate } from "../../middleware/authenticate";
 import { hasPermission } from "../../middleware/hasPermission";
 
@@ -94,4 +93,62 @@ export default async function influencerRoutes(fastify: FastifyInstance) {
         },
         influencerController.delete
     );
+
+
+    fastify.get(
+        "/find-event-invitation/:influencerCode",
+        {
+            preHandler: [
+                authenticate,
+                // hasPermission(
+                //     ["PER00033", "PER00034", "PER00035", "PER00036"],
+                //     true
+                // )
+            ]
+        },
+        influencerController.findEventInvitation
+    );
+
+    fastify.post(
+        "/submit-event-task/:taskCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00089"],
+                    true
+                )
+            ]
+        },
+        influencerController.submitEventTask
+    )
+
+    fastify.get(
+        "/select-posts/:eventCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00089"],
+                    true
+                ),
+            ]
+        },
+        influencerController.selectPostsAgainstEvent
+    )
+
+    fastify.post(
+        "/submit-posts/:eventCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00089"],
+                    true
+                )
+            ]
+        },
+        influencerController.submitSelectedPosts
+
+    )
 }

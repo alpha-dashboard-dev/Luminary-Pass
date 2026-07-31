@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueService from "../../services/venue/venue.service";
 import {validateVenue} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class VenueController {
 
@@ -162,6 +163,24 @@ class VenueController {
         }
     }
 
+    // update venue profile
+    async updateVenueProfile(req: FastifyRequest, reply: FastifyReply) {
+        try{
+            const data = req.body;
+            console.log(data)
+            const result =  await venueService.updateVenueProfile(data, req.user)
+            return ApiResponse.success(
+                reply,
+                result,
+                "Venue Profile updated successfully",
+                200
+            )
+        }
+        catch (err: any) {
+            return ApiResponse.error(reply, err.message, 400, err,);
+        }
+    }
+
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
             const venueCode = String(req.params.venueCode)
@@ -195,22 +214,22 @@ class VenueController {
         try {
             const venueCode = String(req.params.venueCode)
 
-            await venueService.delete(
+            const result = await venueService.delete(
                 venueCode,
                 req.user
             );
 
-            return reply.status(200).send({
-                success: true,
-                message: "venue permanently deleted"
-            });
+            return ApiResponse.success(
+                reply,
+                result,
+                "Account Activated successfully",
+                200
+            )
+
 
         } catch (err: any) {
 
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
+            return ApiResponse.error(reply, err.message, 400, err,);
         }
     }
 }

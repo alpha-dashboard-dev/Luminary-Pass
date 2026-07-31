@@ -21,13 +21,12 @@ class Category extends Model {
 
           entity_type: {
             type: DataTypes.ENUM("venue", "influencer"),
-            allowNull: false,
-            defaultValue: "influencer",
+            allowNull: true,
           },
 
           entity_code: {
             type: DataTypes.STRING(8),
-            allowNull: false,
+            allowNull: true,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
@@ -35,7 +34,7 @@ class Category extends Model {
 
           name: {
             type: DataTypes.STRING(100),
-            allowNull: false,
+            allowNull: true,
           },
 
           description: {

@@ -1,13 +1,12 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import authService from "../../services/authentication/auth.service.ts";
-import {accountValidation} from "../../utils/validator.js";
+import {accountValidation, loginValidator} from "../../utils/validator.js";
 
 class AuthController {
 
     async register(req: FastifyRequest, reply: FastifyReply) {
 
         try {
-
             const  data = req.body as any;
 
             // console.log(data)
@@ -31,15 +30,15 @@ class AuthController {
         }
     }
 
-
     async login(req: FastifyRequest, reply: FastifyReply) {
 
         try {
 
-            const result = await authService.login(
-                req.body,
-                req
-            );
+            const data = req.body as any;
+
+            loginValidator(data)
+
+            const result = await authService.login(data, req);
 
             return reply.status(200).send({
                 success: true,

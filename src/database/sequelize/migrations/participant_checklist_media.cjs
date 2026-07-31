@@ -4,7 +4,7 @@ const {DataTypes} = require("sequelize");
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("signup_sessions", {
+        await queryInterface.createTable("participant_checklist_media", {
             id: {
                 type: Sequelize.BIGINT,
                 autoIncrement: true,
@@ -12,50 +12,47 @@ module.exports = {
                 allowNull: false,
             },
 
-            session_code: {
+            participant_checklist_media_code:{
+                type: Sequelize.STRING(8),
+                unique:true,
+                allowNull:false
+            },
+
+            participant_checklist_code: {
                 type: Sequelize.STRING(8),
                 allowNull: false,
-                unique: true,
             },
 
-            user_code: {
+            instagram_media_id:{
+                type: Sequelize.STRING(50),
+                allowNull:true
+            },
+            remarks:{
+                type: Sequelize.STRING(50),
+                allowNull: true,
+            },
+            remarks_by:{
                 type: Sequelize.STRING(8),
-                allowNull: false,
+                allowNull: true
             },
-
-            account_type: {
-                type: Sequelize.STRING(150),
-                allowNull: false,
-
-            },
-
-            current_step: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-            },
-
             status: {
-                type: Sequelize.ENUM("draft", "pending", "approved", "completed", "in_progress"),
-                allowNull: false,
-                defaultValue: "draft",
+                type: Sequelize.STRING(100),
+                allowNull: true
             },
-
             created_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.fn("NOW"),
             },
-
             updated_at: {
                 type: Sequelize.DATE,
                 allowNull: false,
                 defaultValue: Sequelize.fn("NOW"),
             },
         });
-
     },
 
-    async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("signup_sessions");
+    async down(queryInterface) {
+        await queryInterface.dropTable("participant_checklist_media");
     },
 };

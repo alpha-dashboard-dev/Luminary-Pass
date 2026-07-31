@@ -13,7 +13,7 @@ export default async function eventRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00037", "PER00038", "PER00039", "PER00040"],
-                    true
+                    false
                 )
             ]
         },

@@ -41,7 +41,35 @@ class Influencer extends Model {
             type: DataTypes.DATEONLY,
             allowNull: true,
           },
+          description: {
+              type: DataTypes.TEXT,
+              allowNull: true,
+          },
 
+          user_name:  {
+              type: DataTypes.STRING(100),
+              allowNull: true,
+          },
+          account_type:{
+              type: DataTypes.STRING(100),
+              allowNull: true,
+          },
+          follower_count: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
+           media_count: {
+              type: DataTypes.INTEGER,
+               allowNull: true,
+           },
+          min_followers: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
+          max_followers: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
           created_at: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
@@ -51,6 +79,8 @@ class Influencer extends Model {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
           },
+
+
         },
         {
           sequelize,

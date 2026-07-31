@@ -1,7 +1,15 @@
 import venueRepo from "../../repositories/venue/venue.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import businessRepo from "../../repositories/busines/business.repository";
+import businessRepo from "../../repositories/business/business.repository";
+import venueLocationRepo from "../../repositories/venue/venueLocation.repository.js";
+import initModels from "../../database/sequelize/models/index.cjs";
+import categoryRepo from "../../repositories/category/category.repository.js";
+import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
+import venueScheduleService from "./venueSchedule.service.js";
+import attachmentService from "../mediaAttachment/attachment.service.js";
+
+const db = initModels();
 
 class VenueService {
 
@@ -51,27 +59,31 @@ class VenueService {
     // Get all venues
 
     async getAll(query: any = {}, actor: any) {
-        // console.log(query.where)
+
+        // filters
         const where = buildWhere(query);
 
-        // if(!actor){
-        //     throw new Error("Unauthorized Access");
-        // }
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
 
-        return venueRepo.findAll({
+        return venueRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     // Get Venue By venue code
@@ -88,6 +100,12 @@ class VenueService {
 
         if (!venue) {
             throw new Error("Venue not found");
+        }
+
+        if(actor.roleCode !== "ROL00001") {
+            if(venue.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
         }
 
         return venue;
@@ -111,7 +129,7 @@ class VenueService {
     }
 
     // Update venue
-    async update(venueCode: string, data: any) {
+    async update(venueCode: string, data: any, actor: any) {
 
         const venue = await venueRepo.findOne({
             venue_code: venueCode
@@ -119,7 +137,12 @@ class VenueService {
 
         if (!venue) throw new Error("venue not found");
 
-        console.log(data)
+        if(actor.roleCode !== "ROL00001") {
+            if(venue.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
+        }
+        // console.log(data)
 
         const allowed: any = {};
         if (data.name !== undefined)
@@ -137,6 +160,92 @@ class VenueService {
             { venue_code: venueCode },
            allowed
         );
+    }
+
+    // update venue Profile
+    async updateVenueProfile(data: any, actor: any){
+
+        // console.log(data)
+        const transaction = await db.sequelize.transaction()
+
+        try{
+
+            // const { } = data
+
+            const venueExists = await venueRepo.findOne({
+                venue_code: data.venueCode
+            })
+
+            if(!venueExists) {
+                throw new Error("Venue does not exist");
+            }
+
+            if(venueExists.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
+
+            // console.log(venueExists);
+
+            const venueLocationExist = await venueRepo.findOne({
+                venue_code: data.venueCode
+            })
+
+            if(venueLocationExist){
+                throw new Error("Venue Location already exist");
+            }
+            // Basic Info
+
+            const venue = await venueRepo.update(
+                {
+                    venue_code: data.venueCode
+                },
+                {
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    description: data.description,
+                    web_url: data.webURL
+                },
+                {   transaction }
+            )
+
+            // Location
+            // const venueLocation = await this.create(
+            //     {
+            //         venueCode: venueExists.venue_code,
+            //         address: data.fullAddress,
+            //         area: data.area,
+            //         city: data.city,
+            //         mapLink: data.mapLink,
+            //         status: true
+            //     },
+            //     {
+            //         transaction,
+            //     }
+            // )
+
+            // Social Media
+
+
+            // Schedule
+            const venueSchedule = await venueScheduleService.create({
+
+            })
+            // Venue images
+
+            const venueImages = await attachmentService.uploadMultiple()
+
+            // console.log("venueLocationExist", venueLocationExist);
+
+            await transaction.commit();
+
+            return true
+
+        } catch(err){
+            if(!transaction.finished)
+                await transaction.rollback();
+            throw err;
+        }
     }
 
     // Delete venue

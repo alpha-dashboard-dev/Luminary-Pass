@@ -2,50 +2,94 @@ import {FastifyRequest, FastifyReply} from "fastify";
 
 import instagramService from "../../../services/socialMedia/instagram/instagram.service.js";
 import socialLoginService from "../../../services/socialMedia/socialLogin.service.js";
+import {verifySignupToken} from "../../../utils/signupToken.js";
+import influencerSignupService from "../../../services/registration/influencerSignup.service.js";
 
 
 
 class InstagramController {
 
-    async login(req:FastifyRequest, reply:FastifyReply){
+    // Instagram Login from Frontend
+    async login(req: FastifyRequest, reply: FastifyReply) {
 
-        const url = instagramService.getLoginUrl();
-        // console.log(url);
+        const { signupToken } = req.query as {
+            signupToken: string
+        };
+
+        if (!signupToken) {
+            throw new Error("Signup token required");
+        }
+
+        const payload = verifySignupToken(signupToken);
+
+        const url = instagramService.getLoginUrl(signupToken);
+
         return reply.redirect(url);
+
     }
 
     async callback(req:FastifyRequest, reply:FastifyReply){
 
-        const {code} = req.query as { code:string };
+        const {code, state} = req.query as any;
         // console.log("INSTAGRAM CODE:", code);
+
+        const signup = verifySignupToken(state);
+        const userCode = signup.userCode;
         const token = await instagramService.exchangeCode(code);
+        const longToken = await instagramService.getLongLivedToken(token.access_token);
+        // console.log(longToken.expires_in)
 
-        const data = {
-            provider: "instagram",
+        const result = await influencerSignupService.connectInstagram({
+            userCode,
             providerUserId: token.user_id,
-            accessToken: token.access_token,
-            userCode: "F2ACF446"
-        };
-
-        await socialLoginService.create(data)
-
-        // console.log(token);
-        // const longToken = await instagramService.getLongLivedToken(token.access_token);
+            accessToken: longToken.access_token,
+            expiresIn: longToken.expires_in,
+        })
+        // console.log(token)
         return reply.send({
             message: "Instagram connected",
-            // token: longToken
-            access_token: token.access_token,
-            user_id: token.user_id
-
+            // token: longToken,
+            access_token: longToken.access_token,
+            user_id: token.user_id,
+            expires_in: longToken.expires_in,
+            result: result.signupToken
         });
 
     }
+
+
+    // async callback(req:FastifyRequest, reply:FastifyReply){
+    //
+    //     const {code} = req.query as { code:string };
+    //     // console.log("INSTAGRAM CODE:", code);
+    //     const token = await instagramService.exchangeCode(code);
+    //
+    //     const data = {
+    //         provider: "instagram",
+    //         providerUserId: token.user_id,
+    //         accessToken: token.access_token,
+    //         userCode: "F2ACF446"
+    //     };
+    //
+    //     await socialLoginService.create(data)
+    //
+    //     // console.log(token);
+    //     // const longToken = await instagramService.getLongLivedToken(token.access_token);
+    //     return reply.send({
+    //         message: "Instagram connected",
+    //         // token: longToken
+    //         access_token: token.access_token,
+    //         user_id: token.user_id
+    //
+    //     });
+    //
+    // }
 
     async profile(req:FastifyRequest, reply:FastifyReply){
 
         const {userCode, fields} = req.query as any;
 
-        // console.log(fieldArray);
+        // console.log(userCode);
         const profile = await instagramService.getProfile(userCode, fields);
 
         return reply.send(profile);
@@ -96,11 +140,11 @@ class InstagramController {
 
         try {
 
-            const {token, mediaId} = req.query as any;
+            const {userCode, mediaId} = req.query as any;
             // console.log(mediaId, token);
 
 
-            const media = await instagramService.getMediaById(mediaId, token);
+            const media = await instagramService.getMediaById(userCode, mediaId);
 
             return reply.send({
 
@@ -263,3 +307,10 @@ class InstagramController {
 
 
 export default new InstagramController();
+
+/*
+Influencer signup Process steps
+1) Basic info
+2) Connect Instagram OAuth
+3) Upload verification picture
+ */

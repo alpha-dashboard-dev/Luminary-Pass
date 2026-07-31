@@ -3,10 +3,11 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
+import userRepo from "../../repositories/user/user.repository.js";
 
 class CategoryService {
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
 
         // console.log(data.entityType)
 
@@ -22,26 +23,38 @@ class CategoryService {
                 break;
 
             case "influencer":
-
-                const influencer = await influencerRepo.findOne({
-                    influencer_code: data.entityCode,
+                const influencer = await userRepo.findOne({
+                    user_code: data.entityCode,
                 })
+                // console.log(influencer);
                 if (!influencer){
-                    throw new Error("Influencer doesn't exist");
+                    throw new Error("User doesn't    exist");
                 }
                 break;
         }
 
+        const category = await categoryRepo.findOne({
+            entity_code: data.entityCode,
+            name: data.categoryName,
+        })
+
+        if(category){
+            throw new Error(`${data.categoryName} category already exist for ${data.entityType}`);
+        }
+
         const categoryCode = generateCode();
 
-        return await categoryRepo.create({
-            category_code: categoryCode,
-            entity_type: data.entityType,
-            entity_code: data.entityCode,
-            name: data.name,
-            description: data.description,
-            status: data.status
-        });
+        return await categoryRepo.create(
+            {
+                category_code: categoryCode,
+                entity_type: data.entityType,
+                entity_code: data.entityCode,
+                name: data.categoryName,
+                description: data.description,
+                status: data.status
+            },
+            options
+        );
     }
 
     // Get all Categories

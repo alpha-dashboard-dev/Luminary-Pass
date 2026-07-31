@@ -18,7 +18,7 @@ const VALID_SCHEDULE_STATUSES = [true, false];
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
 
-function validatePhone(phone) {
+function validatePhone(phone: string) {
     if (!phone) {
         throw new Error("Phone is required");
     }
@@ -41,6 +41,27 @@ function validatePhone(phone) {
 
 function isValidEmail(email: string): boolean {
     return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+
+export const loginValidator = (data: any ) => {
+
+    const {email, password} = data
+
+    if (!email) {
+        throw new Error("Email is required");
+    }
+
+    if(!isValidEmail(email)) {
+        throw new Error("Invalid email format");
+    }
+    if (!password) {
+        throw new Error("Password is required");
+    }
+
+    if (password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
 }
 
 export const validateOrganization = (data: any) => {
@@ -135,7 +156,6 @@ export const validateUser = (data: any) => {
     }
 }
 
-// Validation for Influencer
 
 export const validateInfluencer = (data: any) => {
     const { userCode, gender, dateOfBirth } = data
@@ -153,13 +173,13 @@ export const validateInfluencer = (data: any) => {
 
 
 export const validateVenue = (data: any, isUpdate: boolean = false) => {
-    const { businessCode, name, email, phone, status } = data;
+    const {name, email, phone, status } = data;
 
-    if (!isUpdate || businessCode !== undefined) {
-        if (!businessCode || !isValidCode(businessCode)) {
-            throw new Error("Valid 8-character businessCode is required");
-        }
-    }
+    // if (!isUpdate || businessCode !== undefined) {
+    //     if (!businessCode || !isValidCode(businessCode)) {
+    //         throw new Error("Valid 8-character businessCode is required");
+    //     }
+    // }
     if (!isUpdate || name !== undefined) {
         if (!name || name.trim().length < 2) {
             throw new Error("Venue name must be at least 2 characters long");
@@ -535,3 +555,117 @@ export const accountValidation = (data: any) => {
     }
 
 }
+
+export const validateBusinessAccountRegistration = (data: any) => {
+
+    const { firstName, businessName, email, phone } = data
+
+    if (!firstName || firstName.trim().length < 2) {
+        throw new Error("First name must be at least 2 characters long");
+    }
+
+    if (!businessName || businessName.trim().length < 2) {
+        throw new Error("Business name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address!");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+}
+
+export const validateInfluencerBasicInfoRegistration = (data: any) => {
+
+    const { fullName, email, phone, password, confirmPassword } = data
+
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error("Name must be at least 2 characters long");
+    }
+
+    if (!email || !isValidEmail(email)) {
+        throw new Error("Invalid email address!");
+    }
+
+    if(phone){
+        validatePhone(phone)
+    }
+
+    if (!password || password.length < 6) {
+        throw new Error("Password must be at least 6 characters long");
+    }
+
+    if(password !== confirmPassword){
+        throw new Error("Password mismatch");
+    }
+}
+
+export const validateInfluencerApplication = (data: any) => {
+    const {fullName, instaUserName, email, phone, followersRange, country, category, description} = data;
+
+    // Full Name
+    if (!fullName || fullName.trim().length < 2) {
+        throw new Error("Full name must be at least 2 characters long.");
+    }
+
+    // Instagram Username
+    if (!instaUserName || instaUserName.trim().length < 1) {
+        throw new Error("Instagram username is required.");
+    }
+
+    const instagramRegex = /^[a-zA-Z0-9._]+$/;
+    if (!instagramRegex.test(instaUserName)) {
+        throw new Error("Invalid Instagram username.");
+    }
+
+    // Email Required
+    if(!email){
+        throw new Error("Email address is required.");
+    }
+
+    if (!isValidEmail(email)) {
+        throw new Error("Invalid email address.");
+    }
+    // Phone
+    if (phone) {
+        validatePhone(phone);
+    }
+
+    // Followers Range
+    if (!followersRange) {
+        throw new Error("Followers range is required.");
+    }
+
+    const followersRangeRegex = /^\d+[kKmM]?\s*-\s*\d+[kKmM]?$/;
+
+    if (!followersRangeRegex.test(followersRange.trim())) {
+        throw new Error(
+            "Followers range must be in the format '1k - 5k'."
+        );
+    }
+
+    // Country
+    if (!country || country.trim().length < 2) {
+        throw new Error("Country is required.");
+    }
+
+    // Category
+    if (!category || category.trim().length < 2) {
+        throw new Error("Category is required.");
+    }
+
+    // Description
+    if (!description || description.trim().length < 10) {
+        throw new Error(
+            "Description must be at least 10 characters long."
+        );
+    }
+
+    if (description.length > 1000) {
+        throw new Error(
+            "Description cannot exceed 1000 characters."
+        );
+    }
+};

@@ -29,7 +29,7 @@ class Event extends Model {
 
           venue_code: {
             type: DataTypes.STRING(8),
-            allowNull: false,
+            allowNull: true,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
@@ -45,14 +45,22 @@ class Event extends Model {
             allowNull: true,
           },
 
-          start_datetime: {
+          start_date: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
           },
 
-          end_datetime: {
+          end_date: {
             type: DataTypes.DATE,
-            allowNull: false,
+            allowNull: true,
+          },
+          start_time: {
+              type: DataTypes.TIME,
+              allowNull: true,
+          },
+          end_time: {
+              type: DataTypes.TIME,
+              allowNull: true,
           },
 
           application_deadline: {
@@ -64,10 +72,22 @@ class Event extends Model {
             type: DataTypes.INTEGER,
             defaultValue: 0,
           },
-
+          description_influencer_received: {
+              type: DataTypes.TEXT,
+              allowNull: true,
+          },
+          offer_value: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
+          },
           dress_code: {
             type: DataTypes.STRING(255),
             allowNull: true,
+          },
+
+          additional_guests: {
+              type: DataTypes.INTEGER,
+              allowNull: true,
           },
 
           special_instructions: {
@@ -77,12 +97,12 @@ class Event extends Model {
 
           visibility: {
             type: DataTypes.ENUM("public", "private"),
-            defaultValue: "public",
+              allowNull: true,
           },
 
           created_by: {
             type: DataTypes.STRING(8),
-            allowNull: false,
+            allowNull: true,
             validate: {
               is: /^[A-Za-z0-9]{8}$/,
             },
@@ -91,7 +111,7 @@ class Event extends Model {
           status: {
             type: DataTypes.ENUM(
                 "draft",
-                "published",
+                "publish",
                 "closed",
                 "live",
                 "completed",

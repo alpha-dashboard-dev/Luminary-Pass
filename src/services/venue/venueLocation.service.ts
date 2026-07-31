@@ -7,27 +7,33 @@ class venueLocationService {
 
     // Create location
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
+
+        // console.log(data);
 
         const venueExists = await venueRepo.findOne({
             venue_code: data.venueCode
         })
 
-        if(!venueExists) {
+        if (!venueExists) {
             throw new Error("Venue does not exist");
         }
 
         const locationCode = generateCode();
 
-        return await venueLocationRepo.create({
-            venue_location_code: locationCode,
-            venue_code: data.venueCode,
-            address: data.address,
-            area: data.area,
-            city: data.city,
-            country: data.country,
-            status: data.status
-        });
+        return await venueLocationRepo.create(
+            {
+                venue_location_code: locationCode,
+                venue_code: data.venueCode,
+                address: data.address,
+                area: data.area,
+                city: data.city,
+                country: data.country,
+                map_link: data.mapLink,
+                status: data.status
+            },
+            options
+        );
     }
 
     // Get all locations

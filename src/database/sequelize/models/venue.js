@@ -29,7 +29,7 @@ class Venue extends Model {
 
           name: {
             type: DataTypes.STRING(255),
-            allowNull: false,
+            allowNull: true,
           },
 
           email: {
@@ -49,6 +49,10 @@ class Venue extends Model {
             type: DataTypes.TEXT,
             allowNull: true,
           },
+          web_url: {
+              type: DataTypes.STRING(255),
+              allowNull: true,
+          }  ,
 
           status: {
             type: DataTypes.ENUM("active", "inactive"),

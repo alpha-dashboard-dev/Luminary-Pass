@@ -35,29 +35,30 @@ class dbHelper {
         }
     }
 
-    async findAll(table: any, options: any = {})
-    {
-
-        // console.log(table)
-        if (this.orm === "sequelize") {
-
-            return await table.findAll(
-                {
-                    ...options
-                }
-            );
-        }
-    }
-
-    // async findAll(table: any, where: any = {}, options: any = {}) {
+    // async findAll(table: any, options: any = {})
+    // {
     //
+    //     // console.log(table)
     //     if (this.orm === "sequelize") {
-    //         return await table.findAll({
-    //             where,
-    //             ...options
-    //         });
+    //
+    //         return await table.findAll(
+    //             {
+    //                 ...options
+    //             }
+    //         );
     //     }
     // }
+
+    // new method of findAll use in venue repository + service
+    async findAll(table: any, where: any = {}, options: any = {}) {
+
+        if (this.orm === "sequelize") {
+            return await table.findAll({
+                where,
+                ...options
+            });
+        }
+    }
 
 
     async update(table: any, where: any, data: any, options?: any) {
@@ -96,6 +97,32 @@ class dbHelper {
             });
         }
     }
+
+    async query(table: any, options: any = {}) {
+
+        if (this.orm === "sequelize") {
+            return await table.findAll(options);
+        }
+    }
+
+    // async aggregate(table: any, options: any = {}) {
+    //     if (this.orm === "sequelize") {
+    //         return await table.findAll({
+    //             attributes: options.attributes ?? [],
+    //             include: options.include ?? [],
+    //             where: options.where,
+    //             group: options.group,
+    //             having: options.having,
+    //             order: options.order,
+    //             limit: options.limit,
+    //             offset: options.offset,
+    //             raw: options.raw ?? true,
+    //             subQuery: options.subQuery ?? false,
+    //         });
+    //     }
+    //
+    //     // drizzle implementation...
+    // }
 }
 
 export default new dbHelper();

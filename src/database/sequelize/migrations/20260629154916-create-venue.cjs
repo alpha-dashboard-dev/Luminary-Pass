@@ -24,7 +24,7 @@ module.exports = {
 
       name: {
         type: Sequelize.STRING(255),
-        allowNull: false,
+        allowNull: true,
       },
 
       email: {
@@ -39,6 +39,10 @@ module.exports = {
 
       description: {
         type: Sequelize.TEXT,
+        allowNull: true,
+      },
+      web_url: {
+        type: Sequelize.STRING(255),
         allowNull: true,
       },
 

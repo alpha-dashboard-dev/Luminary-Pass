@@ -3,11 +3,15 @@ import participantChecklistRepo from "../../repositories/event/participantCheckl
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import participantRepo from "../../repositories/event/participant.repository.js";
+import checkListRepo from "../../repositories/event/checkList.repository.js";
+import instagramService from "../socialMedia/instagram/instagram.service.js";
 
 class participantChecklistService {
 
 
     async create(data: any) {
+
+        // console.log(data);
 
         const participantExists = await participantRepo.findOne({
             participant_code: data.participantCode
@@ -15,6 +19,14 @@ class participantChecklistService {
 
         if (!participantExists) {
             throw new Error("Participant does not exist");
+        }
+
+        const taskExists = await checkListRepo.findOne({
+            checklist_code: data.checklistCode
+        })
+
+        if(!taskExists) {
+            throw new Error("Task does not exist");
         }
 
         const participantChecklistCode = generateCode();
@@ -25,11 +37,11 @@ class participantChecklistService {
             checklist_code: data.checklistCode,
             submission_url: data.submissionUrl,
             submission_type: data.submissionType,
-            submitted_at: data.submittedAt,
+            submitted_at: data.submittedAt || new Date(),
             review_status: data.reviewStatus,
-            reviewed_by: data.reviewedBy,
-            reviewed_at: data.reviewedAt,
-            review_notes: data.reviewNotes,
+            reviewed_by: data.reviewedBy || null,
+            reviewed_at: data.reviewedAt || null,
+            review_notes: data.reviewNotes || null,
             completion_status: data.reviewCompletionStatus,
             points_awarded: data.pointsAwarded,
         });
@@ -103,9 +115,25 @@ class participantChecklistService {
 
         if (!checklist) throw new Error("Participant checklist not found");
 
+        // console.log(data);
+        const allowed : any = {}
+
+        if(data.reviewNotes !== undefined)
+            allowed.review_notes = data.reviewNotes;
+        if(data.pointsAwarded !== undefined)
+            allowed.points_awarded = data.pointsAwarded;
+        if(data.reviewedAt !== undefined)
+            allowed.reviewed_at = data.reviewedAt || new Date();
+        if(data.reviewStatus !== undefined)
+            allowed.review_status = data.reviewStatus;
+        if(data.reviewedBy !== undefined)
+            allowed.reviewed_by = data.reviewedBy;
+
+        // console.log(allowed)
+
         return await participantChecklistRepo.update(
             { participant_checklist_code: participantChecklistCode },
-            data
+            allowed
         );
     }
 
@@ -123,6 +151,54 @@ class participantChecklistService {
             participant_checklist_code: participantChecklistCode
         });
     }
+
+    async reviewParticipantTask(participantChecklistCode: string, data: any, actor: any) {
+
+        // console.log(data, actor)
+
+        const task = await participantChecklistRepo.findOne({
+            participant_checklist_code: participantChecklistCode
+        })
+
+        if(!task){
+            throw new Error("Participant Task does not exist");
+        }
+
+        // console.log(task);
+
+        const influencer = await participantRepo.findOne({
+            participant_code: task.participant_code
+        })
+
+        // console.log(influencer.influencer_code);
+
+        const media =  await instagramService.getMedia(influencer.influencer_code)
+
+        // console.log(instagramMedia);
+
+        const matched = media.find(m => m.permalink === task.submission_url);
+
+        if (!matched) {
+            throw new Error("Instagram post not found.");
+        }
+
+        // console.log(matched);
+        let reviewTask;
+
+        if(task.review_status === "pending")
+        {
+            reviewTask = await this.update(participantChecklistCode, {
+                ...data,
+                reviewedBy: actor.businessCode
+            })
+        }else {
+            throw new Error(`Task is already ${task.review_status}`);
+        }
+
+
+        return reviewTask;
+    }
+
 }
 
 export default new participantChecklistService();

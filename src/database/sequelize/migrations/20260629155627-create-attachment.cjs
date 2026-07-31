@@ -1,5 +1,6 @@
 "use strict";
 
+const {DataTypes} = require("sequelize");
 /** @type {import("sequelize-cli").Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -19,19 +20,39 @@ module.exports = {
 
       entity_type: {
         type: Sequelize.ENUM(
-            "users",
-            "influencers",
+            "user",
+            "influencer",
             "organization",
             "business",
-            "events"
+            "event"
         ),
-        allowNull: false,
-        defaultValue: "users",
+        allowNull: true,
       },
 
       entity_code: {
         type: Sequelize.STRING(8),
-        allowNull: false,
+        allowNull: true,
+      },
+
+      attachment_category: {
+        type: Sequelize.ENUM(
+            "profile_picture",
+            "cover_image",
+            "gallery",
+            "logo",
+            "banner",
+            "portfolio",
+            "proof",
+            "menu",
+            "contract",
+            "invoice",
+            "document",
+            "reference",
+            "social_link",
+            "other"
+        ),
+        allowNull: true,
+        defaultValue: "other"
       },
 
       title: {
@@ -40,9 +61,28 @@ module.exports = {
       },
 
       media_type: {
-        type: Sequelize.ENUM("image", "video", "document", "website"),
+        type: Sequelize.ENUM("image", "video", "document", "link"),
         allowNull: false,
         defaultValue: "image",
+      },
+
+      disk: {
+        type: Sequelize.ENUM(
+            "local",
+            "public",
+            "cloudinary"
+        ),
+        allowNull: false,
+        defaultValue: "cloudinary",
+      },
+
+      folder: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      original_file_name: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
       },
 
       file_name: {
@@ -60,15 +100,20 @@ module.exports = {
         allowNull: true,
       },
 
-      url: {
+      public_id: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+
+      secure_url: {
         type: Sequelize.STRING(500),
         allowNull: true,
       },
 
       is_primary: {
-        type: Sequelize.ENUM("yes", "no"),
+        type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: "no",
+        defaultValue: false
       },
 
       visibility: {
@@ -89,7 +134,7 @@ module.exports = {
       },
 
       status: {
-        type: Sequelize.ENUM("active", "deleted"),
+        type: Sequelize.ENUM("active", "archived", "deleted"),
         allowNull: false,
         defaultValue: "active",
       },

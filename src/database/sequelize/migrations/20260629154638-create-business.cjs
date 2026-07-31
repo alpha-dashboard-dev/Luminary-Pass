@@ -51,6 +51,11 @@ module.exports = {
         allowNull: true,
       },
 
+      billing_plan: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+
       status: {
         type: Sequelize.ENUM(
             "lead",
@@ -77,18 +82,6 @@ module.exports = {
       },
     });
 
-    // FK: owner user
-    // await queryInterface.addConstraint("businesses", {
-    //   fields: ["owner_user_code"],
-    //   type: "foreign key",
-    //   name: "fk_businesses_owner",
-    //   references: {
-    //     table: "users",
-    //     field: "user_code",
-    //   },
-    //   onUpdate: "CASCADE",
-    //   onDelete: "RESTRICT",
-    // });
   },
 
   async down(queryInterface, Sequelize) {

@@ -29,14 +29,16 @@ class VenueRepository {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
 
         const include = buildIncludes(
             this.tables,
             options.include || [],
         )
+
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

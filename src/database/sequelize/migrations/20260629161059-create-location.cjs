@@ -19,12 +19,12 @@ module.exports = {
 
       entity_type: {
         type: Sequelize.ENUM("business", "event", "user"),
-        allowNull: false,
+        allowNull: true,
       },
 
       entity_code: {
         type: Sequelize.STRING(8),
-        allowNull: false,
+        allowNull: true,
       },
 
       address_line_1: {
@@ -54,6 +54,11 @@ module.exports = {
 
       postal_code: {
         type: Sequelize.STRING(50),
+        allowNull: true,
+      },
+      status: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
         allowNull: true,
       },
 

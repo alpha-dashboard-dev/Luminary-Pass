@@ -31,6 +31,8 @@ class participantChecklistRepository {
 
     async findAll(options: any = {}) {
 
+        // console.log(options)
+
         const include = buildIncludes(
             this.tables,
             options.include || [],
@@ -58,6 +60,14 @@ class participantChecklistRepository {
             this.tables,
             where,
         );
+    }
+
+    async count(where: any, options: any = {}) {
+        return await dbHelper.count(
+            this.tables,
+            where,
+            options
+        )
     }
 }
 

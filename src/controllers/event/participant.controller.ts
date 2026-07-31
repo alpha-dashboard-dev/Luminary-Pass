@@ -188,6 +188,13 @@ class participantController {
             });
         }
     }
+
+    // async participantCheckIn(req: FastifyRequest, reply: FastifyReply) {
+    //
+    //     const participantCode = String(req.params.participantCode)
+    //
+    //     const result = await participantService.participantCheckin()
+    // }
 }
 
 export default  new participantController();

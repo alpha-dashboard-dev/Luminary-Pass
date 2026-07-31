@@ -4,25 +4,79 @@ import {validateEvent} from "../../utils/validator.js";
 
 class eventController {
 
-    async create(req: FastifyRequest, reply: FastifyReply) {
+    // async create(req: FastifyRequest, reply: FastifyReply) {
+    //
+    //     try{
+    //         const data = req.body;
+    //         validateEvent(data)
+    //         const result =  await eventService.create(
+    //             data,
+    //             req.user
+    //         )
+    //         return reply.status(200).send({
+    //             success: true,
+    //             message: "event created successfully",
+    //             data: result
+    //         });
+    //     }
+    //     catch (err: any) {
+    //         return reply.status(400).send({
+    //             success: false,
+    //             message: err.message
+    //         });
+    //     }
+    // }
 
-        try{
-            const data = req.body;
-            validateEvent(data)
-            const result =  await eventService.create(
+
+    //
+    async create(req: FastifyRequest, reply: FastifyReply) {
+        // console.log("Request received");
+        try {
+
+            let eventData:  any = {};
+            const images:   any[] = [];
+
+            for await (const part of req.parts()) {
+                // console.log(part.fieldname, part.type);
+
+                if(part.type === "file") {
+
+                    if(part.fieldname === "eventImages") {
+
+                        const buffer = await part.toBuffer();
+
+                        images.push({
+                            filename: part.filename,
+                            mimetype: part.mimetype,
+                            size: buffer.length,
+                            buffer
+                        });
+                    }
+                } else {
+
+                    eventData[part.fieldname] = part.value;
+                }
+            }
+
+            const data = {
+                ...eventData,
+                images
+            };
+            const result = await eventService.create(
                 data,
                 req.user
-            )
+            );
             return reply.status(200).send({
-                success: true,
-                message: "event created successfully",
-                data: result
+                success:true,
+                message:"Event created successfully",
+                data:result
+
             });
-        }
-        catch (err: any) {
+        } catch(err:any){
             return reply.status(400).send({
-                success: false,
-                message: err.message
+                success:false,
+                message:err.message
+
             });
         }
     }

@@ -1,13 +1,15 @@
 import locationRepo from "../../repositories/location/location.repository";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
-import businessRepo from "../../repositories/busines/business.repository.js";
+import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
 import eventRepo from "../../repositories/event/event.repository.js";
 
 class LocationService {
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
+
+        // console.log(data, options);
 
         switch (data.entityType) {
             case "business":
@@ -40,21 +42,29 @@ class LocationService {
                 break;
         }
 
+        const location = await locationRepo.findOne({
+            entity_code: data.entityCode,
+        })
+
+        if (location){
+            throw new Error(`Location already exist for ${data.entityType}`);
+        }
+
         // Add Status column in Location Table
 
         const locationCode = generateCode();
 
         return await locationRepo.create({
             location_code: locationCode,
-            entity_type: data.entityType,
-            entity_code: data.entityCode,
-            address_line_1: data.addressLine1,
-            address_line_2: data.addressLine2,
-            city: data.city,
-            state: data.state,
-            country: data.country,
-            postal_code: data.postalCode,
-        });
+            entity_type: data.entityType || null,
+            entity_code: data.entityCode || null,
+            address_line_1: data.addressLine1 || null,
+            address_line_2: data.addressLine2 || null,
+            city: data.city || null,
+            state: data.state || null,
+            country: data.country || null,
+            postal_code: data.postalCode || null,
+        }, options);
     }
 
     // Get all Locations

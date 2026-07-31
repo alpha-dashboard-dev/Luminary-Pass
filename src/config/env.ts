@@ -6,6 +6,9 @@ export const env = {
 
     PORT: Number(process.env.PORT ?? 5000),
 
+    JWT_ACCESS_SECRET_TOKEN: process.env.JWT_ACCESS_SECRET_TOKEN,
+    JWT_ACCESS_TOKEN_EXPIRES_IN: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
+
     INSTAGRAM_APP_ID: process.env.INSTAGRAM_APP_ID!,
 
     INSTAGRAM_APP_SECRET: process.env.INSTAGRAM_APP_SECRET!,
@@ -24,5 +27,30 @@ export const env = {
 
     FACEBOOK_APP_SECRET: process.env.FACEBOOK_APP_SECRET!,
 
-    FACEBOOK_PERMISSION_SCOPES: process.env.FACEBOOK_PERMISSION_SCOPES ?? ""
+    FACEBOOK_PERMISSION_SCOPES: process.env.FACEBOOK_PERMISSION_SCOPES ?? "",
+
+    SMTP_HOST: process.env.SMTP_HOST!,
+    SMTP_PORT: Number(process.env.SMTP_PORT!),
+    SMTP_SECURE: process.env.SMTP_SECURE!,
+    SMTP_USER: process.env.SMTP_USER!,
+    SMTP_PASS: process.env.SMTP_PASS!,
+    APP_URL: process.env.APP_URL!,
+
+
+//     Media Attachment
+    ATTACHMENT_DISK: process.env.ATTACHMENT_DISK!,
+    LOCAL_STORAGE_PATH: process.env.LOCAL_STORAGE_PATH!,
+    PUBLIC_STORAGE_PATH: process.env.PUBLIC_STORAGE_PATH!,
+    PUBLIC_URL: process.env.PUBLIC_URL!,
+
+//     Cloudinary ENV Values
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME!,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
+    CLOUDINARY_FOLDER: process.env.CLOUDINARY_FOLDER!,
+
+//     FIREBASE ENV VALUES
+    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID!,
+    FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL!,
+    FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY!,
 };

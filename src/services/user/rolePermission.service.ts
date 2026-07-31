@@ -8,6 +8,8 @@ class RolePermissionService {
 
     async assignPermissions(roleCode: string, permissions: string[], actor: any) {
 
+        // console.log(permissions)
+
         if (!permissions?.length) {
             return [];
         }
@@ -22,22 +24,31 @@ class RolePermissionService {
         }
 
         // Fetch all requested permissions
-        const permissionRecords = await permissionRepo.findAll({
-            where: {
+        // const permissionRecords = await permissionRepo.findAll({
+        //     where: {
+        //         permission_code: permissions,
+        //     },
+        // });
+
+        const permissionRecords = await permissionRepo.findAll(
+            {
                 permission_code: permissions,
-            },
-        });
+            }
+        )
+
+
+        // console.log(permissionRecords);
 
         if (permissionRecords.length !== permissions.length) {
             throw new Error("One or more permissions do not exist");
         }
 
         // Existing mappings
-        const existingMappings = await rolePermissionRepo.findAll({
-            where: {
+        const existingMappings = await rolePermissionRepo.findAll(
+            {
                 role_code: roleCode,
-            },
-        });
+            }
+        );
 
         const assignedPermissions = new Set(
             existingMappings.map((x: any) => x.permission_code)

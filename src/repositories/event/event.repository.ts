@@ -30,11 +30,14 @@ class EventRepository {
     }
 
     async findAll(options: any = {}) {
+        // console.log(options);
 
         const include = buildIncludes(
             this.tables,
             options.include || [],
         )
+
+        console.log(include);
         return await dbHelper.findAll(
             this.tables,
             {
@@ -58,6 +61,19 @@ class EventRepository {
             this.tables,
             where,
         );
+    }
+
+    async count(where: any, options: any = {}) {
+        return await dbHelper.count(
+            this.tables,
+            where,
+            options
+        )
+    }
+
+    async query(options: any = {}) {
+        // console.log(options)
+        return await dbHelper.query(this.tables, options);
     }
 }
 

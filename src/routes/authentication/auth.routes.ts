@@ -9,11 +9,6 @@ export default async function authRoutes(fastify: FastifyInstance) {
         authController.register,
     )
 
-
-    // register business
-
-
-
     // LOGIN (PUBLIC)
     fastify.post("/login", authController.login);
 

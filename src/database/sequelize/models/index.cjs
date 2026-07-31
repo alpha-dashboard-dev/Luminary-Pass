@@ -29,7 +29,8 @@ const Attachment = require('./attachment');
 const Badge = require('./badges');
 const SocialLogin = require('./social_logins');
 const Settings = require("./settings");
-const SignupSession = require('./signup_sessions');
+const OnboardingSession = require('./onboarding_sessions.js');
+const ParticipantChecklistMedia = require('./participant-checklist-media');
 
 
 
@@ -61,13 +62,14 @@ const initModels = () => {
         EventCheckList: EventCheckList.initModel(sequelize),
         ChecklistAttachment: ChecklistAttachment.initModel(sequelize),
         EventParticipantChecklist: EventParticipantChecklist.initModel(sequelize),
+        ParticipantChecklistMedia: ParticipantChecklistMedia.initModel(sequelize),
 
         Attachment: Attachment.initModel(sequelize),
         Badge: Badge.initModel(sequelize),
         SocialLogin: SocialLogin.initModel(sequelize),
         Settings: Settings.initModel(sequelize),
 
-        SignupSession: SignupSession.initModel(sequelize),
+        OnboardingSession: OnboardingSession.initModel(sequelize),
     };
 
     Object.values(models).forEach((model) => {

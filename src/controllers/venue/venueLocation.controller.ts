@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueLocationService from "../../services/venue/venueLocation.service"
 import {validateVenueLocation} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class VenueLocationController {
 

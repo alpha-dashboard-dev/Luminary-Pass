@@ -15,10 +15,9 @@ export const INCLUDE_CONFIG = {
     User: {
         role: {
             attributes: ["role", "rank", "description"],
-
             // include:{
             //     permissions: {
-            //         attributes: ["api", "name"]
+            //         attributes: ["module", "name"]
             //     }
             // }
         },
@@ -27,6 +26,9 @@ export const INCLUDE_CONFIG = {
         },
         business: {
             attributes: ["name", "email", "status"],
+        },
+        influencer: {
+            attributes: ["user_name", "min_followers", "max_followers"],
         }
     },
 

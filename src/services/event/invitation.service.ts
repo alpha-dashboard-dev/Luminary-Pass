@@ -4,8 +4,10 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import eventRepo from "../../repositories/event/event.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
-import businessRepo from "../../repositories/busines/business.repository.js";
+import businessRepo from "../../repositories/business/business.repository.js";
 import userRepo from "../../repositories/user/user.repository.js";
+import participantService from "./participant.service.js";
+import notificationService from "../notifications/notfication.service.js";
 
 class EventInvitationService {
 
@@ -62,7 +64,7 @@ class EventInvitationService {
 
         // add separate column for start & end date and time
 
-        return await eventInvitationRepo.create({
+        const invitation = await eventInvitationRepo.create({
             invitation_code: invitationCode,
             event_code: data.eventCode,
             entity_type: data.entityType,
@@ -73,6 +75,24 @@ class EventInvitationService {
             status: data.status,
             responded_at: data.respondedAt || null,
         });
+
+        // send invitation notification to influencer
+
+        const notification = await notificationService.sendToUser(
+            data.influencerCode,
+            "Event Invitation",
+            "Accept Event Invitation",
+            {
+                type: "EVENT_INVITATION",
+                eventCode: data.eventCode,
+            }
+        )
+
+
+        return {
+            invitation: invitation,
+            notification: notification,
+        }
     }
 
     // Get all invitations
@@ -167,6 +187,51 @@ class EventInvitationService {
             invitation_code: invitationCode
         });
     }
+
+    async respondToInvitation(invitationCode: string, data: any) {
+
+        const invitation = await eventInvitationRepo.findOne({
+            invitation_code: invitationCode
+        })
+
+        if (!invitation) {
+            throw new Error("invitation not found");
+        }
+
+        // console.log(invitation);
+        if(data.status === "accepted") {
+            await participantService.create({
+                eventCode: invitation.event_code,
+                influencerCode: invitation.influencer_code,
+                source: "invitation",
+                sourceCode: invitation.invitation_code,
+                status: "approved",
+            })
+
+            // send Notification to business owner that influencer accepted or declined event invitation
+
+            // const notification = await notficationService.sendToUser()
+        }
+
+        const allowed: any = {};
+        if (data.status !== undefined)
+            allowed.status = data.status;
+        if (data.respondedAt === undefined) {
+            allowed.responded_at = data.respondedAt;
+        } else {
+            allowed.responded_at = new Date();
+        }
+
+        return await eventInvitationRepo.update(
+            {
+                invitation_code: invitationCode
+            },
+            allowed
+        )
+    }
+
+
+
 }
 
 export default new EventInvitationService();

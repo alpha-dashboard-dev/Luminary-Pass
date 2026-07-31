@@ -63,6 +63,11 @@ class Business extends Model {
             allowNull: true,
           },
 
+          billing_plan: {
+              type: DataTypes.TEXT,
+              allowNull: true,
+          },
+
           status: {
             type: DataTypes.ENUM(
                 "lead",
@@ -85,6 +90,22 @@ class Business extends Model {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW,
           },
+
+          email_verification_token: {
+              type: DataTypes.STRING(255),
+              allowNull: true,
+
+          },
+          email_verification_token_expires_at: {
+              type: DataTypes.DATE,
+              allowNull: true,
+          },
+          email_verified: {
+              type: DataTypes.BOOLEAN,
+              allowNull: false,
+              defaultValue: false
+          }
+
         },
         {
           sequelize,

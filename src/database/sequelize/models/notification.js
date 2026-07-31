@@ -1,63 +1,69 @@
 const { Model, DataTypes } = require("sequelize");
 
-class SignupSession extends Model {
+class Notification extends Model {
     static initModel(sequelize) {
-        SignupSession.init(
+        Notification.init(
             {
                 id: {
                     type: DataTypes.BIGINT,
                     autoIncrement: true,
                     primaryKey: true,
                 },
-
-                signup_code: {
+                notification_code: {
                     type: DataTypes.STRING(8),
                     allowNull: false,
-                    unique: true,
                     validate: {
                         is: /^[A-Za-z0-9]{8}$/,
-                    },
+                    }
                 },
 
                 user_code: {
                     type: DataTypes.STRING(8),
-                    allowNull: false,
-                    unique: true,
+                    allowNull: true,
                     validate: {
                         is: /^[A-Za-z0-9]{8}$/,
                     },
                 },
 
-                account_type: {
-                    type: DataTypes.STRING(150),
-                    allowNull: false,
+                title: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
                 },
-
-                current_step: {
-                    type: DataTypes.INTEGER,
-                    allowNull: false,
+                body: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
                 },
-
-                status: {
-                    type: DataTypes.ENUM("draft", "pending", "approved", "completed", "in_progress"),
-                    allowNull: false,
-                    defaultValue: "draft",
+                type: {
+                    type: DataTypes.TEXT,
+                    allowNull: true,
                 },
-
+                reference_code: {
+                    type: DataTypes.STRING(8),
+                    allowNull: true,
+                    validate: {
+                        is: /^[A-Za-z0-9]{8}$/,
+                    }
+                },
+                is_read: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: true,
+                },
                 created_at: {
                     type: DataTypes.DATE,
+                    allowNull: false,
                     defaultValue: DataTypes.NOW,
                 },
 
                 updated_at: {
                     type: DataTypes.DATE,
+                    allowNull: false,
                     defaultValue: DataTypes.NOW,
                 },
             },
             {
                 sequelize,
-                modelName: "SignupSession",
-                tableName: "signup_sessions",
+                modelName: "Notification",
+                tableName: "notifications",
                 timestamps: true,
                 createdAt: "created_at",
                 updatedAt: "updated_at",
@@ -65,17 +71,11 @@ class SignupSession extends Model {
             }
         );
 
-        return SignupSession;
+        return Notification;
     }
 
     static associate(models) {
-        SignupSession.belongsTo(models.User, {
-            foreignKey: "user_code",
-            targetKey: "user_code",
-            as: "user",
-            constraints: false
-        })
     }
 }
 
-module.exports = SignupSession;
+module.exports = Notification;

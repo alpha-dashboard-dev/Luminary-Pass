@@ -1,5 +1,4 @@
 export interface InstagramMedia {
-
     id: string;
 
     caption?: string;
@@ -17,5 +16,5 @@ export interface InstagramMedia {
     like_count?: number;
 
     comments_count?: number;
-
 }
+

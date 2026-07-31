@@ -19,18 +19,17 @@ module.exports = {
 
       entity_type: {
         type: Sequelize.ENUM("venue", "influencer"),
-        allowNull: false,
-        defaultValue: "influencer",
+        allowNull: true,
       },
 
       entity_code: {
         type: Sequelize.STRING(8),
-        allowNull: false,
+        allowNull: true,
       },
 
       name: {
         type: Sequelize.STRING(100),
-        allowNull: false,
+        allowNull: true,
       },
 
       description: {
