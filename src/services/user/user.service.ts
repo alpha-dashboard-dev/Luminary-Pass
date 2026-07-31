@@ -69,18 +69,23 @@ class UserService {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        return userRepo.findAll({
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
+
+        return userRepo.findAll(
             where,
-            include: Array.isArray(query.include) ? query.include : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include) ? query.include : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     // Get users By user code
@@ -99,6 +104,11 @@ class UserService {
             throw new Error("User not found");
         }
 
+        if(actor.roleCode !== "ROL00001") {
+            if(user.business_code !== actor.businessCode) {
+                throw new Error("User does not belong to your business");
+            }
+        }
         return user;
     }
 
@@ -127,6 +137,12 @@ class UserService {
         });
 
         if (!user) throw new Error("User not found");
+
+        if(actor.roleCode !== "ROL00001") {
+            if(user.business_code !== actor.businessCode) {
+                throw new Error("Update failed! User does not belong to your business.");
+            }
+        }
 
         const allowed: any = {};
         if (data.firstName !== undefined)

@@ -29,7 +29,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00001", "PER00002", "PER00003", "PER00004"],
-                    true
+                    false
                 )
             ]
         },
@@ -44,7 +44,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00001", "PER00002", "PER00003", "PER00004"],
-                    true
+                    false
                 )
             ]
         },
