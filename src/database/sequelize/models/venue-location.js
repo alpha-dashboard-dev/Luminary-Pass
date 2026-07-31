@@ -51,6 +51,10 @@ class VenueLocation extends Model {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
           },
+          map_link: {
+              type: DataTypes.TEXT,
+              allowNull: true,
+          },
 
           created_at: {
             type: DataTypes.DATE,

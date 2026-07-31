@@ -46,6 +46,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         defaultValue: false,
       },
+      map_link: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
 
       created_at: {
         type: Sequelize.DATE,
