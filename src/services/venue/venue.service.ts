@@ -4,6 +4,7 @@ import {buildWhere} from "../../utils/buildWhere.js";
 import businessRepo from "../../repositories/business/business.repository";
 import venueLocationRepo from "../../repositories/venue/venueLocation.repository.js";
 import initModels from "../../database/sequelize/models/index.cjs";
+import categoryRepo from "../../repositories/category/category.repository.js";
 
 const db = initModels();
 
@@ -166,6 +167,8 @@ class VenueService {
 
         try{
 
+            const { } = data
+
             const venueExists = await venueRepo.findOne({
                 venue_code: data.venueCode
             })
@@ -174,16 +177,29 @@ class VenueService {
                 throw new Error("Venue does not exist");
             }
 
+            if(venueExists.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
+
             // console.log(venueExists);
 
-            // const venueLocationExist = await venueRepo.findOne({
-            //     venue_code: data.venueCode
-            // })
-            //
-            // if(venueLocationExist){
-            //     throw new Error("Venue already exist");
-            // }
-            //
+            const venueLocationExist = await venueRepo.findOne({
+                venue_code: data.venueCode
+            })
+
+            if(venueLocationExist){
+                throw new Error("Venue Location already exist");
+            }
+            // Basic Info
+
+
+            // Location & Contact
+            // Social Media
+            // Schedule
+            // Venue images
+
+            // console.log("venueLocationExist", venueLocationExist);
+
             // const venueLocation = await this.create(
             //     {
             //         venueCode: venueExists.venue_code,
