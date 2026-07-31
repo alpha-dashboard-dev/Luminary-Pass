@@ -80,7 +80,7 @@ class AuthService {
 
     async login(data: any, request: any) {
 
-        // console.log(data);
+        // console.log(data, request);
 
         const { email, password, fcmToken, deviceName, deviceType, timezone } = data;
 
@@ -99,6 +99,8 @@ class AuthService {
             }
         );
 
+        // console.log(user.role);
+
         if (!user) {
             throw new Error("User doesn't exist with this email.");
         }
@@ -112,7 +114,7 @@ class AuthService {
 
 
         // it only check for business_owner so it may be uerrole.role === "business_owner"
-        if(userRole.role !== "admin" && userRole.role !== "influencer") {
+        if(user.role.role === "business_owner") {
             const business = await businessRepo.findOne({
                 business_code: user.business_code,
             })
@@ -150,7 +152,6 @@ class AuthService {
         const refreshExpiry = new Date(Date.now() + 15 * 24 * 60 * 60 * 1000);
 
         await userSessionRepo.create({
-
             session_code: sessionCode,
             user_code: user.user_code,
             refresh_token: refreshToken,
@@ -168,7 +169,6 @@ class AuthService {
         return {
 
             user: {
-
                 userCode: user.user_code,
                 organizationCode: user.organization_code,
                 businessCode: user.business_code,
