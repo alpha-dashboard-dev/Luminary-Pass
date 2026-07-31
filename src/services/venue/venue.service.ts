@@ -5,6 +5,9 @@ import businessRepo from "../../repositories/business/business.repository";
 import venueLocationRepo from "../../repositories/venue/venueLocation.repository.js";
 import initModels from "../../database/sequelize/models/index.cjs";
 import categoryRepo from "../../repositories/category/category.repository.js";
+import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
+import venueScheduleService from "./venueSchedule.service.js";
+import attachmentService from "../mediaAttachment/attachment.service.js";
 
 const db = initModels();
 
@@ -167,7 +170,7 @@ class VenueService {
 
         try{
 
-            const { } = data
+            // const { } = data
 
             const venueExists = await venueRepo.findOne({
                 venue_code: data.venueCode
@@ -192,14 +195,21 @@ class VenueService {
             }
             // Basic Info
 
+            const venue = await venueRepo.update(
+                {
+                    venue_code: data.venueCode
+                },
+                {
+                    name: data.name,
+                    email: data.email,
+                    phone: data.phone,
+                    description: data.description,
+                    web_url: data.webURL
+                },
+                {   transaction }
+            )
 
-            // Location & Contact
-            // Social Media
-            // Schedule
-            // Venue images
-
-            // console.log("venueLocationExist", venueLocationExist);
-
+            // Location
             // const venueLocation = await this.create(
             //     {
             //         venueCode: venueExists.venue_code,
@@ -213,20 +223,19 @@ class VenueService {
             //         transaction,
             //     }
             // )
-            //
-            // const venueContact = await venueRepo.update(
-            //     {
-            //         venue_code: venueExists.venue_code,
-            //     },
-            //     {
-            //         email: data.email,
-            //         phone: data.phone,
-            //         web_url: data.webURL
-            //     },
-            //     {
-            //         transaction,
-            //     }
-            // )
+
+            // Social Media
+
+
+            // Schedule
+            const venueSchedule = await venueScheduleService.create({
+
+            })
+            // Venue images
+
+            const venueImages = await attachmentService.uploadMultiple()
+
+            // console.log("venueLocationExist", venueLocationExist);
 
             await transaction.commit();
 
