@@ -5,7 +5,6 @@ export const FILTER_CONFIG: any = {
     // User: {
     //
     // },
-
     roleCode: {
         field: "role_code",
         op: Op.eq,
@@ -27,7 +26,22 @@ export const FILTER_CONFIG: any = {
     city: {
         field: "city",
         op: Op.eq,
-    }
+    },
+    phone: {
+        field: "phone",
+        op: Op.eq,
+    },
+    search: {
+        type: "or",
+        fields: [
+            {   field: "description", op: Op.like}
+            // { field: "name", op: Op.like },
+            // { field: "email", op: Op.like },
+            // { field: "phone", op: Op.like },
+            // { field: "street", op: Op.like },
+            // { field: "working_days", op: Op.like },
+        ]
+    },
 };
 
 

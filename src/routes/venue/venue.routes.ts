@@ -28,8 +28,8 @@ export default async function venueRoutes(fastify: FastifyInstance) {
             preHandler: [
                 authenticate,
                 hasPermission(
-                    ["PER00065", "PER00018", "PER00066", "PER00070"],
-                    false
+                    ["PER00018"], // read permission
+                    true
                 )
             ]
         },

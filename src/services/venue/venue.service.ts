@@ -51,12 +51,15 @@ class VenueService {
     // Get all venues
 
     async getAll(query: any = {}, actor: any) {
-        // console.log(query.where)
+
+        // filters
         const where = buildWhere(query);
 
-        // if(!actor){
-        //     throw new Error("Unauthorized Access");
-        // }
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
 
         return venueRepo.findAll({
             where,
