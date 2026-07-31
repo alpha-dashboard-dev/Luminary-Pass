@@ -383,8 +383,7 @@ class UserController {
             const userCode = String(req.params.userCode)
             const data = req.body;
 
-
-            const result = await userService.activateUserAccount(userCode, data, req.user);
+            const result = await userService.activateUserAccount(userCode, data);
 
             return ApiResponse.success(
                 reply,

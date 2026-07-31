@@ -317,9 +317,9 @@ class UserService {
     }
 
 
-    async activateUserAccount(userCode: string, data: any, actor: any){
+    async activateUserAccount(userCode: string, data: any){
 
-        console.log(userCode, actor);
+        // console.log(userCode, actor);
         try{
 
             const { status } = data
