@@ -33,7 +33,7 @@ export default async function venueLocationRoutes(fastify: FastifyInstance) {
                 )
             ]
         },
-        venueLocationController.createLocationAndContact
+        venueLocationController.updateVenueProfile
     );
 
     // GET ALL VENUES

@@ -28,16 +28,16 @@ class VenueLocationController {
         }
     }
 
-    async createLocationAndContact(req: FastifyRequest, reply: FastifyReply) {
+    async updateVenueProfile(req: FastifyRequest, reply: FastifyReply) {
         try{
 
             const data = req.body;
             // console.log(data)
-            const result =  await venueLocationService.createLocationAndContact(data, req.user)
+            const result =  await venueLocationService.updateVenueProfile(data, req.user)
             return ApiResponse.success(
                 reply,
                 result,
-                "Venue Location and contact created successfully",
+                "Venue Profile updated successfully",
                 200
             )
 
