@@ -4,7 +4,7 @@ export class ApiResponse {
 
     static success(reply: FastifyReply, data: any = null, message = "Success", status = 200) {
 
-        return reply.status(status).send({
+        return reply.code(status).send({
             success: true,
             message,
             data,
@@ -13,7 +13,7 @@ export class ApiResponse {
 
     static error(reply: FastifyReply, message = "Something went wrong", status = 500, errors: any = null) {
 
-        return reply.status(status).send({
+        return reply.code(status).send({
             success: false,
             message,
             errors,

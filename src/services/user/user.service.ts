@@ -4,11 +4,13 @@ import { hashPassword } from "../../utils/hashPassword";
 import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js"
 import initModels from "../../database/sequelize/models/index.cjs";
-import emailService from "../sendEmail/email.service.js";
-import businessRepo from "../../repositories/business/business.repository.js";
-import locationRepo from "../../repositories/location/location.repository.js";
-import categoryRepo from "../../repositories/category/category.repository.js";
-import influencerRepo from "../../repositories/influencer/influencer.repository.js";
+import emailService from "../sendEmail/email.service";
+import businessRepo from "../../repositories/business/business.repository";
+import locationRepo from "../../repositories/location/location.repository";
+import categoryRepo from "../../repositories/category/category.repository";
+import influencerRepo from "../../repositories/influencer/influencer.repository";
+import userRoleRepo from "../../repositories/user/userRole.repository";
+import venueRepo from "../../repositories/venue/venue.repository.js";
 
 const db = initModels();
 
@@ -195,9 +197,38 @@ class UserService {
                     throw new Error("User not found");
                 }
 
-                // console.log(user.email);
+                if(user.profile_completed){
+                // console.log("User profile already completed");
+                    return;
+                }
 
-                const result = await emailService.sendProfileSetupEmail(user.email, userCode, user.first_name );
+                const userRole = await userRoleRepo.findOne({
+                    role_code: user.role_code
+                })
+
+                let emailVerified, result;
+
+                if(userRole.role === "business_owner"){
+                    // console.log("Business Owner", userRole.role);
+                    emailVerified = await businessRepo.findOne({
+                        owner_user_code: userCode,
+                        email_verified: true
+
+                    })
+
+                    if(emailVerified){
+                        // console.log("Email Verified", emailVerified)
+                        result = await emailService.sendProfileSetupEmail(user.email, userCode, user.first_name);
+                        throw new Error("Email Verified");
+                    }else{
+                        throw new Error("Email not Verified");
+                    }
+                }
+                else if(userRole.role === "influencer"){
+                    // console.log("Influencer", userRole.role);
+
+                    result = await emailService.sendProfileSetupEmail(user.email, userCode, user.first_name );
+                }
 
                 return result;
 
@@ -286,46 +317,142 @@ class UserService {
     }
 
 
-    async activateInfluencerAccount(userCode: string, data: any){
+    async activateUserAccount(userCode: string, data: any, actor: any){
 
+        console.log(userCode, actor);
         try{
 
+            const { status } = data
+
+            // console.log(status)
+
+            if (!["active", "inactive"].includes(status)) {
+                throw new Error("Invalid status! Status must be active or inactive");
+            }
+            // Found user
             const user = await userRepo.findOne({
                 user_code: userCode
             })
-
             if (!user) {
                 throw new Error("User not found");
             }
 
-            if(user.profile_completed){
-                await userRepo.update(
-                    {user_code: userCode},
-                    data
-                )
-
-                await locationRepo.update(
-                    {
-                        entity_code: userCode,
-                    },
-                    {
-                        status: true
-                    }
-                )
-
-                const influencer = await influencerRepo.findOne({
-                    user_code: userCode
-                })
-
-                await categoryRepo.update(
-                    {
-                        entity_code: influencer.influencer_code,
-                    },
-                    data
-                )
-
-                return true
+            // check profile completed or not
+            if(!user.profile_completed){
+                // console.log("Profile not completed");
+                throw new Error("Profile not completed");
             }
+
+            // check user role
+            const userRole = await userRoleRepo.findOne({
+                role_code: user.role_code
+            })
+
+            if(userRole.role === "business_owner") {
+                // console.log("business owner account");
+                // account already active or not
+                if(user.status !== "active"){
+
+                    // find business
+                    const business = await businessRepo.findOne({
+                        owner_user_code: userCode
+                    })
+
+                    // find business venue
+                    const venue = await venueRepo.findOne({
+                        business_code: business.business_code
+                    })
+
+                    // business Owner active
+                    await userRepo.update(
+                        {
+                            user_code: userCode
+                        },
+                        {
+                            status: status
+                        }
+
+                    )
+
+                    await businessRepo.update(
+                        {
+                            business_code: business.business_code
+                        },
+                        {
+                            status: status
+                        }
+                    )
+
+                    // console.log(business)
+
+                    // business venue active
+                    await venueRepo.update(
+                        {
+                            venue_code: venue.venue_code
+                        },
+                        {
+                            status: status
+                        }
+                    )
+
+                    // // venue category active
+                    await categoryRepo.update(
+                        {
+                            entity_code: venue.venue_code
+                        },
+                        {
+                            status: status
+                        }
+                    )
+                    // business location active
+                    await locationRepo.update(
+                        {
+                            entity_code: business.business_code,
+                        },
+                        {
+                            status: true
+                        }
+                    )
+
+                    // return true;
+                }
+                else{
+                    throw new Error("Your account is already active");
+                }
+            }
+            else if(userRole.role === "influencer"){
+                // console.log("influencer account");
+                // account already active or not
+                if(user.status !== "active"){
+                    await userRepo.update(
+                        {user_code: userCode},
+                        data
+                    )
+                    await locationRepo.update(
+                        {
+                            entity_code: userCode,
+                        },
+                        {
+                            status: true
+                        }
+                    )
+                    const influencer = await influencerRepo.findOne({
+                        user_code: userCode
+                    })
+                    await categoryRepo.update(
+                        {
+                            entity_code: influencer.influencer_code,
+                        },
+                        data
+                    )
+                    // return true
+                }
+                else{
+                    throw new Error("Your account is already active");
+                }
+            }
+
+            return true;
 
         }catch(err){
             throw err

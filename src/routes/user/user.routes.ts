@@ -136,7 +136,7 @@ export default async function userRoutes(fastify: FastifyInstance) {
     )
 
     fastify.patch(
-        "/activate-influencer-account/:userCode",
+        "/activate-user-account/:userCode",
         {
             preHandler: [
                 authenticate,
@@ -146,6 +146,6 @@ export default async function userRoutes(fastify: FastifyInstance) {
                 )
             ]
         },
-        userController.activateInfluencerAccount
+        userController.activateUserAccount
     )
 }

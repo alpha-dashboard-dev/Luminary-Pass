@@ -63,7 +63,7 @@ class BusinessService {
                     name: businessName.trim(),
                     email: email || null,
                     phone: phone,
-                    billing_plan: planInterest
+                    billing_plan: planInterest,
                 },
                 { transaction }
             );
@@ -193,32 +193,6 @@ class BusinessService {
         );
         return true;
     }
-
-    async updateBusinessOwnerProfile(data: any) {
-
-        const business = await businessRepo.findOne({
-            email: data.email,
-            email_verified: true,
-        })
-
-        if (!business) {
-            throw new Error("Business not found");
-        }
-
-        const allowed: any = {};
-        if (data.firstName !== undefined)
-            allowed.first_name = data.firstName;
-        if (data.lastName !== undefined)
-            allowed.last_name = data.lastName;
-        if (data.password) {
-            allowed.password = await hashPassword(data.password);
-        }
-        // console.log(allowed)
-        //
-        // console.log(business)
-
-    }
-
 
     // Get all Businesses
 

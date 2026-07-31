@@ -97,11 +97,10 @@ class EmailService {
             html: `
            <h2>Welcome to Luminary Pass</h2>
 
-            <p>Hello,</p>
+            <p>Hello, <strong>${businessName}</strong></p>
             
             <p>
-            You have been invited to join <strong>${businessName}</strong> on
-            Luminary Pass.
+            You have been invited to join Luminary Pass.
             </p>
             
             <p>

@@ -377,24 +377,28 @@ class UserController {
    }
 
 
-   async activateInfluencerAccount(req: FastifyRequest, reply: FastifyReply) {
+   async activateUserAccount(req: FastifyRequest, reply: FastifyReply) {
         try{
 
             const userCode = String(req.params.userCode)
             const data = req.body;
 
-            const result = await userService.activateInfluencerAccount(userCode, data);
+
+            const result = await userService.activateUserAccount(userCode, data, req.user);
 
             return ApiResponse.success(
                 reply,
                 result,
-                "Influencer Account Activated successfully",
+                "Account Activated successfully",
+                200
             )
 
         }catch(err){
             return ApiResponse.error(
-                false,
+                reply,
                 err.message,
+                400,
+                err,
                 );
         }
    }
