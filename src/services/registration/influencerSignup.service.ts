@@ -64,6 +64,7 @@ class InfluencerSignupService {
             const user = await userRepo.create(
                 {
                     user_code: userCode,
+                    organization_code: "ORG00001",
                     first_name: fullName,
                     email: email,
                     phone: phone,
@@ -426,6 +427,7 @@ class InfluencerSignupService {
                 const user = await userRepo.create(
                     {
                         user_code: userCode,
+                        organization_code: "ORG00001",
                         first_name: fullName || null,
                         email: email || null,
                         phone: phone || null,
