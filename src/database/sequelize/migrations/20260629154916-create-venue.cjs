@@ -41,6 +41,10 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
+      web_url: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
 
       status: {
         type: Sequelize.ENUM("active", "inactive"),

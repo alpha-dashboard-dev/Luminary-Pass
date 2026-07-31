@@ -49,6 +49,10 @@ class Venue extends Model {
             type: DataTypes.TEXT,
             allowNull: true,
           },
+          web_url: {
+              type: DataTypes.STRING(255),
+              allowNull: true,
+          }  ,
 
           status: {
             type: DataTypes.ENUM("active", "inactive"),
