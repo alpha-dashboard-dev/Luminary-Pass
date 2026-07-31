@@ -173,13 +173,13 @@ export const validateInfluencer = (data: any) => {
 
 
 export const validateVenue = (data: any, isUpdate: boolean = false) => {
-    const { businessCode, name, email, phone, status } = data;
+    const {name, email, phone, status } = data;
 
-    if (!isUpdate || businessCode !== undefined) {
-        if (!businessCode || !isValidCode(businessCode)) {
-            throw new Error("Valid 8-character businessCode is required");
-        }
-    }
+    // if (!isUpdate || businessCode !== undefined) {
+    //     if (!businessCode || !isValidCode(businessCode)) {
+    //         throw new Error("Valid 8-character businessCode is required");
+    //     }
+    // }
     if (!isUpdate || name !== undefined) {
         if (!name || name.trim().length < 2) {
             throw new Error("Venue name must be at least 2 characters long");

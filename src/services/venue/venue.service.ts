@@ -94,6 +94,12 @@ class VenueService {
             throw new Error("Venue not found");
         }
 
+        if(actor.roleCode !== "ROL00001") {
+            if(venue.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
+        }
+
         return venue;
     }
 
@@ -115,7 +121,7 @@ class VenueService {
     }
 
     // Update venue
-    async update(venueCode: string, data: any) {
+    async update(venueCode: string, data: any, actor: any) {
 
         const venue = await venueRepo.findOne({
             venue_code: venueCode
@@ -123,7 +129,12 @@ class VenueService {
 
         if (!venue) throw new Error("venue not found");
 
-        console.log(data)
+        if(actor.roleCode !== "ROL00001") {
+            if(venue.business_code !== actor.businessCode) {
+                throw new Error("Venue does not belong to your business");
+            }
+        }
+        // console.log(data)
 
         const allowed: any = {};
         if (data.name !== undefined)

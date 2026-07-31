@@ -44,7 +44,7 @@ export default async function venueRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00017", "PER00018", "PER00019", "PER00020"],
-                    true
+                    false
                 )
             ]
         },
@@ -73,7 +73,7 @@ export default async function venueRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00017", "PER00018", "PER00019", "PER00020"],
-                    true
+                    false
                 )
             ]
         },
