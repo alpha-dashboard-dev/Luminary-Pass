@@ -16,20 +16,35 @@ export function hasPermission(permissionCodes: string[], mode: Boolean) {
                 });
             }
 
-            const rolePermissions = await rolePermissionRepo.findAll({
-                where: {
+            const rolePermissions = await rolePermissionRepo.findAll(
+                {
                     role_code: roleCode,
                     permission_code: {
-                        [Op.in]: permissionCodes
-                    }
-                }},
+                        [Op.in]: permissionCodes,
+                    },
+                },
                 {
                     include: [
                         {
-                            alias: "permission"
-                        }
-                    ]
+                            alias: "permission",
+                        },
+                    ],
                 }
+                // old find All method
+                // {
+                // where: {
+                //     role_code: roleCode,
+                //     permission_code: {
+                //         [Op.in]: permissionCodes
+                //     }
+                // }},
+                // {
+                //     include: [
+                //         {
+                //             alias: "permission"
+                //         }
+                //     ]
+                // }
             );
 
             // console.log(rolePermissions);
