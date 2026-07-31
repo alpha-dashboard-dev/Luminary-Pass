@@ -3,10 +3,6 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 
-import initModels from "../../database/sequelize/models/index.cjs";
-
-const db = initModels();
-
 class venueLocationService {
 
     // Create location
@@ -19,7 +15,7 @@ class venueLocationService {
             venue_code: data.venueCode
         })
 
-        if(!venueExists) {
+        if (!venueExists) {
             throw new Error("Venue does not exist");
         }
 
@@ -38,86 +34,6 @@ class venueLocationService {
             },
             options
         );
-    }
-
-    // create venue location & contact information
-
-    async updateVenueProfile(data: any, actor: any){
-
-        // console.log(data)
-        const transaction = await db.sequelize.transaction()
-
-        try{
-
-            const venueExists = await venueRepo.findOne({
-                venue_code: data.venueCode
-            })
-
-            if(!venueExists) {
-                throw new Error("Venue does not exist");
-            }
-
-            // console.log(venueExists.venue_code);
-
-            const venueLocationExist = await venueRepo.findOne({
-                venue_code: data.venueCode
-            })
-
-            if(venueLocationExist){
-                throw new Error("Venue already exist");
-            }
-
-            const venueLocation = await this.create(
-                {
-                    venueCode: venueExists.venue_code,
-                    address: data.fullAddress,
-                    area: data.area,
-                    city: data.city,
-                    mapLink: data.mapLink,
-                    status: true
-                },
-                {
-                    transaction,
-                }
-            )
-
-            const venueContact = await venueRepo.update(
-                {
-                    venue_code: venueExists.venue_code,
-                },
-                {
-                    email: data.email,
-                    phone: data.phone,
-                    web_url: data.webURL
-                },
-                {
-                    transaction,
-                }
-            )
-
-            await transaction.commit();
-
-            return true
-
-        }catch(err){
-            if(!transaction.finished)
-                await transaction.rollback();
-            throw err;
-        }
-
-        //
-        // const locationCode = generateCode();
-        //
-        // return await venueLocationRepo.create({
-        //     venue_location_code: locationCode,
-        //     venue_code: data.venueCode,
-        //     address: data.address,
-        //     area: data.area,
-        //     city: data.city,
-        //     country: data.country,
-        //     status: data.status
-        // });
-
     }
 
     // Get all locations

@@ -163,6 +163,24 @@ class VenueController {
         }
     }
 
+    // update venue profile
+    async updateVenueProfile(req: FastifyRequest, reply: FastifyReply) {
+        try{
+            const data = req.body;
+            console.log(data)
+            const result =  await venueService.updateVenueProfile(data, req.user)
+            return ApiResponse.success(
+                reply,
+                result,
+                "Venue Profile updated successfully",
+                200
+            )
+        }
+        catch (err: any) {
+            return ApiResponse.error(reply, err.message, 400, err,);
+        }
+    }
+
     async deactivate(req: FastifyRequest, reply: FastifyReply) {
         try{
             const venueCode = String(req.params.venueCode)

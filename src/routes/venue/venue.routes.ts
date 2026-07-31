@@ -80,6 +80,21 @@ export default async function venueRoutes(fastify: FastifyInstance) {
         venueController.update
     );
 
+    // update venue profile
+    fastify.put(
+        "/update-venue-profile",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00065", "PER00069", "PER00070", "PER00071"],
+                    false
+                )
+            ]
+        },
+        venueController.updateVenueProfile
+    );
+
     // Deactivate Venue
 
     fastify.patch(

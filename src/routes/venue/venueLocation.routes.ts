@@ -21,21 +21,6 @@ export default async function venueLocationRoutes(fastify: FastifyInstance) {
         venueLocationController.create
     );
 
-    // venue location + contact
-    fastify.post(
-        "/create-venue-location-contact",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00065", "PER00069", "PER00070", "PER00071"],
-                    false
-                )
-            ]
-        },
-        venueLocationController.updateVenueProfile
-    );
-
     // GET ALL VENUES
     fastify.get(
         "/get-all-venue-locations",
