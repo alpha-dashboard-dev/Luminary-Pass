@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueLocationService from "../../services/venue/venueLocation.service"
 import {validateVenueLocation} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class VenueLocationController {
 
@@ -24,6 +25,25 @@ class VenueLocationController {
                 success: false,
                 message: err.message
             });
+        }
+    }
+
+    async createLocationAndContact(req: FastifyRequest, reply: FastifyReply) {
+        try{
+
+            const data = req.body;
+            // console.log(data)
+            const result =  await venueLocationService.createLocationAndContact(data, req.user)
+            return ApiResponse.success(
+                reply,
+                result,
+                "Venue Location and contact created successfully",
+                200
+            )
+
+        }
+        catch (err: any) {
+            return ApiResponse.error(reply, err.message, 400, err,);
         }
     }
 

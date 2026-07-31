@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueService from "../../services/venue/venue.service";
 import {validateVenue} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class VenueController {
 
@@ -195,22 +196,22 @@ class VenueController {
         try {
             const venueCode = String(req.params.venueCode)
 
-            await venueService.delete(
+            const result = await venueService.delete(
                 venueCode,
                 req.user
             );
 
-            return reply.status(200).send({
-                success: true,
-                message: "venue permanently deleted"
-            });
+            return ApiResponse.success(
+                reply,
+                result,
+                "Account Activated successfully",
+                200
+            )
+
 
         } catch (err: any) {
 
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
+            return ApiResponse.error(reply, err.message, 400, err,);
         }
     }
 }

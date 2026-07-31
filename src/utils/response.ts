@@ -22,3 +22,19 @@ export class ApiResponse {
 }
 
 // use in userController for testing activateInfluencerAccount
+
+/*
+
+ return ApiResponse.success(
+                reply,
+                result,
+                "Account Activated successfully",
+                200
+            )
+return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err,
+                );
+ */

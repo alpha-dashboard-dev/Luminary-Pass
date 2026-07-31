@@ -30,6 +30,45 @@ class venueLocationService {
         });
     }
 
+    // create venue location & contact information
+
+    async createLocationAndContact(data: any, actor: any){
+
+        console.log(data)
+
+        const venueExists = await venueRepo.findOne({
+            venue_code: data.venueCode
+        })
+
+        if(!venueExists) {
+            throw new Error("Venue does not exist");
+        }
+
+        const venueLocation = await this.create({
+
+        })
+
+        const venueContact = await venueRepo.update(
+            {
+                venue_code: venueExists.venueCode,
+            }
+        )
+
+        //
+        // const locationCode = generateCode();
+        //
+        // return await venueLocationRepo.create({
+        //     venue_location_code: locationCode,
+        //     venue_code: data.venueCode,
+        //     address: data.address,
+        //     area: data.area,
+        //     city: data.city,
+        //     country: data.country,
+        //     status: data.status
+        // });
+
+    }
+
     // Get all locations
 
     async getAll(query: any = {}, actor: any) {
