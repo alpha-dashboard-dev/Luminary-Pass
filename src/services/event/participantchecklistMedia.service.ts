@@ -41,12 +41,11 @@ class ParticipantChecklistMediaService {
                 influencer_code: participant.influencer_code
             });
 
-        const mediaRecords =
-            await participantChecklistMediaRepo.findAll({
-                where: {
-                    participant_checklist_code: participantChecklistCode
-                }
-            });
+        const mediaRecords = await participantChecklistMediaRepo.findAll(
+            {
+                participant_checklist_code: participantChecklistCode
+            }
+        );
 
         return await Promise.all(
 

@@ -69,26 +69,31 @@ class LocationService {
 
     // Get all Locations
 
-    async getAll(query: any = {}) {
+    async getAll(query: any = {}, actor: any) {
         // console.log(query)
         const where = buildWhere(query);
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
 
-        console.log(query.include);
 
-        return locationRepo.findAll({
+        return locationRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     // Get location By location Code

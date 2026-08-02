@@ -31,9 +31,16 @@ class VenueScheduleService {
 
     // Get all Venue Schedule
 
-    async getAll(query: any = {}) {
+    async getAll(query: any = {}, actor: any) {
         // console.log(query.where)
         const where = buildWhere(query);
+
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
+
 
         return venueScheduleRepo.findAll(
             where,
