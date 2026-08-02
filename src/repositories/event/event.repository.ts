@@ -29,7 +29,7 @@ class EventRepository {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
         // console.log(options);
 
         const include = buildIncludes(
@@ -40,6 +40,7 @@ class EventRepository {
         console.log(include);
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

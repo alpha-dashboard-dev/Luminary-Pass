@@ -1,3 +1,4 @@
+// @ts-ignore
 import initModels from "../../database/sequelize/models/index.cjs"
 import dbHelper from "../../database/dbHelper/dbHelper.js"
 import {buildIncludes} from "../../utils/buildInclude.js";
