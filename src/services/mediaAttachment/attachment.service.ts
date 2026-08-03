@@ -42,7 +42,7 @@ class AttachmentService {
         // Generate SHA-256 hash
         const fileHash = generateFileHash(buffer)
 
-        console.log("fileHash:", fileHash);
+        // console.log("fileHash:", fileHash);
         const attachmentExisting = await attachmentRepo.findOne({
             entity_code: options.entityCode,
             attachment_category: options.attachmentCategory,
@@ -112,9 +112,7 @@ class AttachmentService {
     }
 
 
-    /**
-     * Delete Attachment
-     */
+    // delete Attachment
     async delete(attachmentCode:string){
 
 
@@ -135,17 +133,13 @@ class AttachmentService {
         await attachmentRepo.update(
 
             {
-                attachment_code:
-                attachmentCode
+                attachment_code: attachmentCode
             },
-
             {
                 status:"deleted"
             }
 
         );
-
-
 
         return {
             message: "Attachment deleted successfully"
@@ -157,17 +151,12 @@ class AttachmentService {
     /**
      * Replace Existing Attachment
      */
-    async replace(
-        attachmentCode:string,
-        file:any
-    ){
+    async replace(attachmentCode:string, file:any){
 
 
-        const attachment =
-            await attachmentRepo.findOne({
+        const attachment = await attachmentRepo.findOne({
 
-                attachment_code:
-                attachmentCode
+                attachment_code: attachmentCode
 
             });
 
