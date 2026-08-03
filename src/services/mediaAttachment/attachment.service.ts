@@ -91,6 +91,7 @@ class AttachmentService {
         return attachment;
     }
 
+
     // upload multiple files
     async uploadMultiple(files:any[], options:any){
 

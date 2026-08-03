@@ -187,69 +187,69 @@ class VenueService {
             }
 
             // Basic Info
-            //
-            // if(basicInfo){
-            //     // console.log(basicInfo);
-            //     const venue = await venueRepo.update(
-            //         {
-            //             venue_code: venueCode
-            //         },
-            //         {
-            //             name: basicInfo.venueName,
-            //             description: basicInfo.venueDescription,
-            //         },
-            //         {   transaction }
-            //     )
-            //
-            //     const venueCategory = await categoryRepo.update(
-            //         {
-            //             entity_code: venueCode
-            //         },
-            //         {
-            //             name: basicInfo.venueCategory,
-            //             description: basicInfo.categoryDescription,
-            //         },
-            //         {   transaction }
-            //     )
-            // }
+
+            if(basicInfo){
+                // console.log(basicInfo);
+                const venue = await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueName,
+                        description: basicInfo.venueDescription,
+                    },
+                    {   transaction }
+                )
+
+                const venueCategory = await categoryRepo.update(
+                    {
+                        entity_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueCategory,
+                        description: basicInfo.categoryDescription,
+                    },
+                    {   transaction }
+                )
+            }
 
             // Location & Contact
-            // if(locationContact){
-            //     // console.log("location contact", locationContact)
-            //
-            //     const venueLocation = await venueLocationRepo.findOne({
-            //         venue_code: venueCode
-            //     })
-            //
-            //     if(!venueLocation) {
-            //         throw new Error("Venue Location does not exist");
-            //     }
-            //
-            //     await venueLocationRepo.update(
-            //         {
-            //             venue_code: venueCode
-            //         },
-            //         {
-            //             area: locationContact.area,
-            //             city: locationContact.city,
-            //             address: locationContact.fullAddress,
-            //             map_link: locationContact.mapLink
-            //         },
-            //         {   transaction }
-            //     )
-            //
-            //     await venueRepo.update(
-            //         {
-            //             venue_code: venueCode
-            //         },
-            //         {
-            //             phone: locationContact.phone,
-            //             email: locationContact.email,
-            //             web_url: locationContact.webURL
-            //         },
-            //         {   transaction }
-            //     )
-            // }
+            if(locationContact){
+                // console.log("location contact", locationContact)
+
+                const venueLocation = await venueLocationRepo.findOne({
+                    venue_code: venueCode
+                })
+
+                if(!venueLocation) {
+                    throw new Error("Venue Location does not exist");
+                }
+
+                await venueLocationRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        area: locationContact.area,
+                        city: locationContact.city,
+                        address: locationContact.fullAddress,
+                        map_link: locationContact.mapLink
+                    },
+                    {   transaction }
+                )
+
+                await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        phone: locationContact.phone,
+                        email: locationContact.email,
+                        web_url: locationContact.webURL
+                    },
+                    {   transaction }
+                )
+            }
 
             // socialMedia
 
