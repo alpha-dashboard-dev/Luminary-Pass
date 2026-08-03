@@ -163,12 +163,62 @@ class VenueController {
         }
     }
 
+
     // update venue profile
     async updateVenueProfile(req: FastifyRequest, reply: FastifyReply) {
         try{
-            const data = req.body;
-            console.log(data)
-            const result =  await venueService.updateVenueProfile(data, req.user)
+
+            const venueCode = String(req.params.venueCode)
+            const parts = req.parts();
+
+            let basicInfo = null;
+            let locationContact = null;
+            let socialMedia = null;
+            let schedule = null;
+            let deletedImages = null;
+            const files = [];
+
+            for await (const part of parts) {
+                if (part.type === "file") {
+                    files.push(part);
+                } else {
+                    switch (part.fieldname) {
+                        case "basicInfo":
+                            basicInfo = JSON.parse(part.value);
+                            break;
+
+                        case "locationContact":
+                            locationContact = JSON.parse(part.value);
+                            break;
+
+                        case "socialMedia":
+                            socialMedia = JSON.parse(part.value);
+                            break;
+
+                        case "schedule":
+                            schedule = JSON.parse(part.value);
+                            break;
+
+                        case "deletedImages":
+                            deletedImages = JSON.parse(part.value);
+                            break;
+                    }
+                }
+            }
+
+           // console.log(basicInfo, locationContact, socialMedia, schedule)
+            const result =  await venueService.updateVenueProfile(
+                venueCode,
+                {
+                    basicInfo,
+                    locationContact,
+                    socialMedia,
+                    schedule,
+                    // deletedImages,
+                },
+                files,
+                req.user
+            )
             return ApiResponse.success(
                 reply,
                 result,

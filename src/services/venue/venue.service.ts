@@ -8,6 +8,7 @@ import categoryRepo from "../../repositories/category/category.repository.js";
 import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
 import venueScheduleService from "./venueSchedule.service.js";
 import attachmentService from "../mediaAttachment/attachment.service.js";
+import {backup} from "node:sqlite";
 
 const db = initModels();
 
@@ -163,17 +164,21 @@ class VenueService {
     }
 
     // update venue Profile
-    async updateVenueProfile(data: any, actor: any){
+    async updateVenueProfile(venueCode: string, payload: any, uploadedFiles: any[], actor: any){
 
         // console.log(data)
         const transaction = await db.sequelize.transaction()
 
         try{
 
-            // const { } = data
+            // console.log(payload)
+
+            const { basicInfo, locationContact, socialMedia, schedule } = payload;
+
+            // console.log(basicInfo, locationContact);
 
             const venueExists = await venueRepo.findOne({
-                venue_code: data.venueCode
+                venue_code: venueCode
             })
 
             if(!venueExists) {
@@ -184,60 +189,78 @@ class VenueService {
                 throw new Error("Venue does not belong to your business");
             }
 
-            // console.log(venueExists);
-
-            const venueLocationExist = await venueRepo.findOne({
-                venue_code: data.venueCode
-            })
-
-            if(venueLocationExist){
-                throw new Error("Venue Location already exist");
-            }
             // Basic Info
+            //
+            if(basicInfo){
+                // console.log(basicInfo);
+                const venue = await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueName,
+                        description: basicInfo.venueDescription,
+                    },
+                    {   transaction }
+                )
 
-            const venue = await venueRepo.update(
-                {
-                    venue_code: data.venueCode
-                },
-                {
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phone,
-                    description: data.description,
-                    web_url: data.webURL
-                },
-                {   transaction }
-            )
+                const venueCategory = await categoryRepo.update(
+                    {
+                        entity_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueCategory,
+                        description: basicInfo.categoryDescription,
+                    },
+                    {   transaction }
+                )
+            }
 
-            // Location
-            // const venueLocation = await this.create(
-            //     {
-            //         venueCode: venueExists.venue_code,
-            //         address: data.fullAddress,
-            //         area: data.area,
-            //         city: data.city,
-            //         mapLink: data.mapLink,
-            //         status: true
-            //     },
-            //     {
-            //         transaction,
-            //     }
-            // )
+            // Location & Contact
 
-            // Social Media
+            if(locationContact){
+                console.log("location contact", locationContact)
+
+                const venueLocation = await venueLocationRepo.findOne({
+                    venue_code: venueCode
+                })
+
+                if(!venueLocation) {
+                    throw new Error("Venue Location does not exist");
+                }
+
+                await venueLocationRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        area: locationContact.area,
+                        city: locationContact.city,
+                        address: locationContact.fullAddress,
+                        map_link: locationContact.mapLink
+                    },
+                    {   transaction }
+                )
+
+                await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        phone: locationContact.phone,
+                        email: locationContact.email,
+                        web_url: locationContact.webURL
+                    },
+                    {   transaction }
+                )
+            }
+
+            // socialMedia
 
 
-            // Schedule
-            const venueSchedule = await venueScheduleService.create({
-
-            })
-            // Venue images
-
-            const venueImages = await attachmentService.uploadMultiple()
-
-            // console.log("venueLocationExist", venueLocationExist);
 
             await transaction.commit();
+
 
             return true
 
