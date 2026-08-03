@@ -156,19 +156,12 @@ class AttachmentService {
 
 
         const attachment = await attachmentRepo.findOne({
+            attachment_code: attachmentCode
 
-                attachment_code: attachmentCode
-
-            });
-
-
+        });
 
         if(!attachment){
-
-            throw new Error(
-                "Attachment not found"
-            );
-
+            throw new Error("Attachment not found");
         }
 
 
@@ -177,13 +170,11 @@ class AttachmentService {
 
 
 
-        const folder =
-            attachment.folder;
+        const folder = attachment.folder;
 
 
 
-        const fileName =
-            FileNameGenerator.generate(
+        const fileName = FileNameGenerator.generate(
 
                 attachment.entity_code,
 
@@ -195,8 +186,7 @@ class AttachmentService {
 
 
 
-        const uploaded =
-            await this.storage.replace(
+        const uploaded = await this.storage.replace(
 
                 attachment.public_id,
 
