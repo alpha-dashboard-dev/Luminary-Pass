@@ -114,39 +114,37 @@ class AttachmentService {
 
 
     // delete Attachment
-    async delete(attachmentCode:    string, actor: any){
-        console.log(attachmentCode, actor);
+    async delete(attachmentCode: string, actor: any){
 
-        // if()
-
-        // const attachment = await attachmentRepo.findOne({
-        //     attachment_code: attachmentCode
-        // });
-        //
-        // if(!attachment){
-        //     throw new Error("Attachment not found");
-        // }
-        //
-        // if(attachment.public_id){
-        //     await this.storage.delete(attachment.public_id);
-        // }
-        //
-        //
-        //
-        // await attachmentRepo.update(
-        //
-        //     {
-        //         attachment_code: attachmentCode
-        //     },
-        //     {
-        //         status:"deleted"
+        // if(actor.roleCode !== "ROL00001") {
+        //     if(venue.business_code !== actor.businessCode) {
+        //         throw new Error("Venue does not belong to your business");
         //     }
-        //
-        // );
+        // }
 
-        return {
-            message: "Attachment deleted successfully"
-        };
+        const attachment = await attachmentRepo.findOne({
+            attachment_code: attachmentCode
+        });
+
+        if(!attachment){
+            throw new Error("Attachment not found");
+        }
+        // console.log(attachment);
+        // console.log(attachment.entity_type)
+        //
+        if(attachment.secure_url){
+            await this.storage.delete(attachment.secure_url);
+        }
+
+        await attachmentRepo.delete({
+            attachment_code: attachmentCode,
+        });
+
+        return true
+
+        // return {
+        //     message: "Attachment deleted successfully"
+        // };
 
 
     }

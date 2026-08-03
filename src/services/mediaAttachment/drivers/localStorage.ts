@@ -67,7 +67,6 @@ class LocalStorage extends StorageInterface {
 
     async delete(filePath) {
         return fsExtra.remove(filePath);
-
     }
 
 

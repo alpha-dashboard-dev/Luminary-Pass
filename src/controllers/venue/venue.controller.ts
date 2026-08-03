@@ -224,7 +224,7 @@ class VenueController {
                     locationContact,
                     socialMedia,
                     schedule,
-                    // deletedImages,
+                    deletedImages,
                 },
                 files,
                 req.user

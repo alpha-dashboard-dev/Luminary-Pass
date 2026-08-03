@@ -10,6 +10,7 @@ import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository
 import attachmentService from "../mediaAttachment/attachment.service.js";
 
 import venueSocialMediaRepo from "../../repositories/venue/venueSocialMedia.repository.js";
+import attachmentRepo from "../../repositories/mediaAttachment/attachment.repository.js";
 
 const db = initModels();
 
@@ -172,7 +173,7 @@ class VenueService {
 
         try{
 
-            const { basicInfo, locationContact, socialMedia, schedule } = payload;
+            const { basicInfo, locationContact, socialMedia, schedule, deletedImages } = payload;
 
             const venueExists = await venueRepo.findOne({
                 venue_code: venueCode
@@ -352,6 +353,26 @@ class VenueService {
 
                     }
                 }
+            }
+
+            // deletedImages
+            if(deletedImages){
+                    console.log(deletedImages);
+
+                    for(const image of deletedImages){
+
+                        const exitingImage = await attachmentRepo.findOne({
+                                attachment_code: image
+                        })
+
+                        if(exitingImage){
+                            await attachmentService.delete(image, actor)
+                        }
+                        // else{
+                        //     throw new Error("Attachment not exist")
+                        // }
+                    }
+
             }
 
             // venue Images, venue attachment also store in attachment table
