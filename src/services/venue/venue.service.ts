@@ -368,9 +368,6 @@ class VenueService {
                         if(exitingImage){
                             await attachmentService.delete(image, actor)
                         }
-                        // else{
-                        //     throw new Error("Attachment not exist")
-                        // }
                     }
 
             }
