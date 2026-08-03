@@ -309,11 +309,11 @@ class VenueService {
 
                 for (const schedule of venueSchedules) {
 
-                    const { day, startTime, endTime, isClosed } = schedule;
+                    const { workingDay, startTime, endTime, isClosed } = schedule;
 
-                    if (!day) continue;
+                    if (!workingDay) continue;
 
-                    const normalizedDay = day.toLowerCase();
+                    const normalizedDay = workingDay.toLowerCase();
 
                     const existing = await venueScheduleRepo.findOne({
                         venue_code: venueCode,

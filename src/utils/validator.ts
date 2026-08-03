@@ -17,6 +17,24 @@ const VALID_WORKING_DAYS = ["monday", "tuesday", "wednesday", "thursday", "frida
 const VALID_SCHEDULE_STATUSES = [true, false];
 const TIME_REGEX = /^([01]\d|2[0-3]):([0-5]\d)$/;
 
+function validateWorkingDay(workingDay: string) {
+
+    if (!workingDay) {
+        throw new Error("Working day is required");
+    }
+
+    const normalizedDay = workingDay.trim().toLowerCase();
+
+    if (!VALID_WORKING_DAYS.includes(normalizedDay)) {
+        throw new Error(
+            "Invalid workingDay. Must be one of: " +
+            VALID_WORKING_DAYS.join(", ")
+        );
+    }
+
+    return normalizedDay;
+}
+
 
 function validatePhone(phone: string) {
     if (!phone) {
@@ -202,35 +220,96 @@ export const validateVenue = (data: any, isUpdate: boolean = false) => {
 
 export const validateVenueProfileUpdate = (data: any) => {
 
-    const {basicInfo, locationContact, socialMedia, schedule, deletedImages} = data;
 
-    if (basicInfo.venueName !== undefined) {
-        if (!basicInfo.venueName  || basicInfo.venueName .trim().length < 2) {
-            throw new Error("Venue name must be at least 2 characters long");
+    const { basicInfo, locationContact, socialMedia, schedule, deletedImages} = data;
+    // console.log(basicInfo, locationContact, socialMedia, schedule, deletedImages)
+
+    if(basicInfo){
+        if (basicInfo.venueName !== undefined) {
+            if (!basicInfo.venueName  || basicInfo.venueName.trim().length < 2) {
+                throw new Error("Venue name must be at least 2 characters long");
+            }
+        }
+
+        if(basicInfo.venueCategory !== undefined) {
+            if (!basicInfo.venueCategory || basicInfo.venueCategory.trim().length < 2) {
+                throw new Error("Venue Category must be at least 2 characters long")
+            }
+        }
+
+        if(basicInfo.categoryDescription !== undefined) {
+
+            if (!basicInfo.categoryDescription || basicInfo.categoryDescription.trim().length < 10) {
+                throw new Error("Category Description must be at least 10 characters long")
+            }
+
+            if (basicInfo.categoryDescription.length > 1000) {
+                throw new Error("Description cannot exceed 1000 characters.");
+            }
+        }
+
+        if(basicInfo.venueDescription !== undefined){
+
+            if(!basicInfo.venueDescription || basicInfo.venueDescription.trim().length < 10) {
+                throw new Error("Venue description must be at least 10 characters long")
+            }
+
+            if(basicInfo.venueDescription.length > 1000){
+                throw new Error("Description cannot be exceed 1000 characters.")
+            }
         }
     }
-    if (locationContact.email !== undefined) {
-        if (!locationContact.email || !isValidEmail(locationContact.email)) {
-            throw new Error("Invalid email address!");
+
+    // Location & Contact
+
+    if(locationContact){
+
+        if(locationContact.area !== undefined){
+            if(!locationContact.area){
+                throw new Error()
+            }
+        }
+
+        if (locationContact.email !== undefined) {
+            if (!locationContact.email || !isValidEmail(locationContact.email)) {
+                throw new Error("Invalid email address!");
+            }
+        }
+
+        if (locationContact.phone) {
+            validatePhone(locationContact.phone);
         }
     }
 
-    if (locationContact.phone) {
-        validatePhone(locationContact.phone);
+
+    if(socialMedia){
+
     }
+
+    if(schedule){
+
+        for(const day of schedule ){
+            validateVenueSchedule(day);
+        }
+    }
+
+    if(deletedImages){
+
+    }
+
+    // if(location)
+
+
+
 
 
 }
 
-
 export const validateVenueSchedule = (data: any) => {
-    const { venueCode ,workingDay, startTime, endTime, status } = data;
+    // console.log(data);
+    const { workingDay, startTime, endTime, status } = data;
 
-    if(!venueCode || !isValidCode(venueCode)) {
-        throw new Error("Valid 8-character venueCode is required");
-    }
-
-    if (!workingDay || !VALID_WORKING_DAYS.includes(workingDay)) {
+    if (!validateWorkingDay(workingDay) || !VALID_WORKING_DAYS.includes(validateWorkingDay(workingDay))) {
         throw new Error("Invalid workingDays. Must be one of: " + VALID_WORKING_DAYS.join(", "));
     }
 
