@@ -96,7 +96,9 @@ export const validateOrganization = (data: any) => {
         throw new Error("Invalid email address");
     }
 
-    validatePhone(phone)
+    if(phone){
+        validatePhone(phone)
+    }
 
     if (!password || password.length < 6) {
         throw new Error("Password must be at least 6 characters long");
