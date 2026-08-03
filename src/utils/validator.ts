@@ -25,6 +25,9 @@ function validatePhone(phone: string) {
 
     phone = phone.trim();
 
+    // remove spaces
+    phone = phone.replace(/[\s\-()]/g, "");
+
     // Normalize PK numbers
     if (phone.startsWith("0")) {
         phone = "+92" + phone.slice(1);
@@ -173,13 +176,10 @@ export const validateInfluencer = (data: any) => {
 
 
 export const validateVenue = (data: any, isUpdate: boolean = false) => {
+    // console.log("validateVenue", data);
     const {name, email, phone, status } = data;
 
-    // if (!isUpdate || businessCode !== undefined) {
-    //     if (!businessCode || !isValidCode(businessCode)) {
-    //         throw new Error("Valid 8-character businessCode is required");
-    //     }
-    // }
+
     if (!isUpdate || name !== undefined) {
         if (!name || name.trim().length < 2) {
             throw new Error("Venue name must be at least 2 characters long");
@@ -199,6 +199,28 @@ export const validateVenue = (data: any, isUpdate: boolean = false) => {
         throw new Error("Invalid status. Must be one of: " + VALID_STATUSES.join(", "));
     }
 };
+
+export const validateVenueProfileUpdate = (data: any) => {
+
+    const {basicInfo, locationContact, socialMedia, schedule, deletedImages} = data;
+
+    if (basicInfo.venueName !== undefined) {
+        if (!basicInfo.venueName  || basicInfo.venueName .trim().length < 2) {
+            throw new Error("Venue name must be at least 2 characters long");
+        }
+    }
+    if (locationContact.email !== undefined) {
+        if (!locationContact.email || !isValidEmail(locationContact.email)) {
+            throw new Error("Invalid email address!");
+        }
+    }
+
+    if (locationContact.phone) {
+        validatePhone(locationContact.phone);
+    }
+
+
+}
 
 
 export const validateVenueSchedule = (data: any) => {

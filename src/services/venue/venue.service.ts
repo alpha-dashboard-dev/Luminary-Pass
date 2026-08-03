@@ -168,7 +168,7 @@ class VenueService {
     // update venue Profile
     async updateVenueProfile(venueCode: string, payload: any, uploadedFiles: any[], actor: any){
 
-        // console.log(data)
+        // console.log(payload)
         const transaction = await db.sequelize.transaction()
 
         try{
@@ -357,7 +357,7 @@ class VenueService {
 
             // deletedImages
             if(deletedImages){
-                    console.log(deletedImages);
+                    // console.log(deletedImages);
 
                     for(const image of deletedImages){
 

@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import venueService from "../../services/venue/venue.service";
-import {validateVenue} from "../../utils/validator.js";
+import {validateVenue, validateVenueProfileUpdate} from "../../utils/validator.js";
 import {ApiResponse} from "../../utils/response.js";
 
 class VenueController {
@@ -216,22 +216,28 @@ class VenueController {
                 }
             }
 
+            const payload = {basicInfo, locationContact, socialMedia, schedule, deletedImages};
+
+            validateVenueProfileUpdate(payload);
+
            // console.log(basicInfo, locationContact, socialMedia, schedule)
-            const result =  await venueService.updateVenueProfile(
-                venueCode,
-                {
-                    basicInfo,
-                    locationContact,
-                    socialMedia,
-                    schedule,
-                    deletedImages,
-                },
-                files,
-                req.user
-            )
+
+            // const result =  await venueService.updateVenueProfile(
+            //     venueCode,
+            //     payload,
+            //     // {
+            //     //     basicInfo,
+            //     //     locationContact,
+            //     //     socialMedia,
+            //     //     schedule,
+            //     //     deletedImages,
+            //     // },
+            //     files,
+            //     req.user
+            // )
             return ApiResponse.success(
                 reply,
-                result,
+                // result,
                 "Venue Profile updated successfully",
                 200
             )
