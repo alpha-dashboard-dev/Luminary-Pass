@@ -222,22 +222,22 @@ class VenueController {
 
            // console.log(basicInfo, locationContact, socialMedia, schedule)
 
-            // const result =  await venueService.updateVenueProfile(
-            //     venueCode,
-            //     payload,
-            //     // {
-            //     //     basicInfo,
-            //     //     locationContact,
-            //     //     socialMedia,
-            //     //     schedule,
-            //     //     deletedImages,
-            //     // },
-            //     files,
-            //     req.user
-            // )
+            const result =  await venueService.updateVenueProfile(
+                venueCode,
+                payload,
+                // {
+                //     basicInfo,
+                //     locationContact,
+                //     socialMedia,
+                //     schedule,
+                //     deletedImages,
+                // },
+                files,
+                req.user
+            )
             return ApiResponse.success(
                 reply,
-                // result,
+                result,
                 "Venue Profile updated successfully",
                 200
             )
