@@ -6,9 +6,9 @@ import venueLocationRepo from "../../repositories/venue/venueLocation.repository
 import initModels from "../../database/sequelize/models/index.cjs";
 import categoryRepo from "../../repositories/category/category.repository.js";
 import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
-import venueScheduleService from "./venueSchedule.service.js";
+
 import attachmentService from "../mediaAttachment/attachment.service.js";
-import {backup} from "node:sqlite";
+
 import venueSocialMediaRepo from "../../repositories/venue/venueSocialMedia.repository.js";
 
 const db = initModels();
@@ -354,15 +354,23 @@ class VenueService {
                 }
             }
 
-            // venue Images
+            // venue Images, venue attachment also store in attachment table
 
-            // if(uploadedFiles){
-            //     console.log(uploadedFiles);
-            // }
+            if(uploadedFiles){
+                // console.log(uploadedFiles);
+                const options = {
+                    entityType: "venue",
+                    entityCode: venueCode,
+                    attachmentCategory: "portfolio",
+                    uploadedBy: actor.userCode,
+                    visibility: "public",
+                    transaction
+                }
+                await attachmentService.uploadMultiple(uploadedFiles, options)
+            }
 
 
             await transaction.commit();
-
 
             return true
 

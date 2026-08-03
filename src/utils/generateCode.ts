@@ -3,6 +3,10 @@ export function generateCode(): string {
     return crypto.randomBytes(4).toString("hex").toUpperCase();
 }
 
+export function generateFileHash(buffer: Buffer){
+    return crypto.createHash("sha256").update(buffer).digest("hex");
+}
+
 
 // export async function generateCode(model: any, prefix: string, codeField: string): Promise<string> {
 //     const lastRecord = await model.findOne({

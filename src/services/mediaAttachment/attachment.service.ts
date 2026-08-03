@@ -3,7 +3,7 @@ import FolderGenerator from "./helpers/folderGenerator";
 import FileNameGenerator from "./helpers/fileNameGenerator";
 import EntityResolver from "./helpers/entityResolver";
 import AttachmentValidator from "./validator/attachmentValidator";
-import { generateCode } from "../../utils/generateCode";
+import {generateCode, generateFileHash} from "../../utils/generateCode";
 import StorageFactory from "./storageFactory.service";
 import {parseMimeType} from "../../utils/attachment.js";
 
@@ -12,16 +12,15 @@ class AttachmentService {
 
     private storage:any;
 
-
     constructor(){
         this.storage = StorageFactory.make();
     }
-    /**
-     * Upload Single File
-     */
+
+    // upload single file
     async upload(file:any, options:any){
 
         // console.log(file, options);
+
 
         AttachmentValidator.validate(file);
         const entity = await EntityResolver.exists(
@@ -38,6 +37,24 @@ class AttachmentService {
         const folder = FolderGenerator.generate(options.entityType, options.attachmentCategory);
         const fileName = FileNameGenerator.generate(options.entityCode, options.attachmentCategory, file.filename);
 
+        const buffer = file.buffer ? file.buffer : await file.toBuffer();
+
+        // Generate SHA-256 hash
+        const fileHash = generateFileHash(buffer)
+
+        console.log("fileHash:", fileHash);
+        const attachmentExisting = await attachmentRepo.findOne({
+            entity_code: options.entityCode,
+            attachment_category: options.attachmentCategory,
+            file_hash: fileHash,
+
+        })
+        // console.log(attachmentExisting)
+        if(attachmentExisting){
+            return null
+            // throw new Error("Image already exists with this file");
+        }
+
         const uploaded = await this.storage.upload(
                 file,
                 {
@@ -45,6 +62,8 @@ class AttachmentService {
                     fileName
                 }
             );
+
+        // console.log(uploaded);
 
         const attachment = await attachmentRepo.create({
                 attachment_code: generateCode(),
@@ -60,6 +79,7 @@ class AttachmentService {
                 file_extension: fileName.split(".").pop(),
                 mime_type: file.mimetype,
                 file_size: file.size || null,
+                file_hash: fileHash,
                 public_id: uploaded.publicId || null,
                 secure_url: uploaded.secureUrl,
                 uploaded_by: options.uploadedBy,
@@ -67,13 +87,11 @@ class AttachmentService {
                 visibility: options.visibility ?? "private",
                 display_order: options.displayOrder ?? 1,
                 status: "active"
-            });
+            }, options.transaction);
         return attachment;
     }
 
-    /**
-     * Upload Multiple Files
-     */
+    // upload multiple files
     async uploadMultiple(files:any[], options:any){
 
         const attachments=[];
@@ -85,7 +103,10 @@ class AttachmentService {
                     ...options,
                     mediaType: media_type.fileType
                 });
-            attachments.push(attachment);
+            if(attachment){
+                attachments.push(attachment);
+            }
+
         }
         return attachments;
     }
@@ -127,8 +148,7 @@ class AttachmentService {
 
 
         return {
-            message:
-                "Attachment deleted successfully"
+            message: "Attachment deleted successfully"
         };
 
 

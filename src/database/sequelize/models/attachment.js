@@ -25,7 +25,8 @@ class Attachment extends Model {
                 "influencer",
                 "organization",
                 "business",
-                "event"
+                "event",
+                "venue"
             ),
             allowNull: true,
           },
@@ -141,6 +142,10 @@ class Attachment extends Model {
             allowNull: false,
             defaultValue: "active",
           },
+          file_hash: {
+              type: DataTypes.STRING(64),
+              allowNull: true,
+          }  ,
 
           created_at: {
             type: DataTypes.DATE,

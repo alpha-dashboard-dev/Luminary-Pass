@@ -64,35 +64,6 @@ class LocalStorage extends StorageInterface {
     }
 
 
-    // async upload(file, options = {}) {
-    //
-    //     console.log(file, options);
-    //
-    //     const destination = path.join(
-    //         env.LOCAL_STORAGE_PATH,
-    //         options.folder
-    //     );
-    //
-    //     // console.log(destination);
-    //     await fsExtra.ensureDir(destination);
-    //
-    //
-    //     const filePath = path.join(
-    //         destination,
-    //         options.fileName
-    //     );
-    //
-    //     await fsExtra.writeFile(filePath, file.buffer);
-    //
-    //     // await pipeline(file.stream, fs.createWriteStream(filePath));
-    //     // await fs.copy(file.filepath, filePath);
-    //     return {
-    //         disk: "local",
-    //         path: filePath,
-    //         secureUrl: filePath,
-    //     };
-    // }
-
 
     async delete(filePath) {
         return fsExtra.remove(filePath);

@@ -27,6 +27,26 @@ class VenueAttachment extends Model {
               }
 
           },
+            attachment_category: {
+                type: DataTypes.ENUM(
+                    "profile_picture",
+                    "cover_image",
+                    "gallery",
+                    "logo",
+                    "banner",
+                    "portfolio",
+                    "proof",
+                    "menu",
+                    "contract",
+                    "invoice",
+                    "document",
+                    "reference",
+                    "social_link",
+                    "other"
+                ),
+                allowNull: true,
+                defaultValue: "other",
+            },
 
           attachment_type: {
             type: DataTypes.ENUM("image", "video", "link"),
