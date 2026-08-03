@@ -20,8 +20,6 @@ class AttachmentService {
     async upload(file:any, options:any){
 
         // console.log(file, options);
-
-
         AttachmentValidator.validate(file);
         const entity = await EntityResolver.exists(
             options.entityType,
@@ -36,6 +34,8 @@ class AttachmentService {
 
         const folder = FolderGenerator.generate(options.entityType, options.attachmentCategory);
         const fileName = FileNameGenerator.generate(options.entityCode, options.attachmentCategory, file.filename);
+
+        // console.log(folder)
 
         const buffer = file.buffer ? file.buffer : await file.toBuffer();
 
@@ -114,33 +114,35 @@ class AttachmentService {
 
 
     // delete Attachment
-    async delete(attachmentCode:string){
+    async delete(attachmentCode:    string, actor: any){
+        console.log(attachmentCode, actor);
 
+        // if()
 
-        const attachment = await attachmentRepo.findOne({
-            attachment_code: attachmentCode
-        });
-
-        if(!attachment){
-            throw new Error("Attachment not found");
-        }
-
-        if(attachment.public_id){
-            await this.storage.delete(attachment.public_id);
-        }
-
-
-
-        await attachmentRepo.update(
-
-            {
-                attachment_code: attachmentCode
-            },
-            {
-                status:"deleted"
-            }
-
-        );
+        // const attachment = await attachmentRepo.findOne({
+        //     attachment_code: attachmentCode
+        // });
+        //
+        // if(!attachment){
+        //     throw new Error("Attachment not found");
+        // }
+        //
+        // if(attachment.public_id){
+        //     await this.storage.delete(attachment.public_id);
+        // }
+        //
+        //
+        //
+        // await attachmentRepo.update(
+        //
+        //     {
+        //         attachment_code: attachmentCode
+        //     },
+        //     {
+        //         status:"deleted"
+        //     }
+        //
+        // );
 
         return {
             message: "Attachment deleted successfully"

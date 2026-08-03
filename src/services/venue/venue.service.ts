@@ -361,7 +361,7 @@ class VenueService {
                 const options = {
                     entityType: "venue",
                     entityCode: venueCode,
-                    attachmentCategory: "portfolio",
+                    attachmentCategory: "gallery",
                     uploadedBy: actor.userCode,
                     visibility: "public",
                     transaction
