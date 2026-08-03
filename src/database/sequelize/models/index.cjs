@@ -25,6 +25,7 @@ const EventParticipantChecklist = require('./event_participant_checklist');
 const VenueLocation = require('./venue-location');
 const VenueAttachment = require('./venue_attachment');
 const Attachment = require('./attachment');
+const SocialMedia = require('./venue_social_media');
 
 const Badge = require('./badges');
 const SocialLogin = require('./social_logins');
@@ -51,6 +52,7 @@ const initModels = () => {
         VenueTimeTable: VenueTimeTable.initModel(sequelize),
         VenueLocation: VenueLocation.initModel(sequelize),
         VenueAttachment: VenueAttachment.initModel(sequelize),
+        SocialMedia: SocialMedia.initModel(sequelize),
 
         Location: Location.initModel(sequelize),
         Influencer: Influencer.initModel(sequelize),

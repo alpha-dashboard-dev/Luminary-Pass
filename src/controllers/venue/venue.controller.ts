@@ -180,7 +180,17 @@ class VenueController {
 
             for await (const part of parts) {
                 if (part.type === "file") {
-                    files.push(part);
+                    // files.push(part);
+                    if (!part.mimetype.startsWith("image/")) {
+                        throw new Error(`${part.filename} is not an image`);
+                    }
+                    const buffer = await part.toBuffer();
+
+                    files.push({
+                        filename: part.filename,
+                        mimetype: part.mimetype,
+                        buffer
+                    });
                 } else {
                     switch (part.fieldname) {
                         case "basicInfo":
