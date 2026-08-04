@@ -47,7 +47,7 @@ class EventInvitationService {
             case "influencer":
 
                 const influencer = await influencerRepo.findOne({
-                    influencer_code: data.entityCode,
+                    user_code: data.entityCode,
                 })
                 if (!influencer){
                     throw new Error("Influencer doesn't exist");
@@ -214,7 +214,7 @@ class EventInvitationService {
         if(data.status === "accepted") {
             await participantService.create({
                 eventCode: invitation.event_code,
-                influencerCode: invitation.influencer_code,
+                influencerCode: invitation.entity_code,
                 source: "invitation",
                 sourceCode: invitation.invitation_code,
                 status: "approved",

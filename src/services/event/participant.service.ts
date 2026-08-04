@@ -20,7 +20,7 @@ class participantService {
         }
 
         const influencer = await influencerRepo.findOne({
-            influencer_code: data.influencerCode
+            user_code: data.influencerCode
         })
 
         if (!influencer) {
