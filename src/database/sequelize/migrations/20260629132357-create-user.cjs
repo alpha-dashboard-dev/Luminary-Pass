@@ -60,7 +60,7 @@ module.exports = {
       },
 
       user_type: {
-        type: Sequelize.ENUM("manager", "staff"),
+        type: Sequelize.ENUM("admin","manager", "staff", "viewer"),
         allowNull: true,
       },
 

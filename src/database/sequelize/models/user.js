@@ -74,7 +74,7 @@ class User extends Model {
           },
 
           user_type: {
-            type: DataTypes.ENUM("manager", "staff"),
+            type: DataTypes.ENUM("admin","manager", "staff", "viewer"),
             allowNull: true,
           },
 

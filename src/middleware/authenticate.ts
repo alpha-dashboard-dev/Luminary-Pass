@@ -65,6 +65,7 @@ export async function authenticate(req: FastifyRequest, reply: FastifyReply) {
         (req as any).user = {
             userCode: user.user_code,
             roleCode: user.role_code,
+            organizationCode: user.organization_code,
             businessCode: user.business_code,
             sessionCode: payload.sessionCode
         };

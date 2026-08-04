@@ -10,6 +10,8 @@ import venueRepo from "../../repositories/venue/venue.repository.js";
 import categoryRepo from "../../repositories/category/category.repository.js";
 import locationRepo from "../../repositories/location/location.repository.js";
 import emailService from "../sendEmail/email.service.js";
+import userService from "../user/user.service.js";
+import userRoleService from "../user/userRole.service.js";
 
 const db = initModels();
 
@@ -362,16 +364,56 @@ class BusinessService {
 
     async inviteTeamMember(data: any, actor: any) {
 
-        // console.log(data, actor)
+        const transaction = await db.sequelize.transaction();
 
-        const user = await userRepo.findOne({
-            email: data.email
-        })
+        try{
 
-        if(user){
-            throw new Error("User already exist with this email")
+            const user = await userRepo.findOne({
+                email: data.email
+            })
+
+            if(user){
+                throw new Error("User already exist with this email")
+            }
+
+            const role = await userRoleService.create(
+                {
+                    businessCode: actor.businessCode,
+                    role: data.role,
+                    rank: data.rank,
+                    description: data.description,
+                },
+                {   transaction }
+            )
+
+            const member = await userService.create(
+                {
+                    organizationCode: actor.organizationCode,
+                    businessCode: actor.businessCode,
+                    roleCode: role.role_code,
+                    firstName: data.name,
+                    email: data.email,
+                    userType: data.role,
+                },
+                {   transaction }
+            )
+
+            // console.log(member.user_code)
+            await transaction.commit();
+
+            await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
+
+            return {
+                success: true,
+                message: "Invite sent to email"
+            }
+
+        }catch(err){
+            if(!transaction.finished)
+                await transaction.rollback();
+
+            throw err;
         }
-
     }
 
 

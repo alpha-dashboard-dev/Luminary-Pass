@@ -4,21 +4,20 @@ import {buildWhere} from "../../utils/buildWhere.js";
 
 class UserRoleService {
 
-    async create(data: any, actor: any){
-
-        // if(!actor){
-        //     throw new Error("Unauthorized Access");
-        // }
+    async create(data: any, options?: any) {
 
         const roleCode = generateCode()
 
-        return userRoleRepo.create({
-            role_code: roleCode,
-            business_code: data.businessCode,
-            role: data.role,
-            rank: data.rank,
-            description: data.description,
-        })
+        return userRoleRepo.create(
+            {
+                role_code: roleCode,
+                business_code: data.businessCode,
+                role: data.role,
+                rank: data.rank,
+                description: data.description,
+            },
+            options
+        )
     }
 
     async getAll(query: any = {}, actor: any) {

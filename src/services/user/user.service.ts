@@ -18,7 +18,7 @@ class UserService {
 
     // Create Users
 
-    async create(data: any) {
+    async create(data: any, options?: any) {
 
         // console.log(data);
 
@@ -32,13 +32,16 @@ class UserService {
             throw new Error("Email already exists");
         }
 
-        const phoneExists = await userRepo.findOne({
-            phone: data.phone
-        })
+        if(data.phone){
+            const phoneExists = await userRepo.findOne({
+                phone: data.phone
+            })
 
-        if (phoneExists) {
-            throw new Error("Phone already exists");
+            if (phoneExists) {
+                throw new Error("Phone already exists");
+            }
         }
+
 
         const userCode = generateCode();
         let password
@@ -47,20 +50,23 @@ class UserService {
              password = await hashPassword(data.password);
         }
 
-        return await userRepo.create({
-            user_code: userCode,
-            organization_code: data.organizationCode || null,
-            business_code: data.businessCode || null,
-            role_code: data.roleCode,
-            first_name: data.firstName || null,
-            last_name: data.lastName || null,
-            email: data.email.trim().toLowerCase(),
-            phone: data.phone || null,
-            password: password || null,
-            user_type: data.userType || null ,
-            avatar: null,
-            status: data.status
-        });
+        return await userRepo.create(
+            {
+                user_code: userCode,
+                organization_code: data.organizationCode || null,
+                business_code: data.businessCode || null,
+                role_code: data.roleCode,
+                first_name: data.firstName || null,
+                last_name: data.lastName || null,
+                email: data.email.trim().toLowerCase(),
+                phone: data.phone || null,
+                password: password || null,
+                user_type: data.userType || null ,
+                avatar: null,
+                status: data.status
+            },
+            options
+        );
     }
 
     // Get all users
