@@ -15,6 +15,27 @@ const firebaseAdmin = getApps().length > 0 ? getApps()[0]
 
 export default firebaseAdmin;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import { initializeApp, cert } from "firebase-admin/app";
 // import serviceAccount from "../../credentials/firebase-service-account.json" with { type: "json" };
 // const firebaseAdmin = initializeApp({
