@@ -371,10 +371,19 @@ class BusinessService {
             const user = await userRepo.findOne({
                 email: data.email
             })
+            console.log(user)
 
             if(user){
                 throw new Error("User already exist with this email")
             }
+
+            // bypass email or bypass profile,
+            // business owner decide whatever they create the user profile or
+            // they only send email with the setupProfile, then user create their profile
+            // they only send email with the setupProfile, then user create their profile
+            // state checks user exist or profile completed or not,
+
+            // console.log("Profile created successfully")
 
             const role = await userRoleService.create(
                 {
