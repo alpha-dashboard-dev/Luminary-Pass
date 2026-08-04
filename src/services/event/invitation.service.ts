@@ -195,7 +195,7 @@ class EventInvitationService {
         });
     }
 
-    async respondToInvitation(invitationCode: string, data: any) {
+    async respondToInvitation(invitationCode: string, data: any, actor: any) {
 
         const invitation = await eventInvitationRepo.findOne({
             invitation_code: invitationCode
@@ -206,6 +206,11 @@ class EventInvitationService {
         }
 
         // console.log(invitation);
+
+        if(invitation.entity_code !== actor.userCode){
+            throw new Error("You don't respond to this invitation");
+        }
+
         if(data.status === "accepted") {
             await participantService.create({
                 eventCode: invitation.event_code,

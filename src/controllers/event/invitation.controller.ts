@@ -196,19 +196,22 @@ class invitationController {
 
             const data = req.body;
             // console.log(data)
-            const result = await invitationService.respondToInvitation(invitationCode, data);
-            return reply.status(200).send({
-                success: true,
-                message: "Respond successfully submitted",
-                data: result
-            });
+            const result = await invitationService.respondToInvitation(invitationCode, data, req.user);
+            return ApiResponse.success(
+                reply,
+                result,
+                "Respond successfully submitted",
+                200
+            )
 
         } catch (err: any) {
 
-            return reply.status(400).send({
-                success: false,
-                message: err.message,
-            });
+            return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err
+            )
         }
     }
 
