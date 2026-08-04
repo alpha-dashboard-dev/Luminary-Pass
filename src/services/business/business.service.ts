@@ -403,15 +403,11 @@ class BusinessService {
 
             await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
 
-            return {
-                success: true,
-                message: "Invite sent to email"
-            }
+            return true
 
         }catch(err){
             if(!transaction.finished)
                 await transaction.rollback();
-
             throw err;
         }
     }
