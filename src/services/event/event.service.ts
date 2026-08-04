@@ -23,8 +23,6 @@ class EventService {
         const { name, startDate, endDate, startTime, applicationDeadline, influencerCapacity, description, influencerOffer, offerAmount,
             dressCode, additionalGuests, specialRequirements, status, taskDetails, images } = data
 
-        console.log(images)
-
         const transaction = await db.sequelize.transaction();
 
         try{
