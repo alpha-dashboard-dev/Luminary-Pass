@@ -27,7 +27,7 @@ export default async function participantRoutes(fastify: FastifyInstance) {
                 authenticate,
                 hasPermission(
                     ["PER00061", "PER00062", "PER00063", "PER00064"],
-                    true
+                    false
                 )
             ]
         },
@@ -88,5 +88,19 @@ export default async function participantRoutes(fastify: FastifyInstance) {
             ]
         },
         participantController.delete
+    )
+
+    fastify.patch(
+        "/checkin-participant/:participantCode",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                    ["PER00061", "PER00062", "PER00063", "PER00064"],
+                    false
+                )
+            ]
+        },
+        participantController.participantCheckIn
     )
 }
