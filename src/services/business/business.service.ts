@@ -368,12 +368,13 @@ class BusinessService {
 
         try{
 
-            const user = await userRepo.findOne({
+
+            const userExist = await userRepo.findOne({
                 email: data.email
             })
-            console.log(user)
+            console.log(userExist)
 
-            if(user){
+            if(userExist){
                 throw new Error("User already exist with this email")
             }
 
@@ -381,7 +382,7 @@ class BusinessService {
             // business owner decide whatever they create the user profile or
             // they only send email with the setupProfile, then user create their profile
             // they only send email with the setupProfile, then user create their profile
-            // state checks user exi
+            // state checks user exist or not, profile completed or not
 
             // console.log("Profile created successfully")
 
