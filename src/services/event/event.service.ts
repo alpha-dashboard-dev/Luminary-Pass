@@ -4,13 +4,7 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
-import {
-    addHoursToNow,
-    normalizeDateOnly,
-    normalizeDeadline,
-    normalizeTimeToHHMM,
-    parseDate
-} from "../../utils/dateTimeFormat.js";
+import {addHoursToNow, parseDate} from "../../utils/dateTimeFormat.js";
 import attachmentService from "../mediaAttachment/attachment.service.js";
 const db = initModels();
 
