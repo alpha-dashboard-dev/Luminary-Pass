@@ -12,7 +12,8 @@ import notificationService from "../notifications/notfication.service.js";
 class EventInvitationService {
 
     // CREATE invitation
-    async create(data: any) {
+    async create(data: any, actor: any) {
+
 
         const event = await eventRepo.findOne({
             event_code: data.eventCode,
@@ -21,6 +22,16 @@ class EventInvitationService {
         if (!event) {
             throw new Error("Event does not exist");
         }
+
+        // console.log(event)
+
+        // console.log(actor)
+
+       if(actor.roleCode !== "ROL00001"){
+           if(event.business_code !== actor.businessCode){
+               throw new Error("Event does not belong to your business")
+           }
+       }
 
         switch (data.entityType) {
             case "business":
@@ -44,33 +55,29 @@ class EventInvitationService {
                 break;
         }
 
+       const inviterCode = data.invitedBy ? data.invitedBy : actor.userCode
+
         const inviter = await userRepo.findOne({
-            user_code: data.invitedBy,
+            user_code: inviterCode,
         })
+
+        // console.log(inviterCode)
 
         if (!inviter) {
             throw new Error("Inviter doesn't exist");
         }
 
-        // const influencer = await influencerRepo.findOne({
-        //     influencer_code: data.influencerCode
-        // })
+        // console.log(inviter);
         //
-        // if (!influencer) {
-        //     throw new Error("influencer doesn't exist");
-        // }
-
+        //
         const invitationCode = generateCode();
-
-        // add separate column for start & end date and time
 
         const invitation = await eventInvitationRepo.create({
             invitation_code: invitationCode,
             event_code: data.eventCode,
             entity_type: data.entityType,
             entity_code: data.entityCode,
-            influencer_code: data.influencerCode,
-            invited_by: data.invitedBy,
+            invited_by: inviterCode,
             invitation_message: data.invitationMessage,
             status: data.status,
             responded_at: data.respondedAt || null,
@@ -78,20 +85,19 @@ class EventInvitationService {
 
         // send invitation notification to influencer
 
-        const notification = await notificationService.sendToUser(
-            data.influencerCode,
-            "Event Invitation",
-            "Accept Event Invitation",
-            {
-                type: "EVENT_INVITATION",
-                eventCode: data.eventCode,
-            }
-        )
-
+        // const notification = await notificationService.sendToUser(
+        //     data.influencerCode,
+        //     "Event Invitation",
+        //     "Accept Event Invitation",
+        //     {
+        //         type: "EVENT_INVITATION",
+        //         eventCode: data.eventCode,
+        //     }
+        // )
 
         return {
             invitation: invitation,
-            notification: notification,
+            // notification: notification,
         }
     }
 

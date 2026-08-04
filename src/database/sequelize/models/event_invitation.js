@@ -96,12 +96,12 @@ class EventInvitation extends Model {
         constraints: false,
     });
 
-    EventInvitation.belongsTo(models.Influencer, {
-        foreignKey: "user_code",
-        targetKey: "user_code",
-        as: "influencerInvitation",
-        constraints: false,
-    });
+    // EventInvitation.belongsTo(models.Influencer, {
+    //     foreignKey: "user_code",
+    //     targetKey: "user_code",
+    //     as: "influencerInvitation",
+    //     constraints: false,
+    // });
 
     EventInvitation.belongsTo(models.User, {
         foreignKey: "invited_by",

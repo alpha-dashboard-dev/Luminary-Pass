@@ -625,7 +625,7 @@ export const validateInfluencerRating = (data: any) => {
 
 export const validateEventInvitation = (data: any) => {
 
-    const { eventCode, entityType, entityCode, influencerCode, invitedBy, status } = data
+    const { eventCode, entityType, entityCode, invitedBy, status } = data
 
     const VALID_INVITATION_ENTITY_TYPE = ["influencer", "business", "customer"]
     const VALID_INVITATION_STATUSES = ["pending", "accepted", "declined", "expired"]
@@ -642,12 +642,8 @@ export const validateEventInvitation = (data: any) => {
         throw new Error("Valid 8-character entityCode is required")
     }
 
-    if(!influencerCode || !isValidCode(influencerCode)) {
-        throw new Error("Valid 8-character influencerCode is required")
-    }
-
-    if(!invitedBy || !isValidCode(invitedBy)) {
-        throw new Error("Valid 8-character userCode is required, who invite the influencer")
+    if(invitedBy && !isValidCode(invitedBy)) {
+        throw new Error("Valid 8-character userCode is required, who sending the invitation")
     }
 
     if(!status || !VALID_INVITATION_STATUSES.includes(status)) {
