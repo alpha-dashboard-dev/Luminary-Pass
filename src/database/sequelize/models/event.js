@@ -111,7 +111,7 @@ class Event extends Model {
           status: {
             type: DataTypes.ENUM(
                 "draft",
-                "publish",
+                "published",
                 "closed",
                 "live",
                 "completed",

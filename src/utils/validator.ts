@@ -1,3 +1,5 @@
+import {normalizeDateOnly, normalizeTimeToHHMM} from "./dateTimeFormat.js";
+
 const CODE_REGEX = /^[A-Za-z0-9]{8}$/;
 function isValidCode(code: string): boolean {
     return typeof code === "string" && CODE_REGEX.test(code);
@@ -392,26 +394,205 @@ export const validateCategory = (data: any) => {
 
 
 // Validation for Event
-export const validateEvent = (data: any) => {
-    const { businessCode, venueCode, visibility, status } = data;
+export const validateEventDetails = (data: any) => {
+
+    const { name, startDate, endDate, startTime, applicationDeadline, influencerCapacity, description, influencerOffer, offerAmount, dressCode,
+        additionalGuests, specialRequirements, status, taskDetails} = data;
+
+    // console.log(taskDetails)
 
     const VALID_EVENT_STATUSES = ["draft", "published", "closed", "live", "completed", "cancelled"];
 
-    if(businessCode && !isValidCode(businessCode)) {
-        throw new Error("Valid 8-character businessCode is required");
-    }
+        if (!name || typeof name !== "string" || name.trim().length < 2) {
+            throw new Error("Event name must be at least 2 characters long");
+        }
 
-    if(!venueCode || !isValidCode(venueCode)) {
-        throw new Error("Valid 8-character venueCode is required");
-    }
+        // start date
+        let normalizedStartDate: string;
 
-    if(!visibility || !VALID_VISIBILITY.includes(visibility)) {
-        throw new Error("Invalid attachment visibility. Must be one of: " + VALID_VISIBILITY.join(", ") );
-    }
+        try {
+            normalizedStartDate = normalizeDateOnly(startDate);
+        } catch {
+            throw new Error("Invalid start date");
+        }
 
-    if(!status || !VALID_EVENT_STATUSES.includes(status)) {
-        throw new Error("Invalid Event status. Must be one of: " + VALID_EVENT_STATUSES.join(", "));
-    }
+        // end date
+        let normalizedEndDate: string;
+
+        try {
+            normalizedEndDate = normalizeDateOnly(endDate);
+        } catch {
+            throw new Error("Invalid end date");
+        }
+
+        // application deadline
+        let normalizedApplicationDeadline: string;
+
+        try {
+            normalizedApplicationDeadline = normalizeDateOnly(applicationDeadline);
+
+        } catch {
+            throw new Error("Invalid application deadline");
+        }
+
+        // End date cannot be before start date
+        if (normalizedEndDate < normalizedStartDate) {
+            throw new Error("End date cannot be before start date");
+        }
+
+
+        // Application deadline cannot be after the event start date
+        if (normalizedApplicationDeadline > normalizedStartDate) {
+            throw new Error("Application deadline cannot be after the event start date");
+        }
+
+        // start time
+        let normalizedStartTime: string;
+
+        try {
+            normalizedStartTime = normalizeTimeToHHMM(startTime);
+        } catch {
+            throw new Error("Invalid start time. Use HH:MM format");
+        }
+
+        // influencer Capacity
+        if (influencerCapacity === undefined || influencerCapacity === null || influencerCapacity === "") {
+            throw new Error("Influencer capacity is required");
+        }
+
+        const capacity = Number(influencerCapacity);
+
+        if (!Number.isInteger(capacity) || capacity < 1 || capacity > 20) {
+            throw new Error("Influencer capacity must be an integer between 1 and 20");
+        }
+
+        // description
+        if (!description || typeof description !== "string" || description.trim().length < 5) {
+            throw new Error("Event description must be at least 5 characters long");
+        }
+
+
+
+        // Influencer Offer
+        if (!influencerOffer || typeof influencerOffer !== "string" || influencerOffer.trim().length < 2) {
+            throw new Error("Influencer offer must be at least 2 characters long");
+        }
+
+
+        // Offer Amount
+         if (offerAmount === undefined || offerAmount === null || offerAmount === "") {
+            throw new Error("Offer amount is required");
+        }
+
+        const parsedOfferAmount = Number(offerAmount);
+
+         if (!Number.isFinite(parsedOfferAmount) || parsedOfferAmount < 0) {
+            throw new Error("Offer amount must be a valid non-negative number");
+         }
+
+
+        // Dress Code
+        if (!dressCode || typeof dressCode !== "string" || dressCode.trim().length < 2) {
+            throw new Error("Dress code is required");
+        }
+
+
+        // Additional Guests
+        if (additionalGuests === undefined || additionalGuests === null || additionalGuests === "") {
+            throw new Error("Additional guests is required");
+        }
+
+        const parsedAdditionalGuests = Number(additionalGuests);
+
+        if (!Number.isInteger(parsedAdditionalGuests) || parsedAdditionalGuests < 0) {
+            throw new Error("Additional guests must be a non-negative integer");
+        }
+
+
+        // Special Requirements
+        if (!specialRequirements || typeof specialRequirements !== "string" || specialRequirements.trim().length < 2) {
+            throw new Error("Special requirements must be at least 2 characters long");
+        }
+
+        // task data
+
+        if (!taskDetails) {
+            throw new Error("Task details are required");
+        }
+
+        let parsedTaskDetails;
+
+        try {
+            parsedTaskDetails = typeof taskDetails === "string" ? JSON.parse(taskDetails) : taskDetails;
+        } catch (error) {
+            throw new Error("Invalid taskDetails JSON");
+        }
+
+        if (!Array.isArray(parsedTaskDetails)) {
+            throw new Error("Task details must be an array");
+        }
+
+        for(const task of parsedTaskDetails) {
+
+            // console.log(task);
+
+            const {taskDescription, taskDeadline} = task;
+
+            // console.log(taskDescription, taskDeadline);
+
+            if (!taskDescription || typeof taskDescription !== "string" || taskDescription.trim().length < 2) {
+                throw new Error("Task description must be at least 2 characters long");
+            }
+            //
+            // // Task Deadline
+            if (taskDeadline === undefined || taskDeadline === null || taskDeadline === "") {
+                throw new Error("Task deadline is required");
+            }
+
+            const parsedTaskDeadline = Number(taskDeadline);
+
+            if (!Number.isInteger(parsedTaskDeadline) || parsedTaskDeadline <= 0) {
+                throw new Error("Task deadline must be a positive integer");
+            }
+
+            if (parsedTaskDeadline < 24) {
+                throw new Error("Task deadline must be at least 24 hours");
+            }
+        }
+
+
+        // event status
+        if (!status || typeof status !== "string" || !VALID_EVENT_STATUSES.includes(status)) {
+            throw new Error("Invalid event status. Must be one of: " + VALID_EVENT_STATUSES.join(", "));
+        }
+
+
+    // return normalized Data
+    return {
+        // Event Details
+        name: name.trim(),
+        startDate: normalizedStartDate,
+        endDate: normalizedEndDate,
+        startTime: normalizedStartTime,
+        applicationDeadline: normalizedApplicationDeadline,
+        influencerCapacity: capacity,
+        description: description.trim(),
+
+        // Event Offer
+        influencerOffer: influencerOffer.trim(),
+        offerAmount: parsedOfferAmount,
+        dressCode: dressCode.trim(),
+        additionalGuests: parsedAdditionalGuests,
+        specialRequirements: specialRequirements.trim(),
+
+
+        // Event Task
+        // taskDescription: taskDescription.trim(),
+        // taskDeadline: parsedTaskDeadline,
+        // Status
+        status: status
+    };
+
 }
 
 // Validation for Influencer Rating

@@ -4,7 +4,13 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import venueRepo from "../../repositories/venue/venue.repository.js";
 import checklistRepo from "../../repositories/event/checkList.repository.js";
-import {normalizeDateOnly, normalizeDeadline, normalizeTimeToHHMM, parseDate} from "../../utils/dateTimeFormat.js";
+import {
+    addHoursToNow,
+    normalizeDateOnly,
+    normalizeDeadline,
+    normalizeTimeToHHMM,
+    parseDate
+} from "../../utils/dateTimeFormat.js";
 import attachmentService from "../mediaAttachment/attachment.service.js";
 const db = initModels();
 
@@ -14,17 +20,16 @@ class EventService {
     async create(data: any, actor: any){
         // console.log(data)
 
-        const { eventName, eventStartDate, eventEndDate, eventStartTime,
-            applicationDeadline, influencerCapacity, description, influencerOfferDescription, offerValue,
-            dressCode, additionalGuests, specialRequirements, taskDescription, taskDeadline,
-            eventStatus, images } = data
+        const { name, startDate, endDate, startTime, applicationDeadline, influencerCapacity, description, influencerOffer, offerAmount,
+            dressCode, additionalGuests, specialRequirements, status, taskDetails, images } = data
+
+        console.log(images)
 
         const transaction = await db.sequelize.transaction();
 
         try{
 
             const eventCode = generateCode()
-            const checklistCode = generateCode()
             const invitationCode = generateCode()
             const venue = await venueRepo.findOne({
                 business_code: actor.businessCode,
@@ -35,36 +40,42 @@ class EventService {
             if(!venue) {
                 throw new Error("Venue does not exist")
             }
-
+        //
             const event = await eventRepo.create(
                 {
                     event_code: eventCode,
                     business_code: actor.businessCode,
                     venue_code: venue.venue_code,
-                    title: eventName,
+                    title: name,
                     description: description,
-                    start_date: normalizeDateOnly(eventStartDate),
-                    end_date: normalizeDateOnly(eventEndDate),
-                    start_time: normalizeTimeToHHMM(eventStartTime),
+                    start_date: startDate,
+                    end_date: endDate,
+                    start_time: startTime,
                     application_deadline: parseDate(applicationDeadline),
                     influencer_capacity: influencerCapacity,
-                    description_influencer_received: influencerOfferDescription,
-                    offer_value: offerValue,
+                    description_influencer_received: influencerOffer,
+                    offer_value: offerAmount,
                     dress_code: dressCode,
                     additional_guests: additionalGuests,
                     special_instructions: specialRequirements,
-                    status: eventStatus,
+                    created_by: actor.userCode,
+                    status: status,
                 },
                 {   transaction }
             );
 
-            const eventTask = await checklistRepo.create(
-                {
-                    checklist_code: checklistCode,
+            const checklistData = taskDetails.map((task: any) => {
+                const hours = Number(task.taskDeadline)
+
+                return {
+                    checklist_code: generateCode(),
                     event_code: eventCode,
-                    description: taskDescription || null,
-                    submission_deadline: parseDate(taskDeadline) || null,
-                },
+                    description: task.taskDescription,
+                    submission_deadline: addHoursToNow(hours) // deadline calculated from now with given hours, minimum 24 hours
+                }
+            })
+            const eventTasks = await checklistRepo.bulkCreate(
+                checklistData,
                 {   transaction }
             );
 
@@ -73,19 +84,18 @@ class EventService {
             const options = {
                 entityType: "event",
                 entityCode: eventCode,
-                title: eventName,
+                title: name,
                 mediaType: "image",
                 attachmentCategory: "gallery",
                 uploadedBy: actor.userCode,
             }
-
 
             const attachment = await attachmentService.uploadMultiple(images, options)
 
 
             return{
                 event,
-                eventTask,
+                eventTasks,
                 attachment,
             }
 
