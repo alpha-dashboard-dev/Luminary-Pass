@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import businessService from "../../services/business/business.service";
 import {validateBusiness, validateBusinessAccountRegistration} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class businessController {
 
@@ -302,6 +303,33 @@ class businessController {
                 success: false,
                 message: err.message
             });
+        }
+    }
+
+
+    //    Invite Team Member
+
+    async inviteTeamMember(req: FastifyRequest, reply: FastifyReply){
+        try{
+
+            const data = req.body
+
+            const result = await businessService.inviteTeamMember(data, req.user);
+
+            return ApiResponse.success(
+                reply,
+                result,
+                "Invitation send to team member",
+                200
+            )
+
+        }catch(err: any){
+            return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err
+            )
         }
     }
 

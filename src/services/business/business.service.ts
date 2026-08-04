@@ -360,41 +360,56 @@ class BusinessService {
     }
 
 
-    async activateBusiness(token: string) {
+    async inviteTeamMember(data: any, actor: any) {
 
-        const business = await businessRepo.findOne({
-            activation_token: token
-        });
+        // console.log(data, actor)
 
-        if (!business) {
-            throw new Error("Invalid activation link");
+        const user = await userRepo.findOne({
+            email: data.email
+        })
+
+        if(user){
+            throw new Error("User already exist with this email")
         }
 
-        await businessRepo.update(
-            {
-                business_code: business.business_code
-            },
-            {
-                status: "active",
-                activation_token: null,
-                activation_token_expires_at: null,
-                email_verified: true,
-            }
-        );
-
-        await userRepo.update(
-            {
-                business_code: business.business_code
-            },
-            {
-                status: "active"
-            }
-        );
-
-        return {
-            message: "Business account activated successfully."
-        };
     }
+
+
+    // async activateBusiness(token: string) {
+    //
+    //     const business = await businessRepo.findOne({
+    //         activation_token: token
+    //     });
+    //
+    //     if (!business) {
+    //         throw new Error("Invalid activation link");
+    //     }
+    //
+    //     await businessRepo.update(
+    //         {
+    //             business_code: business.business_code
+    //         },
+    //         {
+    //             status: "active",
+    //             activation_token: null,
+    //             activation_token_expires_at: null,
+    //             email_verified: true,
+    //         }
+    //     );
+    //
+    //     await userRepo.update(
+    //         {
+    //             business_code: business.business_code
+    //         },
+    //         {
+    //             status: "active"
+    //         }
+    //     );
+    //
+    //     return {
+    //         message: "Business account activated successfully."
+    //     };
+    // }
 }
 
 export default new BusinessService();
