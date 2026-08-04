@@ -381,7 +381,7 @@ class BusinessService {
             // business owner decide whatever they create the user profile or
             // they only send email with the setupProfile, then user create their profile
             // they only send email with the setupProfile, then user create their profile
-            // state checks user exist or profile completed or not,
+            // state checks user exi
 
             // console.log("Profile created successfully")
 
