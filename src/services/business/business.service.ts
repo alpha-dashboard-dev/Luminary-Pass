@@ -10,6 +10,9 @@ import venueRepo from "../../repositories/venue/venue.repository.js";
 import categoryRepo from "../../repositories/category/category.repository.js";
 import locationRepo from "../../repositories/location/location.repository.js";
 import emailService from "../sendEmail/email.service.js";
+import userService from "../user/user.service.js";
+import userRoleService from "../user/userRole.service.js";
+import userRoleRepo from "../../repositories/user/userRole.repository.js";
 
 const db = initModels();
 
@@ -200,24 +203,27 @@ class BusinessService {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        if(!actor){
-            throw new Error("Unauthorized Access");
+        // Admin can see all businesses
+        // Non-admin can only see their business details
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
         }
 
-        return businessRepo.findAll({
+        return businessRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     // Get Business By Business Code
@@ -357,41 +363,194 @@ class BusinessService {
     }
 
 
-    async activateBusiness(token: string) {
+    async inviteTeamMember(data: any, actor: any) {
 
-        const business = await businessRepo.findOne({
-            activation_token: token
-        });
+        const transaction = await db.sequelize.transaction();
 
-        if (!business) {
-            throw new Error("Invalid activation link");
+        try{
+
+            // case 1) user doesn't exist, owner send profile setup link through email
+            // find business user
+            const businessMemberExists = await userRepo.findOne({
+                email: data.email,
+                business_code: actor.businessCode
+            })
+
+
+            // find role exist with this business, if not create role against business
+            let userRoleExists = await userRoleRepo.findOne({
+                business_code: actor.businessCode,
+                role: data.role
+            })
+
+            if(!userRoleExists){
+                console.log("User Role doest not exist.");
+                userRoleExists = await userRoleService.create(
+                    {
+                        businessCode: actor.businessCode,
+                        role: data.role,
+                        rank: data.rank || null,
+                        description: data.description || null,
+                    },
+                    { transaction }
+                )
+            }
+
+            let hashPassword;
+            if(data.password){
+                hashPassword = await hashPassword(data.password);
+            }
+
+            if(!businessMemberExists){
+                // console.log("user doesn't exist")
+                const bypassProfile = data.bypassProfile === true;
+                // case 1) user doesn't exist, owner create user with all profile data and bypass profile setup, don't send email
+                // Owner provides complete profile
+                if (bypassProfile) {
+
+                    const member = await userService.create(
+                        {
+                            // validate business owner must provide required fields
+                            organizationCode: actor.organizationCode,
+                            businessCode: actor.businessCode,
+                            roleCode: userRoleExists.role_code,
+
+                            firstName: data.firstName || data.name || null,
+                            lastName: data.lastName || null,
+                            email: data.email,
+                            phone: data.phone || null,
+                            password: hashPassword,
+                            userType: userRoleExists.role,
+                            profileCompleted: true,
+                            status: "active",
+                        },
+                        { transaction }
+                    );
+
+                    await transaction.commit();
+
+                    return true;
+                }
+
+                // case 2) user doesn't exist, owner create user with email, name, role & send profile setup link to complete profile
+                const businessMember = await userService.create(
+                    {
+                        organizationCode: actor.organizationCode,
+                        businessCode: actor.businessCode,
+                        roleCode: userRoleExists.role_code,
+                        firstName: data.name,
+                        email: data.email,
+                        userType: userRoleExists.role,
+                        status: "inactive",
+                    },
+                    {   transaction }
+                )
+
+                await transaction.commit();
+
+                await emailService.sendProfileSetupEmail(data.email, businessMember.user_code, data.name)
+
+                return true
+            }
+
+
+            // case 3) user already exist, and have active status
+            if(businessMemberExists.status === "active"){
+                throw new Error("An active member has already exists with this email");
+            }
+
+            // case 4) user already exist but their profile is in complete
+            if(!businessMemberExists.profile_completed){
+                console.log("profile not completed")
+
+                const bypassProfile = data.bypassProfile === true;
+
+                console.log(bypassProfile)
+                //
+                // if (bypassProfile) {
+                //     const existingMember = await userService.create(
+                //         {
+                //             firstName: data.firstName || data.name || null,
+                //             lastName: data.lastName || null,
+                //             email: data.email,
+                //             phone: data.phone || null,
+                //             password: hashPassword,
+                //             userType: userRoleExists.role,
+                //             profileCompleted: true,
+                //             status: "active",
+                //         },
+                //         { transaction }
+                //     );
+                //
+                //     await transaction.commit();
+                //
+                //     return true;
+                // }
+                // await transaction.commit()
+                // await emailService.sendProfileSetupEmail(businessMemberExists.email, businessMemberExists.user_code, businessMemberExists.first_name)
+                return true;
+            }
+
+            await userRepo.update(
+                {
+                    user_code: businessMemberExists.user_code,
+                },
+                {
+                    role_code: userRoleExists.role_code,
+                    user_type: userRoleExists.role,
+                    status: "active",
+                },
+                {
+                    transaction
+                }
+            )
+
+            // console.log(member.user_code)
+            await transaction.commit();
+            return true
+
+        }   catch(err){
+            if(!transaction.finished)
+                await transaction.rollback();
+            throw err;
         }
-
-        await businessRepo.update(
-            {
-                business_code: business.business_code
-            },
-            {
-                status: "active",
-                activation_token: null,
-                activation_token_expires_at: null,
-                email_verified: true,
-            }
-        );
-
-        await userRepo.update(
-            {
-                business_code: business.business_code
-            },
-            {
-                status: "active"
-            }
-        );
-
-        return {
-            message: "Business account activated successfully."
-        };
     }
+
+    // async activateBusiness(token: string) {
+    //
+    //     const business = await businessRepo.findOne({
+    //         activation_token: token
+    //     });
+    //
+    //     if (!business) {
+    //         throw new Error("Invalid activation link");
+    //     }
+    //
+    //     await businessRepo.update(
+    //         {
+    //             business_code: business.business_code
+    //         },
+    //         {
+    //             status: "active",
+    //             activation_token: null,
+    //             activation_token_expires_at: null,
+    //             email_verified: true,
+    //         }
+    //     );
+    //
+    //     await userRepo.update(
+    //         {
+    //             business_code: business.business_code
+    //         },
+    //         {
+    //             status: "active"
+    //         }
+    //     );
+    //
+    //     return {
+    //         message: "Business account activated successfully."
+    //     };
+    // }
 }
 
 export default new BusinessService();

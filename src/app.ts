@@ -1,6 +1,5 @@
 import Fastify from "fastify";
 import multipart from "@fastify/multipart";
-
 import routes from "./routes/index.js";
 
 
@@ -17,16 +16,8 @@ await app.register(multipart, {
     }
 });
 
-// app.addHook("onRequest", async (req) => {
-//     console.log("METHOD:", req.method);
-//     console.log("URL:", req.url);
-//     console.log("HEADERS:", req.headers);
-// });
 
 app.register(routes, { prefix: "/api" });
 
-// app.ready(() => {
-//     console.log(app.printRoutes());
-// });
 
 export default app;

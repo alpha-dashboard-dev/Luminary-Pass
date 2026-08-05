@@ -1,47 +1,52 @@
 import userRoleRepo from "../../repositories/user/userRole.repository.js"
 import { generateCode} from "../../utils/generateCode.js";
+import {buildWhere} from "../../utils/buildWhere.js";
 
 class UserRoleService {
 
-    async create(data: any, actor: any){
+    async create(data: any, options?: any) {
 
-        // if(!actor){
-        //     throw new Error("Unauthorized Access");
-        // }
+        // console.log(data, options);
 
         const roleCode = generateCode()
 
-        return userRoleRepo.create({
-            role_code: roleCode,
-            business_code: data.businessCode,
-            role: data.role,
-            rank: data.rank,
-            description: data.description,
-        })
+        return userRoleRepo.create(
+            {
+                role_code: roleCode,
+                business_code: data.businessCode,
+                role: data.role,
+                rank: data.rank,
+                description: data.description,
+            },
+            options
+        )
     }
 
     async getAll(query: any = {}, actor: any) {
         // console.log(query.where)
-        // const where = buildWhere(query);
+        const where = buildWhere(query);
 
-        // if (!this.isAdmin(actor)) {
-        //     where.business_code = actor.businessCode;
-        // }
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
 
-        return userRoleRepo.findAll({
-            // where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+        return userRoleRepo.findAll(
+            where,
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     async getByRoleCode(roleCode: string,query: any = {}, actor: any) {

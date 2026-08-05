@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import invitationService from "../../services/event/invitation.service";
 import {validateEventInvitation} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class invitationController {
 
@@ -8,22 +9,25 @@ class invitationController {
 
         try{
             const data = req.body;
+
+            // console.log(data)
             validateEventInvitation(data);
-            const result =  await invitationService.create(
-                data,
-                req.user
+            const result =  await invitationService.create(data, req.user)
+
+            return ApiResponse.success(
+                reply,
+                result,
+                "Invitation created successfully",
+                200
             )
-            return reply.status(200).send({
-                success: true,
-                message: "invitation created successfully",
-                data: result
-            });
         }
         catch (err: any) {
-            return reply.status(400).send({
-                success: false,
-                message: err.message
-            });
+            return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err
+            )
         }
     }
 
@@ -192,19 +196,22 @@ class invitationController {
 
             const data = req.body;
             // console.log(data)
-            const result = await invitationService.respondToInvitation(invitationCode, data);
-            return reply.status(200).send({
-                success: true,
-                message: "Respond successfully submitted",
-                data: result
-            });
+            const result = await invitationService.respondToInvitation(invitationCode, data, req.user);
+            return ApiResponse.success(
+                reply,
+                result,
+                "Respond successfully submitted",
+                200
+            )
 
         } catch (err: any) {
 
-            return reply.status(400).send({
-                success: false,
-                message: err.message,
-            });
+            return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err
+            )
         }
     }
 

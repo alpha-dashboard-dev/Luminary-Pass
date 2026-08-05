@@ -1,4 +1,5 @@
 import attachmentService from "../../services/mediaAttachment/attachment.service";
+import {FastifyReply, FastifyRequest} from "fastify";
 
 
 class AttachmentController {
@@ -124,37 +125,26 @@ class AttachmentController {
 
     }
 
+    async delete(req: FastifyRequest, reply: FastifyReply) {
 
+        try {
+            const attachmentCode = String(req.params.attachmentCode)
 
+            await attachmentService.delete(attachmentCode, req.user);
 
+            return reply.status(200).send({
+                success: true,
+                message: "Attachment permanently deleted"
+            });
 
+        } catch (err: any) {
 
-    async delete(req:any,reply:any){
-
-
-        const result =
-            await attachmentService.delete(
-
-                req.params.attachmentCode
-
-            );
-
-
-        return reply.send({
-
-            success:true,
-
-            data:result
-
-        });
-
-
+            return reply.status(400).send({
+                success: false,
+                message: err.message
+            });
+        }
     }
-
-
-
-
-
 
     async replace(req:any,reply:any){
 

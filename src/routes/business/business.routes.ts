@@ -129,4 +129,20 @@ export default async function businessRoutes(fastify: FastifyInstance) {
         },
         businessController.delete
     )
+
+
+//     Invite team Member
+    fastify.post(
+        "/invite-team-member",
+        {
+            preHandler: [
+                authenticate,
+                hasPermission(
+                ["PER00005"],  //  assign role
+                true
+                )
+            ]
+        },
+        businessController.inviteTeamMember
+    )
 }

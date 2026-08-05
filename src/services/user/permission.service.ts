@@ -1,5 +1,6 @@
 import permissionRepo from "../../repositories/user/permission.repository.js"
 import { generateCode} from "../../utils/generateCode.js";
+import {buildWhere} from "../../utils/buildWhere.js";
 
 class PermissionService {
 
@@ -30,26 +31,29 @@ class PermissionService {
 
     async getAll(query: any = {}, actor: any) {
         // console.log(query.where)
-        // const where = buildWhere(query);
+        const where = buildWhere(query);
 
-        // if (!this.isAdmin(actor)) {
-        //     where.business_code = actor.businessCode;
-        // }
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
 
-        return permissionRepo.findAll({
-            // where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+        return permissionRepo.findAll(
+            where,
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     async getByPermissionCode(permissionCode: string,query: any = {}, actor: any) {

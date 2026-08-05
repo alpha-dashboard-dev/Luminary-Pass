@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes, Op } = require("sequelize");
 
 class User extends Model {
   static initModel(sequelize) {
@@ -56,7 +56,6 @@ class User extends Model {
           email: {
             type: DataTypes.STRING(255),
             allowNull: true,
-            unique: true,
             validate: {
               isEmail: true,
             },
@@ -65,7 +64,6 @@ class User extends Model {
           phone: {
             type: DataTypes.STRING(50),
             allowNull: true,
-            unique: true,
           },
 
           password: {
@@ -74,12 +72,7 @@ class User extends Model {
           },
 
           user_type: {
-            type: DataTypes.ENUM("manager", "staff"),
-            allowNull: true,
-          },
-
-          avatar: {
-            type: DataTypes.STRING(500),
+            type: DataTypes.STRING(100),
             allowNull: true,
           },
 
@@ -122,6 +115,31 @@ class User extends Model {
           createdAt: "created_at",
           updatedAt: "updated_at",
           underscored: true,
+
+
+            indexes: [
+                // global user with business code = null
+                {
+                    name: "users_global_email_unique",
+                    unique: true,
+                    fields: ["email", "phone"],
+                    where: {
+                        business_code: null,
+                    },
+                },
+
+                // business specific user with businessCode
+                {
+                    name: "users_business_email_unique",
+                    unique: true,
+                    fields: ["business_code", "email", "phone"],
+                    where: {
+                        business_code: {
+                            [Op.ne]: null,
+                        },
+                    },
+                },
+            ],
         }
     );
 

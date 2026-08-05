@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import eventService from "../../services/event/event.service";
-import {validateEvent} from "../../utils/validator.js";
+import {validateEvent, validateEventDetails} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class eventController {
 
@@ -53,8 +54,16 @@ class eventController {
                         });
                     }
                 } else {
-
-                    eventData[part.fieldname] = part.value;
+                    if(part.fieldname === "taskDetails"){
+                        try{
+                            eventData[part.fieldname] = JSON.parse(part.value as string);
+                        } catch{
+                            throw new Error("Invalid taskDetails JSON")
+                        }
+                    }
+                    else{
+                        eventData[part.fieldname] = part.value;
+                    }
                 }
             }
 
@@ -62,22 +71,27 @@ class eventController {
                 ...eventData,
                 images
             };
+
+            // console.log(data);
+            validateEventDetails(data);
+            // console.log(data);
             const result = await eventService.create(
                 data,
                 req.user
             );
-            return reply.status(200).send({
-                success:true,
-                message:"Event created successfully",
-                data:result
-
-            });
+            return ApiResponse.success(
+                reply,
+                result,
+                "Event Created Successfully",
+                200
+            )
         } catch(err:any){
-            return reply.status(400).send({
-                success:false,
-                message:err.message
-
-            });
+            return ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err,
+            );
         }
     }
 

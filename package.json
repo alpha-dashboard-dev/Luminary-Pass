@@ -8,11 +8,12 @@
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
     "sequelize:migrate": "sequelize-cli db:migrate",
-    "sequelize:seed": "sequelize-cli db:seed:all",
+    "sequelize:seed:all": "sequelize-cli db:seed:all",
     "sequelize:migrate:undo": "sequelize-cli db:migrate:undo",
     "sequelize:migrate:undo:all": "sequelize-cli db:migrate:undo:all",
     "sequelize:seed:undo": "sequelize-cli db:seed:undo",
-    "sequelize:seed:undo:all": "sequelize-cli db:seed:undo:all"
+    "sequelize:seed:undo:all": "sequelize-cli db:seed:undo:all",
+    "sequelize:seed": "sequelize-cli db:seed --seed"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",

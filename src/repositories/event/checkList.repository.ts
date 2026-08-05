@@ -16,6 +16,10 @@ class checkListRepository {
         return await dbHelper.create(this.tables, data, options);
     }
 
+    async bulkCreate(data: any[], options?: any) {
+        return await dbHelper.bulkCreate(this.tables, data, options);
+    }
+
     async findOne(where: any = {}, options: any = {}) {
         return await dbHelper.findOne(
             this.tables,
@@ -29,7 +33,7 @@ class checkListRepository {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
 
         const include = buildIncludes(
             this.tables,
@@ -37,6 +41,7 @@ class checkListRepository {
         )
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

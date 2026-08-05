@@ -4,20 +4,23 @@ import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
 
-class BusinessRepository {
+class venueSocialMediaRepo {
 
     private tables: any;
 
     constructor() {
-        this.tables = db.Business;
+        this.tables = db.SocialMedia;
     }
 
     async create(data: any, options?: any) {
         return await dbHelper.create(this.tables, data, options);
     }
 
+    async bulkCreate(data: any[], options?: any) {
+        return await dbHelper.bulkCreate(this.tables, data, options);
+    }
+
     async findOne(where: any = {}, options: any = {}) {
-        // console.log(where);
         return await dbHelper.findOne(
             this.tables,
             {
@@ -36,6 +39,7 @@ class BusinessRepository {
             this.tables,
             options.include || [],
         )
+
         return await dbHelper.findAll(
             this.tables,
             where,
@@ -67,17 +71,9 @@ class BusinessRepository {
         return await dbHelper.delete(
             this.tables,
             where,
-            options,
-        );
-    }
-
-    async count(where: any, options: any = {}) {
-        return await dbHelper.count(
-            this.tables,
-            where,
             options
-        )
+        );
     }
 }
 
-export default new BusinessRepository();
+export default new venueSocialMediaRepo();

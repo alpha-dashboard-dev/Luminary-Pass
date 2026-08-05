@@ -1,5 +1,6 @@
+// @ts-ignore
 import initModels from "../../database/sequelize/models/index.cjs"
-import dbHelper from "../../database/dbHelper/dbHelper"
+import dbHelper from "../../database/dbHelper/dbHelper.js"
 import {buildIncludes} from "../../utils/buildInclude.js";
 
 const db = initModels();
@@ -29,7 +30,7 @@ class abilityRepository {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
 
         const include = buildIncludes(
             this.tables,
@@ -37,6 +38,7 @@ class abilityRepository {
         )
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

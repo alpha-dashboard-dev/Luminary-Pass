@@ -1,5 +1,6 @@
 "use strict";
 
+const {DataTypes} = require("sequelize");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -45,13 +46,11 @@ module.exports = {
       email: {
         type: Sequelize.STRING(255),
         allowNull: true,
-        unique: true,
       },
 
       phone: {
         type: Sequelize.STRING(50),
         allowNull: true,
-        unique: true,
       },
 
       password: {
@@ -60,12 +59,7 @@ module.exports = {
       },
 
       user_type: {
-        type: Sequelize.ENUM("manager", "staff"),
-        allowNull: true,
-      },
-
-      avatar: {
-        type: Sequelize.STRING(500),
+        type: Sequelize.STRING(100),
         allowNull: true,
       },
 
@@ -73,6 +67,19 @@ module.exports = {
         type: Sequelize.ENUM("active", "inactive"),
         allowNull: false,
         defaultValue: "active",
+      },
+      profile_setup_token: {
+        type: Sequelize.STRING(255),
+        allowNull: true,
+      },
+      profile_setup_token_expires_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
+      profile_completed: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
       },
 
       created_at: {
@@ -92,7 +99,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("users");
 
-    // Clean up ENUM type (required for PostgreSQL only)
+    // Clean up ENUM type
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_users_user_type";');
     await queryInterface.sequelize.query('DROP TYPE IF EXISTS "enum_users_status";');
   },

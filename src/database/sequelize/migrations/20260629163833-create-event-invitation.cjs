@@ -32,10 +32,10 @@ module.exports = {
         allowNull: true,
       },
 
-      influencer_code: {
-        type: Sequelize.STRING(8),
-        allowNull: false,
-      },
+      // influencer_code: {
+      //   type: Sequelize.STRING(8),
+      //   allowNull: false,
+      // },
 
       invited_by: {
         type: Sequelize.STRING(8),
@@ -77,7 +77,7 @@ module.exports = {
 
     // Indexes (important for event systems)
     await queryInterface.addIndex("event_invitations", ["event_code"]);
-    await queryInterface.addIndex("event_invitations", ["influencer_code"]);
+    // await queryInterface.addIndex("event_invitations", ["influencer_code"]);
     await queryInterface.addIndex("event_invitations", ["status"]);
     await queryInterface.addIndex("event_invitations", ["entity_type"]);
   },

@@ -26,20 +26,22 @@ class socialLoginService {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        return socialLoginRepo.findAll({
+        return socialLoginRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                where,
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
     // Get socials By social code
     async getBySocialLoginCode(socialCode: string, query: any = {}) {

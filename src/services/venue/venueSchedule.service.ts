@@ -31,23 +31,31 @@ class VenueScheduleService {
 
     // Get all Venue Schedule
 
-    async getAll(query: any = {}) {
+    async getAll(query: any = {}, actor: any) {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        return venueScheduleRepo.findAll({
+        // Admin can see all venues
+        // Non-admin can only see their business's venues
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
+        }
+
+
+        return venueScheduleRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
         });
     }
 

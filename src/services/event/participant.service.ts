@@ -4,6 +4,7 @@ import { generateCode } from "../../utils/generateCode";
 import {buildWhere} from "../../utils/buildWhere.js";
 import eventRepo from "../../repositories/event/event.repository.js";
 import influencerRepo from "../../repositories/influencer/influencer.repository.js";
+import participantController from "../../controllers/event/participant.controller.js";
 
 class participantService {
 
@@ -20,7 +21,7 @@ class participantService {
         }
 
         const influencer = await influencerRepo.findOne({
-            influencer_code: data.influencerCode
+            user_code: data.influencerCode
         })
 
         if (!influencer) {
@@ -49,24 +50,25 @@ class participantService {
         // console.log(query.where)
         const where = buildWhere(query);
 
-        if(!actor){
-            throw new Error("Unauthorized Access");
+        if(actor.roleCode !== "ROL00001") {
+            where.business_code = actor.businessCode;
         }
 
-        return participantRepo.findAll({
+        return participantRepo.findAll(
             where,
-            include: Array.isArray(query.include)
-                ? query.include
-                : [],
-            limit: query.limit ? Number(query.limit) : undefined,
-            offset: query.offset ? Number(query.offset) : undefined,
-            order: [
-                [
-                    query.sort_by || "created_at",
-                    query.sort_order || "DESC"
+            {
+                include: Array.isArray(query.include)
+                    ? query.include
+                    : [],
+                limit: query.limit ? Number(query.limit) : undefined,
+                offset: query.offset ? Number(query.offset) : undefined,
+                order: [
+                    [
+                        query.sort_by || "created_at",
+                        query.sort_order || "DESC"
+                    ]
                 ]
-            ]
-        });
+            });
     }
 
     // Get participant By participant Code
@@ -136,8 +138,75 @@ class participantService {
         });
     }
 
-    async participantCheckin(participantCode: string, actor: any) {
+    async participantCheckIn(participantCode: string, data: any, actor: any) {
 
+        const { status } = data
+
+        const participant = await participantRepo.findOne({
+            participant_code: participantCode
+        })
+
+        if (!participant) {
+            throw new Error("Participant not found");
+        }
+
+        const event = await eventRepo.findOne({
+            event_code: participant.event_code
+        })
+
+        if (!event) {
+            throw new Error("Event not found where participant approved");
+        }
+
+        if(event.business_code !== actor.businessCode) {
+            throw new Error("Participant doesn't belong to your business");
+        }
+
+        let participantStatus;
+
+        switch (status) {
+            case "checked_in" :
+                {
+                    if(participant.status !== status){
+                        participantStatus = status
+                    }
+                    break;
+                }
+
+            case "completed":
+                {
+                    if(participant.status === status){
+                        throw new Error("Participant already checkIn in event")
+                    }
+
+                    participantStatus = status
+                    break;
+                }
+
+            case "no_show":
+                {
+                    if(participant.status === status){
+                        throw new Error("Participant already checkIn in event")
+                    }
+
+                    participantStatus = status
+                    break;
+                }
+            default: {
+                throw new Error("Invalid Status Value")
+            }
+        }
+
+        console.log(`Participant status: ${participantStatus}`);
+
+        return await participantRepo.update(
+            {
+                participant_code: participantCode
+            },
+            {
+                status: participantStatus
+            }
+        );
     }
 }
 

@@ -24,7 +24,8 @@ module.exports = {
             "influencer",
             "organization",
             "business",
-            "event"
+            "event",
+            "venue"
         ),
         allowNull: true,
       },
@@ -137,6 +138,10 @@ module.exports = {
         type: Sequelize.ENUM("active", "archived", "deleted"),
         allowNull: false,
         defaultValue: "active",
+      },
+      file_hash: {
+        type: Sequelize.STRING(64),
+        allowNull: true,
       },
 
       created_at: {

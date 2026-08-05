@@ -6,8 +6,11 @@ import venueLocationRepo from "../../repositories/venue/venueLocation.repository
 import initModels from "../../database/sequelize/models/index.cjs";
 import categoryRepo from "../../repositories/category/category.repository.js";
 import venueScheduleRepo from "../../repositories/venue/venueSchedule.repository.js";
-import venueScheduleService from "./venueSchedule.service.js";
+
 import attachmentService from "../mediaAttachment/attachment.service.js";
+
+import venueSocialMediaRepo from "../../repositories/venue/venueSocialMedia.repository.js";
+import attachmentRepo from "../../repositories/mediaAttachment/attachment.repository.js";
 
 const db = initModels();
 
@@ -163,17 +166,17 @@ class VenueService {
     }
 
     // update venue Profile
-    async updateVenueProfile(data: any, actor: any){
+    async updateVenueProfile(venueCode: string, payload: any, uploadedFiles: any[], actor: any){
 
-        // console.log(data)
+        // console.log(payload)
         const transaction = await db.sequelize.transaction()
 
         try{
 
-            // const { } = data
+            const { basicInfo, locationContact, socialMedia, schedule, deletedImages } = payload;
 
             const venueExists = await venueRepo.findOne({
-                venue_code: data.venueCode
+                venue_code: venueCode
             })
 
             if(!venueExists) {
@@ -184,58 +187,206 @@ class VenueService {
                 throw new Error("Venue does not belong to your business");
             }
 
-            // console.log(venueExists);
-
-            const venueLocationExist = await venueRepo.findOne({
-                venue_code: data.venueCode
-            })
-
-            if(venueLocationExist){
-                throw new Error("Venue Location already exist");
-            }
             // Basic Info
 
-            const venue = await venueRepo.update(
-                {
-                    venue_code: data.venueCode
-                },
-                {
-                    name: data.name,
-                    email: data.email,
-                    phone: data.phone,
-                    description: data.description,
-                    web_url: data.webURL
-                },
-                {   transaction }
-            )
+            if(basicInfo){
+                // console.log(basicInfo);
+                const venue = await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueName,
+                        description: basicInfo.venueDescription,
+                    },
+                    {   transaction }
+                )
 
-            // Location
-            // const venueLocation = await this.create(
-            //     {
-            //         venueCode: venueExists.venue_code,
-            //         address: data.fullAddress,
-            //         area: data.area,
-            //         city: data.city,
-            //         mapLink: data.mapLink,
-            //         status: true
-            //     },
-            //     {
-            //         transaction,
-            //     }
-            // )
+                const venueCategory = await categoryRepo.update(
+                    {
+                        entity_code: venueCode
+                    },
+                    {
+                        name: basicInfo.venueCategory,
+                        description: basicInfo.categoryDescription,
+                    },
+                    {   transaction }
+                )
+            }
 
-            // Social Media
+            // Location & Contact
+            if(locationContact){
+                // console.log("location contact", locationContact)
 
+                const venueLocation = await venueLocationRepo.findOne({
+                    venue_code: venueCode
+                })
 
-            // Schedule
-            const venueSchedule = await venueScheduleService.create({
+                if(!venueLocation) {
+                    throw new Error("Venue Location does not exist");
+                }
 
-            })
-            // Venue images
+                await venueLocationRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        area: locationContact.area,
+                        city: locationContact.city,
+                        address: locationContact.fullAddress,
+                        map_link: locationContact.mapLink
+                    },
+                    {   transaction }
+                )
 
-            const venueImages = await attachmentService.uploadMultiple()
+                await venueRepo.update(
+                    {
+                        venue_code: venueCode
+                    },
+                    {
+                        phone: locationContact.phone,
+                        email: locationContact.email,
+                        web_url: locationContact.webURL
+                    },
+                    {   transaction }
+                )
+            }
 
-            // console.log("venueLocationExist", venueLocationExist);
+            // socialMedia
+
+            if(socialMedia){
+                const socialPlatformMap = {
+                    instaUsername: "instagram",
+                    tiktokUsername: "tiktok",
+                    facebookPage: "facebook",
+                    twitterUsername: "twitter",
+                };
+
+                for (const [key, value] of Object.entries(socialMedia)) {
+
+                    if (!value) continue;
+
+                    const socialPlatform = socialPlatformMap[key];
+
+                    const existing = await venueSocialMediaRepo.findOne({
+                        venue_code: venueCode,
+                        social_platform: socialPlatform
+                    });
+
+                    // console.log(existing);
+                    if (existing) {
+
+                        await venueSocialMediaRepo.update(
+                            {
+                                venue_code: venueCode,
+                                social_platform: socialPlatform
+                            },
+                            {
+                                user_name: value
+                            },
+                            { transaction }
+                        );
+
+                    } else {
+
+                        await venueSocialMediaRepo.create(
+                            {
+                                social_media_code: generateCode(),
+                                venue_code: venueCode,
+                                social_platform: socialPlatform,
+                                user_name: value
+                            },
+                            { transaction }
+                        );
+                    }
+                }
+            }
+
+            // venue Schedule
+            if(schedule){
+                // console.log(schedule);
+                const venueSchedules = schedule;
+
+                for (const schedule of venueSchedules) {
+
+                    const { workingDay, startTime, endTime, isClosed } = schedule;
+
+                    if (!workingDay) continue;
+
+                    const normalizedDay = workingDay.toLowerCase();
+
+                    const existing = await venueScheduleRepo.findOne({
+                        venue_code: venueCode,
+                        working_day: normalizedDay
+                    });
+
+                    // console.log(normalizedDay, existing);
+
+                    if (existing) {
+
+                        await venueScheduleRepo.update(
+                            {
+                                venue_code: venueCode,
+                                working_day: normalizedDay
+                            },
+                            {
+                                start_time: startTime,
+                                end_time: endTime,
+                                status: !isClosed
+                            },
+                            { transaction }
+                        );
+
+                    } else {
+
+                        await venueScheduleRepo.create(
+                            {
+                                venue_schedule_code: generateCode(),
+                                venue_code: venueCode,
+                                working_day: normalizedDay,
+                                start_time: startTime,
+                                end_time: endTime,
+                                status: !isClosed
+                            },
+                            { transaction }
+                        );
+
+                    }
+                }
+            }
+
+            // deletedImages
+            if(deletedImages){
+                    // console.log(deletedImages);
+
+                    for(const image of deletedImages){
+
+                        const exitingImage = await attachmentRepo.findOne({
+                                attachment_code: image
+                        })
+
+                        if(exitingImage){
+                            await attachmentService.delete(image, actor)
+                        }
+                    }
+
+            }
+
+            // venue Images, venue attachment also store in attachment table
+
+            if(uploadedFiles){
+                // console.log(uploadedFiles);
+                const options = {
+                    entityType: "venue",
+                    entityCode: venueCode,
+                    attachmentCategory: "gallery",
+                    uploadedBy: actor.userCode,
+                    visibility: "public",
+                    transaction
+                }
+                await attachmentService.uploadMultiple(uploadedFiles, options)
+            }
+
 
             await transaction.commit();
 

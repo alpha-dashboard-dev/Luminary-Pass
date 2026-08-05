@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import participantService from "../../services/event/participant.service";
 import {validateEventParticipant} from "../../utils/validator.js";
+import {ApiResponse} from "../../utils/response.js";
 
 class participantController {
 
@@ -189,12 +190,32 @@ class participantController {
         }
     }
 
-    // async participantCheckIn(req: FastifyRequest, reply: FastifyReply) {
-    //
-    //     const participantCode = String(req.params.participantCode)
-    //
-    //     const result = await participantService.participantCheckin()
-    // }
+    async participantCheckIn(req: FastifyRequest, reply: FastifyReply) {
+
+        try{
+
+            const participantCode = String(req.params.participantCode)
+
+            const data = req.body;
+
+            const result = await participantService.participantCheckIn(participantCode, data, req.user)
+
+            return ApiResponse.success(
+                reply,
+                result,
+                "Participant check-in successfully",
+                200
+            )
+
+        }catch(err: any){
+            ApiResponse.error(
+                reply,
+                err.message,
+                400,
+                err
+            )
+        }
+    }
 }
 
 export default  new participantController();

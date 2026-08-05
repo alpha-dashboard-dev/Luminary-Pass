@@ -34,10 +34,10 @@ class EventInvitation extends Model {
             allowNull: true,
           },
 
-          influencer_code: {
-            type: DataTypes.STRING(8),
-            allowNull: false,
-          },
+          // influencer_code: {
+          //   type: DataTypes.STRING(8),
+          //   allowNull: false,
+          // },
 
           invited_by: {
             type: DataTypes.STRING(8),
@@ -96,12 +96,12 @@ class EventInvitation extends Model {
         constraints: false,
     });
 
-    EventInvitation.belongsTo(models.Influencer, {
-        foreignKey: "influencer_code",
-        targetKey: "influencer_code",
-        as: "influencerInvitation",
-        constraints: false,
-    });
+    // EventInvitation.belongsTo(models.Influencer, {
+    //     foreignKey: "user_code",
+    //     targetKey: "user_code",
+    //     as: "influencerInvitation",
+    //     constraints: false,
+    // });
 
     EventInvitation.belongsTo(models.User, {
         foreignKey: "invited_by",

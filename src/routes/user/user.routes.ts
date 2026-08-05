@@ -137,15 +137,15 @@ export default async function userRoutes(fastify: FastifyInstance) {
 
     fastify.patch(
         "/activate-user-account/:userCode",
-        {
-            preHandler: [
-                authenticate,
-                hasPermission(
-                    ["PER00001", "PER00002", "PER00003", "PER00004"],
-                    true
-                )
-            ]
-        },
+        // {
+        //     preHandler: [
+        //         authenticate,
+        //         hasPermission(
+        //             ["PER00001", "PER00002", "PER00003", "PER00004"],
+        //             true
+        //         )
+        //     ]
+        // },
         userController.activateUserAccount
     )
 }

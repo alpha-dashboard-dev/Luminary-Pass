@@ -33,7 +33,7 @@ class participantChecklistMediaRepo {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
 
         // console.log(options)
 
@@ -43,6 +43,7 @@ class participantChecklistMediaRepo {
         )
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

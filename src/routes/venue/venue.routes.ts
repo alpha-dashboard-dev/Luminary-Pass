@@ -82,7 +82,7 @@ export default async function venueRoutes(fastify: FastifyInstance) {
 
     // update venue profile
     fastify.put(
-        "/update-venue-profile",
+        "/update-venue-profile/:venueCode",
         {
             preHandler: [
                 authenticate,

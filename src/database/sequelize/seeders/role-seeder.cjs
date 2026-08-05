@@ -8,7 +8,7 @@ module.exports = {
             {
                 role_code: "ROL00001",
                 business_code: "0",
-                role: "admin",
+                role: "super_admin",
                 rank: 0,
                 description: "System Administrator",
                 created_at: now,

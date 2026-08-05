@@ -30,7 +30,7 @@ class InfluencerOnboardingRepository {
         );
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {}, options: any = {}) {
 
         const include = buildIncludes(
             this.tables,
@@ -38,6 +38,7 @@ class InfluencerOnboardingRepository {
         )
         return await dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

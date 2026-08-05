@@ -16,7 +16,7 @@ class UserRole {
         return dbHelper.create(this.tables, data, options)
     }
 
-    async findAll(options: any = {}) {
+    async findAll(where: any = {} ,options: any = {}) {
         // console.log(options);
 
         const include = buildIncludes(
@@ -26,6 +26,7 @@ class UserRole {
 
         return dbHelper.findAll(
             this.tables,
+            where,
             {
                 ...options,
                 include

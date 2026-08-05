@@ -119,7 +119,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM(
             "draft",
-            "publish",
+            "published",
             "closed",
             "live",
             "completed",
