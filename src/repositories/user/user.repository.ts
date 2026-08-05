@@ -48,6 +48,7 @@ class UserRepository {
     }
 
     async update(where: any, data: any, options: any = {}) {
+        console.log(where, data, options);
         return dbHelper.update(
             this.tables,
             where,

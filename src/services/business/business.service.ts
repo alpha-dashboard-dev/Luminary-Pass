@@ -452,16 +452,42 @@ class BusinessService {
 
                 return true
             }
-            // console.log("user already exists")
-            // case 3) user already exist, have active status
+
+
+            // case 3) user already exist, and have active status
             if(businessMemberExists.status === "active"){
                 throw new Error("An active member has already exists with this email");
             }
 
             // case 4) user already exist but their profile is in complete
             if(!businessMemberExists.profile_completed){
-                await transaction.commit()
-                await emailService.sendProfileSetupEmail(businessMemberExists.email, businessMemberExists.user_code, businessMemberExists.first_name)
+                console.log("profile not completed")
+
+                const bypassProfile = data.bypassProfile === true;
+
+                console.log(bypassProfile)
+                //
+                // if (bypassProfile) {
+                //     const existingMember = await userService.create(
+                //         {
+                //             firstName: data.firstName || data.name || null,
+                //             lastName: data.lastName || null,
+                //             email: data.email,
+                //             phone: data.phone || null,
+                //             password: hashPassword,
+                //             userType: userRoleExists.role,
+                //             profileCompleted: true,
+                //             status: "active",
+                //         },
+                //         { transaction }
+                //     );
+                //
+                //     await transaction.commit();
+                //
+                //     return true;
+                // }
+                // await transaction.commit()
+                // await emailService.sendProfileSetupEmail(businessMemberExists.email, businessMemberExists.user_code, businessMemberExists.first_name)
                 return true;
             }
 
@@ -478,7 +504,6 @@ class BusinessService {
                     transaction
                 }
             )
-
 
             // console.log(member.user_code)
             await transaction.commit();
