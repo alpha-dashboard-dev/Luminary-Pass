@@ -20,7 +20,7 @@ class UserService {
 
     async create(data: any, options?: any) {
 
-        // console.log(data);
+        console.log(data, options);
 
         const emailExists = await userRepo.findOne(
             {

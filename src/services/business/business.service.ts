@@ -12,6 +12,7 @@ import locationRepo from "../../repositories/location/location.repository.js";
 import emailService from "../sendEmail/email.service.js";
 import userService from "../user/user.service.js";
 import userRoleService from "../user/userRole.service.js";
+import userRoleRepo from "../../repositories/user/userRole.repository.js";
 
 const db = initModels();
 
@@ -368,48 +369,57 @@ class BusinessService {
 
         try{
 
-
+            // case 1) user doesn't exist, owner send profile setup link through email
+            // find business user
             const businessUserExist = await userRepo.findOne({
                 email: data.email,
                 business_code: actor.businessCode
             })
 
-            // console.log(userExist)
 
-            if(businessUserExist){
-                console.log(businessUserExist)
-                // throw new Error("User already exist with this email")
+            // find role exist with this business, if not create role against business
+            let userRoleExists = await userRoleRepo.findOne({
+                business_code: actor.businessCode,
+                role: data.role
+            })
+
+            if(!userRoleExists){
+                console.log("User Role doest not exist.");
+                userRoleExists = await userRoleService.create(
+                    {
+                        businessCode: actor.businessCode,
+                        role: data.role,
+                        rank: data.rank || null,
+                        description: data.description || null,
+                    },
+                    { transaction }
+                )
             }
 
-            // console.log("Profile created successfully")
+            // case 1) user doesn't exist, owner create user with email & send profile setup link to complete profile
+            if(!businessUserExist){
+                console.log("user doesn't exist")
+                // case 1) user doesn't exist, owner create user with email & send profile setup link to complete profile
+                // const member = await userService.create(
+                //     {
+                //         organizationCode: actor.organizationCode,
+                //         businessCode: actor.businessCode,
+                //         roleCode: userRoleExists.role_code,
+                //         firstName: data.name,
+                //         email: data.email,
+                //         userType: userRoleExists.role,
+                //     },
+                //     {   transaction }
+                // )
+                //
+                // await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
 
-            // const role = await userRoleService.create(
-            //     {
-            //         businessCode: actor.businessCode,
-            //         role: data.role,
-            //         rank: data.rank,
-            //         description: data.description,
-            //     },
-            //     {   transaction }
-            // )
-            //
-            // const member = await userService.create(
-            //     {
-            //         organizationCode: actor.organizationCode,
-            //         businessCode: actor.businessCode,
-            //         roleCode: role.role_code,
-            //         firstName: data.name,
-            //         email: data.email,
-            //         userType: data.role,
-            //     },
-            //     {   transaction }
-            // )
-            //
-            // // console.log(member.user_code)
-            // await transaction.commit();
-            //
-            // await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
+                // case 2) user doesn't exist, owner create user with all profile data and bypass profile, don't send email
 
+            }
+
+            // console.log(member.user_code)
+            await transaction.commit();
             return true
 
         }   catch(err){

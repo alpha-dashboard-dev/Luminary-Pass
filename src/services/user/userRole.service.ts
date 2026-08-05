@@ -6,6 +6,8 @@ class UserRoleService {
 
     async create(data: any, options?: any) {
 
+        // console.log(data, options);
+
         const roleCode = generateCode()
 
         return userRoleRepo.create(
