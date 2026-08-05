@@ -371,7 +371,7 @@ class BusinessService {
 
             // case 1) user doesn't exist, owner send profile setup link through email
             // find business user
-            const businessUserExist = await userRepo.findOne({
+            const businessMemberExists = await userRepo.findOne({
                 email: data.email,
                 business_code: actor.businessCode
             })
@@ -396,27 +396,89 @@ class BusinessService {
                 )
             }
 
-            // case 1) user doesn't exist, owner create user with email & send profile setup link to complete profile
-            if(!businessUserExist){
-                console.log("user doesn't exist")
-                // case 1) user doesn't exist, owner create user with email & send profile setup link to complete profile
-                // const member = await userService.create(
-                //     {
-                //         organizationCode: actor.organizationCode,
-                //         businessCode: actor.businessCode,
-                //         roleCode: userRoleExists.role_code,
-                //         firstName: data.name,
-                //         email: data.email,
-                //         userType: userRoleExists.role,
-                //     },
-                //     {   transaction }
-                // )
-                //
-                // await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
-
-                // case 2) user doesn't exist, owner create user with all profile data and bypass profile, don't send email
-
+            let hashPassword;
+            if(data.password){
+                hashPassword = await hashPassword(data.password);
             }
+
+            if(!businessMemberExists){
+                // console.log("user doesn't exist")
+                const bypassProfile = data.bypassProfile === true;
+                // case 1) user doesn't exist, owner create user with all profile data and bypass profile setup, don't send email
+                // Owner provides complete profile
+                if (bypassProfile) {
+
+                    const member = await userService.create(
+                        {
+                            // validate business owner must provide required fields
+                            organizationCode: actor.organizationCode,
+                            businessCode: actor.businessCode,
+                            roleCode: userRoleExists.role_code,
+
+                            firstName: data.firstName || data.name || null,
+                            lastName: data.lastName || null,
+                            email: data.email,
+                            phone: data.phone || null,
+                            password: hashPassword,
+                            userType: userRoleExists.role,
+                            profileCompleted: true,
+                            status: "active",
+                        },
+                        { transaction }
+                    );
+
+                    await transaction.commit();
+
+                    return true;
+                }
+
+                // case 2) user doesn't exist, owner create user with email, name, role & send profile setup link to complete profile
+                const businessMember = await userService.create(
+                    {
+                        organizationCode: actor.organizationCode,
+                        businessCode: actor.businessCode,
+                        roleCode: userRoleExists.role_code,
+                        firstName: data.name,
+                        email: data.email,
+                        userType: userRoleExists.role,
+                        status: "inactive",
+                    },
+                    {   transaction }
+                )
+
+                await transaction.commit();
+
+                await emailService.sendProfileSetupEmail(data.email, businessMember.user_code, data.name)
+
+                return true
+            }
+            // console.log("user already exists")
+            // case 3) user already exist, have active status
+            if(businessMemberExists.status === "active"){
+                throw new Error("An active member has already exists with this email");
+            }
+
+            // case 4) user already exist but their profile is in complete
+            if(!businessMemberExists.profile_completed){
+                await transaction.commit()
+                await emailService.sendProfileSetupEmail(businessMemberExists.email, businessMemberExists.user_code, businessMemberExists.first_name)
+                return true;
+            }
+
+            await userRepo.update(
+                {
+                    user_code: businessMemberExists.user_code,
+                },
+                {
+                    role_code: userRoleExists.role_code,
+                    user_type: userRoleExists.role,
+                    status: "active",
+                },
+                {
+                    transaction
+                }
+            )
+
 
             // console.log(member.user_code)
             await transaction.commit();

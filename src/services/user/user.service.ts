@@ -20,7 +20,7 @@ class UserService {
 
     async create(data: any, options?: any) {
 
-        console.log(data, options);
+        // console.log(data, options);
 
         const emailExists = await userRepo.findOne(
             {
@@ -258,6 +258,7 @@ class UserService {
             throw err
         }
     }
+
     async verifySetupLink(token: string){
         const user = await userRepo.findOne({
             profile_setup_token: token,
