@@ -369,45 +369,46 @@ class BusinessService {
         try{
 
 
-            const userExist = await userRepo.findOne({
-                email: data.email
+            const businessUserExist = await userRepo.findOne({
+                email: data.email,
+                business_code: actor.businessCode
             })
 
-            console.log(userExist)
+            // console.log(userExist)
 
-            if(userExist){
-                console.log(userExist)
+            if(businessUserExist){
+                console.log(businessUserExist)
                 // throw new Error("User already exist with this email")
             }
 
             // console.log("Profile created successfully")
 
-            const role = await userRoleService.create(
-                {
-                    businessCode: actor.businessCode,
-                    role: data.role,
-                    rank: data.rank,
-                    description: data.description,
-                },
-                {   transaction }
-            )
-
-            const member = await userService.create(
-                {
-                    organizationCode: actor.organizationCode,
-                    businessCode: actor.businessCode,
-                    roleCode: role.role_code,
-                    firstName: data.name,
-                    email: data.email,
-                    userType: data.role,
-                },
-                {   transaction }
-            )
-
-            // console.log(member.user_code)
-            await transaction.commit();
-
-            await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
+            // const role = await userRoleService.create(
+            //     {
+            //         businessCode: actor.businessCode,
+            //         role: data.role,
+            //         rank: data.rank,
+            //         description: data.description,
+            //     },
+            //     {   transaction }
+            // )
+            //
+            // const member = await userService.create(
+            //     {
+            //         organizationCode: actor.organizationCode,
+            //         businessCode: actor.businessCode,
+            //         roleCode: role.role_code,
+            //         firstName: data.name,
+            //         email: data.email,
+            //         userType: data.role,
+            //     },
+            //     {   transaction }
+            // )
+            //
+            // // console.log(member.user_code)
+            // await transaction.commit();
+            //
+            // await emailService.sendProfileSetupEmail(data.email, member.user_code, data.name)
 
             return true
 
@@ -417,15 +418,6 @@ class BusinessService {
             throw err;
         }
     }
-
-
-    /*
-    1	"USR00001"	"ORG00001"	"0"	"ROL00001"	"System"	"Admin"	"admin@system.com"	"03000000000"	"$2b$10$0NFY7M/QTpXM9AdWWBXYe.oskTwNxrV.H2ersShbGOEg/L8uI/fEy"			"active"	"2026-07-30 17:49:14.775+05"	"2026-07-30 17:49:14.775+05"			false
-    2	"0E03B769"			"ROL00003"	"abdullah"	"javed"	"alpha.dashboard.dev@gmail.com"	"03068481230"	"$2b$10$ZPt/088AWnektkHfROOvvON9.bUxBNjODcmTj6fs692NCDG7bEnmG"			"active"	"2026-07-30 18:00:32.86+05"	"2026-07-30 23:45:16.943+05"			true
-3	"2D11F60F"	"ORG00001"	"F2A9349E"	"ROL00002"	"Abdul Rehman"	"Khan"	"rajaabdullahjaved01@gmail.com"	"030684812330"	"$2b$10$8qXBBIes9vVDQlIZjLs1DOZO9afIiIErpNKyzQK8YnmQco/ExuFBq"			"active"	"2026-07-31 15:45:26.481+05"	"2026-07-31 17:41:17.625+05"			true
-6	"74AAEB32"	"ORG00001"	"F2A9349E"	"87DDBC66"	"Abdul"	"Rehman"	"01abdullahjaved@gmail.com"		"$2b$10$dLc4a5CV7CJSFTGt2qYEZeNRLt1zVgCiNkzZFhJ4Fy7btH2vNXRne"	"admin"		"active"	"2026-08-04 17:23:43.332+05"	"2026-08-04 17:24:51.788+05"			true
-     */
-
 
     // async activateBusiness(token: string) {
     //
