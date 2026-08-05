@@ -32,14 +32,14 @@ module.exports = {
 
                 user_type: null,
 
-                avatar: null,
-
                 status: "active",
+
+                profile_completed: true,
 
                 created_at: now,
 
                 updated_at: now,
-            }
+            },
         ]);
     },
 

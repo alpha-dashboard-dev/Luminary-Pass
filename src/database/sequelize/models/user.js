@@ -1,4 +1,4 @@
-const { Model, DataTypes } = require("sequelize");
+const { Model, DataTypes, Op } = require("sequelize");
 
 class User extends Model {
   static initModel(sequelize) {
@@ -115,6 +115,31 @@ class User extends Model {
           createdAt: "created_at",
           updatedAt: "updated_at",
           underscored: true,
+
+
+            indexes: [
+                // global user with business code = null
+                {
+                    name: "users_global_email_unique",
+                    unique: true,
+                    fields: ["email", "phone"],
+                    where: {
+                        business_code: null,
+                    },
+                },
+
+                // business specific user with businessCode
+                {
+                    name: "users_business_email_unique",
+                    unique: true,
+                    fields: ["business_code", "email", "phone"],
+                    where: {
+                        business_code: {
+                            [Op.ne]: null,
+                        },
+                    },
+                },
+            ],
         }
     );
 
