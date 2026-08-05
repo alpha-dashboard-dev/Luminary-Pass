@@ -314,6 +314,10 @@ class UserService {
                 throw new Error("Verification link expired. Request for a new link");
             }
 
+            if(data.password !== data.confirmPassword){
+                throw new Error("Passwords do not match");
+            }
+
             let hashedPassword;
             if(data.password)
                 hashedPassword = await hashPassword(data.password);
