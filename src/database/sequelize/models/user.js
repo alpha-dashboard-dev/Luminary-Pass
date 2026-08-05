@@ -56,7 +56,6 @@ class User extends Model {
           email: {
             type: DataTypes.STRING(255),
             allowNull: true,
-            unique: true,
             validate: {
               isEmail: true,
             },
@@ -65,7 +64,6 @@ class User extends Model {
           phone: {
             type: DataTypes.STRING(50),
             allowNull: true,
-            unique: true,
           },
 
           password: {
@@ -74,12 +72,7 @@ class User extends Model {
           },
 
           user_type: {
-            type: DataTypes.ENUM("admin","manager", "staff", "viewer"),
-            allowNull: true,
-          },
-
-          avatar: {
-            type: DataTypes.STRING(500),
+            type: DataTypes.STRING(100),
             allowNull: true,
           },
 

@@ -45,13 +45,11 @@ module.exports = {
       email: {
         type: Sequelize.STRING(255),
         allowNull: true,
-        unique: true,
       },
 
       phone: {
         type: Sequelize.STRING(50),
         allowNull: true,
-        unique: true,
       },
 
       password: {
@@ -60,12 +58,7 @@ module.exports = {
       },
 
       user_type: {
-        type: Sequelize.ENUM("admin","manager", "staff", "viewer"),
-        allowNull: true,
-      },
-
-      avatar: {
-        type: Sequelize.STRING(500),
+        type: Sequelize.STRING(100),
         allowNull: true,
       },
 
